@@ -1,61 +1,70 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/src/foundation/key.dart';
+import 'package:flutter/src/widgets/framework.dart';
 
-class ExamPage extends StatefulWidget {
+class RegisterExamPage extends StatefulWidget {
+  const RegisterExamPage({Key? key}) : super(key: key);
+
   @override
-  _ExamPageState createState() => _ExamPageState();
+  State<RegisterExamPage> createState() => _RegisterExamPageState();
 }
 
-class _ExamPageState extends State<ExamPage> {
+class _RegisterExamPageState extends State<RegisterExamPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
         appBar: AppBar(
-          leading: Icon(Icons.menu),
-          title: Text("EXÁMENES"),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          title: Text("EXAMEN DE LABORATORIO"),
           actions: [],
         ),
-        body: ListView.builder(
-            itemCount: 3,
-            itemBuilder: ((context, index) {
-              return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        title: Text(
-                          "Hemoglobina",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue,
-                              fontSize: 24),
-                        ),
-                        leading: Icon(
-                          Icons.bloodtype_outlined,
-                          size: 48,
-                          color: Colors.red,
-                        ),
-                        trailing: IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.arrow_right,
-                            size: 30,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        //!Divider
-                        height: 10,
-                        child: Center(
-                            child: Container(
-                          height: 1,
-                          color: Colors.black,
-                        )),
-                      ),
-                    ],
-                  ));
-            })));
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Text(
+                  "Luego de realizar este examen en un centro especializado, registre el resultado a continuación"),
+              SizedBox(height: 20),
+              Text("Examen de laboratorio"),
+              TextField(
+                enabled: false,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Nombre de examen"',
+                ),
+              ),
+              SizedBox(height: 20),
+              Text("Resultado"),
+              TextField(
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: '150',
+                ),
+              ),
+              SizedBox(height: 20),
+              Text("Fecha de entrega"),
+              TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Date picker',
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(onPressed: () {}, child: Text("ACEPTAR"))
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
