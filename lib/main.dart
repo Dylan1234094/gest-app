@@ -4,6 +4,7 @@ import 'package:gest_app/layout/authentication/login_gest.dart';
 import 'package:gest_app/layout/authentication/login_obs.dart';
 import 'package:gest_app/layout/authentication/register_gest.dart';
 import 'package:gest_app/layout/authentication/register_obs.dart';
+import 'package:gest_app/layout/gest/tabs.dart';
 import 'package:gest_app/layout/start/start_page.dart';
 import 'package:gest_app/layout/monitoring/monitoring_obstetra.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const MyHomePage(),
+        '/': (context) => Tabs(), //! Tabs -> const MyHomePage(),
         '/registerObstetra': (context) => const RegisterObs(),
         '/loginObstetra': (context) => const LoginObsWidget(),
         '/registerGestante': (context) => const RegisterGest(),
