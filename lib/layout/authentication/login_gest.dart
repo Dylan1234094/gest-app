@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gest_app/layout/gest/guide/guide_detail.dart';
+import 'package:gest_app/layout/gest/tabs.dart';
 import 'package:gest_app/service/gestante_service.dart';
 import 'package:googleapis/fitness/v1.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,7 +33,8 @@ class _LoginGestState extends State<LoginGest> {
           children: <Widget>[
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-              child: Text("Inicie sesión con su cuenta de Google para continuar con la configuración de su cuenta"),
+              child: Text(
+                  "Inicie sesión con su cuenta de Google para continuar con la configuración de su cuenta"),
             ),
             Align(
               alignment: Alignment.center,
@@ -64,6 +67,11 @@ GestanteService _gestanteService = GestanteService();
 
 void loginGestante(BuildContext context) {
   _gestanteService.signInGestante(context);
+  Navigator.of(context).push(
+    MaterialPageRoute<void>(builder: (BuildContext context) {
+      return Tabs();
+    }),
+  );
 }
 
 void logoutGestante() {

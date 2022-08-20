@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:gest_app/layout/gest/guide/guide_detail.dart';
-import 'package:gest_app/service/guides_service.dart';
 
 class GuidePage extends StatefulWidget {
   @override
@@ -25,13 +24,6 @@ class _GuidePageState extends State<GuidePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: Icon(Icons.menu),
-          title: Text("GUÍAS"),
-          actions: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
-          ],
-        ),
         body: ListView.builder(
             itemCount: 3,
             itemBuilder: ((context, index) {
@@ -40,13 +32,10 @@ class _GuidePageState extends State<GuidePage> {
                 child: GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(
-                              MaterialPageRoute<void>(
-                                  builder: (BuildContext context) {
-                                return GuideDetailPage( //! Se ingresa la UID
-                                  //idDrink: widget.cocktail.idDrink
-                                  );
-                              }),
-                            );
+                      MaterialPageRoute<void>(builder: (BuildContext context) {
+                        return GuideDetailPage('1');
+                      }),
+                    );
                   },
                   child: Card(
                     child: Column(

@@ -2,8 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:gest_app/shared/date_input.dart';
 
 class RegisterExamPage extends StatefulWidget {
   const RegisterExamPage({Key? key}) : super(key: key);
@@ -13,6 +12,14 @@ class RegisterExamPage extends StatefulWidget {
 }
 
 class _RegisterExamPageState extends State<RegisterExamPage> {
+  final dateController = TextEditingController();
+
+  @override
+  void dispose() {
+    dateController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -53,11 +60,9 @@ class _RegisterExamPageState extends State<RegisterExamPage> {
               ),
               SizedBox(height: 20),
               Text("Fecha de entrega"),
-              TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Date picker',
-                ),
+              MyDateInput(
+                label: "Fecha de entrega",
+                dateController: dateController,
               ),
               SizedBox(height: 20),
               ElevatedButton(onPressed: () {}, child: Text("ACEPTAR"))

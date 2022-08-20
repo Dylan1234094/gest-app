@@ -3,13 +3,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Guide {
   final String? id;
   final String? title;
-  final String? description;
+  final String? shortDescription;
+  final String? largeDescription;
   final String? thumbnail;
 
   const Guide({
     this.id,
     this.title,
-    this.description,
+    this.shortDescription,
+    this.largeDescription,
     this.thumbnail
   });
 
@@ -21,7 +23,8 @@ class Guide {
     return Guide(
       id: data?['id'],
       title: data?['title'],
-      description: data?['description'],
+      shortDescription: data?['shortDescription'],
+      largeDescription: data?['largeDescription'],
       thumbnail: data?['thumbnail'],
     );
   }
@@ -30,7 +33,8 @@ class Guide {
     return {
       if (id != null) "id": id,
       if (title != null) "title": title,
-      if (description != null) "description": description,
+      if (shortDescription != null) "shortDescription": shortDescription,
+      if (largeDescription != null) "largeDescription": largeDescription,
       if (thumbnail != null) "thumbnail": thumbnail
     };
   }

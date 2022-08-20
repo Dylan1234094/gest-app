@@ -12,11 +12,6 @@ class _ExamPageState extends State<ExamPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: Icon(Icons.menu),
-          title: Text("EXÁMENES"),
-          actions: [],
-        ),
         body: ListView.builder(
             itemCount: 3,
             itemBuilder: ((context, index) {
@@ -42,9 +37,9 @@ class _ExamPageState extends State<ExamPage> {
                             Navigator.of(context).push(
                               MaterialPageRoute<void>(
                                   builder: (BuildContext context) {
-                                return RegisterExamPage( //! Se ingresa la UID
-                                  //idDrink: widget.cocktail.idDrink
-                                  );
+                                return RegisterExamPage(//! Se ingresa la UID
+                                    //idDrink: widget.cocktail.idDrink
+                                    );
                               }),
                             );
                           },

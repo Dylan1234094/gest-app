@@ -11,10 +11,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(          
-          leading: Icon(Icons.menu),
-          title: Text("INICIO"),
-        ),
         body: ListView.builder(
             itemCount: 3,
             itemBuilder: ((context, index) {
@@ -33,8 +29,7 @@ class _HomePageState extends State<HomePage> {
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 24),
                             ),
-                            Text(
-                                'Gráfico evolutivo',
+                            Text('Gráfico evolutivo',
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
                                     fontStyle: FontStyle.italic, fontSize: 18))
@@ -44,7 +39,7 @@ class _HomePageState extends State<HomePage> {
                       Image(
                         image: NetworkImage(
                             'https://help.highbond.com/helpdocs/highbond/es/Content/images/visualizer/chart_examples/line_chart_simple.png'),
-                            width: 500,
+                        width: 500,
                       ),
                     ],
                   ),

@@ -8,6 +8,7 @@ import 'package:gest_app/layout/gest/tabs.dart';
 import 'package:gest_app/layout/start/start_page.dart';
 import 'package:gest_app/layout/monitoring/monitoring_obstetra.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gest_app/shared/drawer_gest.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,9 +27,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/',
+      initialRoute: '/tabs',
       routes: {
-        '/': (context) => Tabs(), //! Tabs -> const MyHomePage(),
+        '/tabs': (context) => Tabs(),
+        '/': (context) => MyHomePage(),
         '/registerObstetra': (context) => const RegisterObs(),
         '/loginObstetra': (context) => const LoginObsWidget(),
         '/registerGestante': (context) => const RegisterGest(),
