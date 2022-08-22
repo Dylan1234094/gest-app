@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:gest_app/data/model/gestante.dart';
 import 'package:gest_app/data/model/obstetra.dart';
 
 final db = FirebaseFirestore.instance;
@@ -96,5 +97,24 @@ class ObstetraService {
       print(e);
     }
     return obstetra = Obstetra(id: uid, nombre: nombre, apellido: apellido, codigoObstetra: codigoObstetra);
+  }
+
+  Future<List<Gestante>> getListaGestantes(String codigoObstetra) async {
+    List<Gestante> listaGestantes = [];
+    Gestante gestante;
+
+    try {
+      await db.collection("gestantes").where("codigoObstetra", isEqualTo: codigoObstetra).get().then((event) {
+        for (var doc in event.docs) {
+          gestante = Gestante(
+              nombre: doc.data()["nombre"], apellido: doc.data()["apellido"], fechaRegla: doc.data()["fechaRegla"], vitals: doc.data()["vitals"]);
+          listaGestantes.add(gestante);
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+
+    return listaGestantes;
   }
 }

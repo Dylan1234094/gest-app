@@ -24,7 +24,7 @@ class GestanteService {
               if (doc.exists) {
                 print("Usuario ya se encuentra registrado");
               } else {
-                Navigator.pushNamed(context, '/registerGestante');
+                Navigator.pushNamed(context, '/linkObstetraGestante');
               }
             },
             onError: (e) => print("Error al intentar obtener doc ${value.user!.uid}"),
@@ -48,7 +48,7 @@ class GestanteService {
   }
 
   void createGestante(String nombre, String apellido, String correo, String telefono, String dni, String fechaNacimiento, String fechaRegla,
-      String fechaEco, String fechaCita) async {
+      String fechaEco, String fechaCita, String codigoObs, VitalSign vitals) async {
     final gestante = Gestante(
         nombre: nombre,
         apellido: apellido,
@@ -57,7 +57,10 @@ class GestanteService {
         fechaNacimiento: fechaNacimiento,
         fechaRegla: fechaRegla,
         fechaEco: fechaEco,
-        fechaCita: fechaCita);
+        fechaCita: fechaCita,
+        codigoObstetra: codigoObs,
+        vitals: vitals.toJson());
+
     final docRef = db
         .collection("gestantes")
         .withConverter(

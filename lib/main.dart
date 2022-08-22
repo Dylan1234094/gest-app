@@ -4,6 +4,8 @@ import 'package:gest_app/layout/authentication/login_gest.dart';
 import 'package:gest_app/layout/authentication/login_obs.dart';
 import 'package:gest_app/layout/authentication/register_gest.dart';
 import 'package:gest_app/layout/authentication/register_obs.dart';
+import 'package:gest_app/layout/authentication/linkobs_gest.dart';
+import 'package:gest_app/layout/authentication/vitalsigns_gest.dart';
 import 'package:gest_app/layout/start/start_page.dart';
 import 'package:gest_app/layout/monitoring/monitoring_obstetra.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -32,6 +34,8 @@ class MyApp extends StatelessWidget {
         '/loginObstetra': (context) => const LoginObsWidget(),
         '/registerGestante': (context) => const RegisterGest(),
         '/loginGestante': (context) => const LoginGest(),
+        '/linkObstetraGestante': (context) => const LinkObsGest(),
+        '/vitalSignsGestante': (context) => const VitalSignsGest(),
       },
     );
   }
@@ -46,7 +50,7 @@ class MyHomePage extends StatelessWidget {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.hasData && snapshot.data!.emailVerified == false) {
-              //emailVerified permite reconocer que el inicio de sesión no es una por una cuenta de Google (Gestante)
+              //emailVerified permite reconocer que el inicio de sesión no es por una cuenta de Google (Gestante)
               return const MonitorObs();
             } else {
               return const Start();

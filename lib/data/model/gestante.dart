@@ -1,5 +1,39 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+class VitalSign {
+  final String? actFisica;
+  final String? freCardi;
+  final String? suenio;
+  final String? presArt;
+  final String? freResp;
+  final String? satOxig;
+  final String? peso;
+  final String? gluco;
+
+  const VitalSign({this.actFisica, this.freCardi, this.suenio, this.presArt, this.freResp, this.satOxig, this.peso, this.gluco});
+
+  VitalSign.fromJson(Map<String, dynamic> json)
+      : actFisica = json['actFisica'],
+        freCardi = json['freCardi'],
+        suenio = json['suenio'],
+        presArt = json['presArt'],
+        freResp = json['freResp'],
+        satOxig = json['satOxig'],
+        peso = json['peso'],
+        gluco = json['gluco'];
+
+  Map<String, dynamic> toJson() => {
+        'actFisica': actFisica,
+        'freCardi': freCardi,
+        'suenio': suenio,
+        'presArt': presArt,
+        'freResp': freResp,
+        'satOxig': satOxig,
+        'peso': peso,
+        'gluco': gluco
+      };
+}
+
 class Gestante {
   final String? id;
   final String? nombre;
@@ -12,6 +46,7 @@ class Gestante {
   final String? fechaEco;
   final String? fechaCita;
   final String? codigoObstetra;
+  final Map<String, dynamic>? vitals;
 
   const Gestante(
       {this.id,
@@ -24,7 +59,8 @@ class Gestante {
       this.fechaRegla,
       this.fechaEco,
       this.fechaCita,
-      this.codigoObstetra});
+      this.codigoObstetra,
+      this.vitals});
 
   factory Gestante.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -43,6 +79,7 @@ class Gestante {
       fechaEco: data?['fechaEco'],
       fechaCita: data?['fechaCita'],
       codigoObstetra: data?['codigoObstetra'],
+      vitals: data?['vitals'],
     );
   }
 
@@ -59,6 +96,7 @@ class Gestante {
       if (fechaEco != null) "fechaEco": fechaEco,
       if (fechaCita != null) "fechaCita": fechaCita,
       if (codigoObstetra != null) "codigoObstetra": codigoObstetra,
+      if (vitals != null) "vitals": vitals,
     };
   }
 }

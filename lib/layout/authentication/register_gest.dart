@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gest_app/layout/authentication/linkobs_gest.dart';
 import 'package:gest_app/shared/date_input.dart';
 import 'package:gest_app/service/gestante_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class RegisterGest extends StatelessWidget {
   const RegisterGest({Key? key}) : super(key: key);
@@ -18,6 +20,22 @@ class FormGest extends StatefulWidget {
   State<FormGest> createState() => _FormGestState();
 }
 
+class registerGestArguments {
+  final String nombre;
+  final String apellido;
+  final String correo;
+  final String telefono;
+  final String dni;
+  final String fechaNacimiento;
+  final String fechaRegla;
+  final String fechaEco;
+  final String fechaCita;
+  final String codigoObs;
+
+  registerGestArguments(this.nombre, this.apellido, this.correo, this.telefono, this.dni, this.fechaNacimiento, this.fechaRegla, this.fechaEco,
+      this.fechaCita, this.codigoObs);
+}
+
 class _FormGestState extends State<FormGest> {
   final nombreController = TextEditingController();
   final apellidoController = TextEditingController();
@@ -28,6 +46,7 @@ class _FormGestState extends State<FormGest> {
   final fechaReglaController = TextEditingController();
   final fechaEcoController = TextEditingController();
   final fechaCitaController = TextEditingController();
+  final linkObsController = TextEditingController();
 
   @override
   void dispose() {
@@ -40,11 +59,18 @@ class _FormGestState extends State<FormGest> {
     fechaReglaController.dispose();
     fechaEcoController.dispose();
     fechaCitaController.dispose();
+    linkObsController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as linkObsArguments;
+    var correo = FirebaseAuth.instance.currentUser!.email;
+
+    linkObsController.text = args.codigoObs;
+    correoController.text = correo!;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Perfil"),
@@ -71,6 +97,14 @@ class _FormGestState extends State<FormGest> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
               child: TextFormField(
+                enabled: false,
+                controller: correoController,
+                decoration: const InputDecoration(labelText: 'Correo'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+              child: TextFormField(
                 controller: nombreController,
                 decoration: const InputDecoration(labelText: 'Nombre'),
               ),
@@ -80,13 +114,6 @@ class _FormGestState extends State<FormGest> {
               child: TextFormField(
                 controller: apellidoController,
                 decoration: const InputDecoration(labelText: 'Apellido'),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-              child: TextFormField(
-                controller: correoController,
-                decoration: const InputDecoration(labelText: 'Correo'),
               ),
             ),
             Padding(
@@ -130,16 +157,18 @@ class _FormGestState extends State<FormGest> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 child: ElevatedButton(
                   onPressed: () => {
-                    insertDataGestante(
-                        nombreController.text,
-                        apellidoController.text,
-                        correoController.text,
-                        telefonoController.text,
-                        dniController.text,
-                        fechaNacimientoController.text,
-                        fechaReglaController.text,
-                        fechaEcoController.text,
-                        fechaCitaController.text)
+                    Navigator.pushNamed(context, '/vitalSignsGestante',
+                        arguments: registerGestArguments(
+                            nombreController.text,
+                            apellidoController.text,
+                            correoController.text,
+                            telefonoController.text,
+                            dniController.text,
+                            fechaNacimientoController.text,
+                            fechaReglaController.text,
+                            fechaEcoController.text,
+                            fechaCitaController.text,
+                            linkObsController.text))
                   },
                   child: const Text('SIGUIENTE'),
                 ),
@@ -150,11 +179,4 @@ class _FormGestState extends State<FormGest> {
       ),
     );
   }
-}
-
-void insertDataGestante(String nombre, String apellido, String correo, String telefono, String dni, String fechaNacimiento, String fechaRegla,
-    String fechaEco, String fechaCita) {
-  GestanteService _gestanteService = GestanteService();
-
-  _gestanteService.createGestante(nombre, apellido, correo, telefono, dni, fechaNacimiento, fechaRegla, fechaEco, fechaCita);
 }
