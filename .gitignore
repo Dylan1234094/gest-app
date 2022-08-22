@@ -48,3 +48,4 @@ app.*.map.json
 # Settings of code editor format
 /.vscode
 pubspec.lock
+pubspec.lock

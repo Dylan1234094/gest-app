@@ -27,7 +27,7 @@ class GestanteService {
                 Navigator.pushNamed(context, '/linkObstetraGestante');
               }
             },
-            onError: (e) => print("Error al intentar obtener doc ${value.user!.uid}"),
+            onError: (e) => print("Error al intentar obtener doc ${value.user!.uid} en gestante"),
           );
         } catch (e) {
           print(e);
@@ -69,5 +69,38 @@ class GestanteService {
         )
         .doc(dni);
     await docRef.set(gestante);
+  }
+
+  Future<Gestante> getGestante(String uid) async {
+    Gestante gestante;
+    var nombre = "";
+    var apellido = "";
+    var correo = "";
+    var telefono = "";
+    var fechaNacimiento = "";
+    var fechaRegla = "";
+    var fechaEco = "";
+    var fechaCita = "";
+
+    try {
+      final docRef = db.collection("gestantes").doc(uid);
+      await docRef.get().then(
+        (DocumentSnapshot doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          nombre = data["nombre"];
+          apellido = data["apellido"];
+          correo = data["correo"];
+          telefono = data["telefono"];
+          fechaNacimiento = data["fechaNacimiento"];
+          fechaRegla = data["fechaRegla"];
+          fechaEco = data["fechaEco"];
+          fechaCita = data["fechaCita"];
+        },
+        onError: (e) => print("Error al intentar obtener doc $uid en gestante"),
+      );
+    } catch (e) {
+      print(e);
+    }
+    return gestante = Gestante(id: uid, nombre: nombre, apellido: apellido);
   }
 }
