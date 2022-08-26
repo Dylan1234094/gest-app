@@ -32,8 +32,17 @@ class registerGestArguments {
   final String fechaCita;
   final String codigoObs;
 
-  registerGestArguments(this.nombre, this.apellido, this.correo, this.telefono, this.dni, this.fechaNacimiento, this.fechaRegla, this.fechaEco,
-      this.fechaCita, this.codigoObs);
+  registerGestArguments(
+      this.nombre,
+      this.apellido,
+      this.correo,
+      this.telefono,
+      this.dni,
+      this.fechaNacimiento,
+      this.fechaRegla,
+      this.fechaEco,
+      this.fechaCita,
+      this.codigoObs);
 }
 
 class _FormGestState extends State<FormGest> {

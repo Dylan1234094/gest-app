@@ -38,4 +38,26 @@ class GuideService {
         largeDescription: largeDescription,
         thumbnail: thumbnail);
   }
+
+  Future<List<Guide>> getGuideList() async {
+    List<Guide> listaGuias = [];
+    Guide guia;
+
+    try {
+      await db.collection("guias").get().then((event) {
+        for (var doc in event.docs) {
+          guia = Guide(
+              id: doc.data()["id"],
+              title: doc.data()["title"],
+              thumbnail: doc.data()["thumbnail"],
+              shortDescription: doc.data()["shortDescription"]);
+          listaGuias.add(guia);
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+
+    return listaGuias;
+  }
 }

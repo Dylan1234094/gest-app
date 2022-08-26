@@ -1,11 +1,12 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:gest_app/data/model/guide.dart';
 import 'package:gest_app/service/guides_service.dart';
 
 class GuideDetailPage extends StatefulWidget {
-  const GuideDetailPage(String guideId, {Key? key}) : super(key: key);
+  final String guideId;
+  const GuideDetailPage({Key? key, required this.guideId}) : super(key: key);
 
   @override
   State<GuideDetailPage> createState() => _GuideDetailPageState();
@@ -14,61 +15,60 @@ class GuideDetailPage extends StatefulWidget {
 class _GuideDetailPageState extends State<GuideDetailPage> {
   @override
   Widget build(BuildContext context) {
-    var id = "6UXrK0clWmnUchH4maMy";
-
     return Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          title: Text("Guía Psicoprofilaxis"),
-          actions: [],
-        ),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            title: Text("Guía Psicoprofilaxis")),
         body: FutureBuilder<Guide>(
-            future: null, //getGuideById(id), //! ID
+            future: getGuideById(widget.guideId), //! ID
             builder: (context, snapshot) {
-              if (!snapshot.hasData) { //! invertir !
-                return Padding(
+              if (!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
+              }
+              return SingleChildScrollView(
+                child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(  //! Title
+                      Padding(
+                        //! Title
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          "snapshot.data!.title!",
+                          snapshot.data!.title!,
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 24),
                         ),
                       ),
-                      Padding(  //! Short Description
+                      Padding(
+                        //! Short Description
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "snapshot.data!.shortDescription!",
+                        child: Text(snapshot.data!.shortDescription!,
                             style: TextStyle(
                                 fontStyle: FontStyle.italic, fontSize: 16)),
                       ),
-                      Padding(  //! Thumbnail
+                      Padding(
+                        //! Thumbnail
                         padding: const EdgeInsets.all(8.0),
                         child: Image(
-                          image: NetworkImage(
-                              'https://concepto.de/wp-content/uploads/2019/06/natacion-e1562943144215.jpg'),
+                          image: NetworkImage(snapshot.data!.thumbnail!),
                         ),
                       ),
-                      Padding(  //! Large Description
+                      Padding(
+                        //! Large Description
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          "snapshot.data!.largeDescription!",
+                          snapshot.data!.largeDescription!,
                           style: TextStyle(fontSize: 12),
                         ),
                       )
                     ],
                   ),
-                );
-              } else {
-                return Center(child: Text("Error al obtener ID"));
-              }
+                ),
+              );
             }));
   }
 }

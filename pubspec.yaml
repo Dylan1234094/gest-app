@@ -41,6 +41,8 @@ dependencies:
   firebase_storage: ^10.2.17
   googleapis: ^9.1.0
   google_sign_in: ^5.4.0
+  health: ^4.0.0
+  permission_handler: 8.1.6
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +70,7 @@ flutter:
   assets:
     - assets/
     - assets/IconsVitals/
+    - assets/IconsExams/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

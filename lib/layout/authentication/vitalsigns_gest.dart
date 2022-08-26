@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:gest_app/layout/authentication/linkobs_gest.dart';
 import 'package:gest_app/layout/authentication/register_gest.dart';
-import 'package:gest_app/shared/date_input.dart';
 import 'package:gest_app/service/gestante_service.dart';
 
 import '../../data/model/gestante.dart';
@@ -48,7 +46,9 @@ class _FormVitalGestState extends State<FormVitalGest> {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as registerGestArguments;
+    final user = FirebaseAuth.instance.currentUser!;
+    final args =
+        ModalRoute.of(context)!.settings.arguments as registerGestArguments;
     actFisicaController.text = "true";
     freCardiController.text = "true";
     suenioController.text = "true";
@@ -84,42 +84,50 @@ class _FormVitalGestState extends State<FormVitalGest> {
             VitalSignWidget(
               vitalSignController: actFisicaController,
               title: 'Actividad Física',
-              content: 'Se monitorea el número de pasos de la aplicación Google Fit.',
+              content:
+                  'Se monitorea el número de pasos de la aplicación Google Fit.',
             ),
             VitalSignWidget(
               vitalSignController: freCardiController,
               title: 'Frecuencia Cardíaca',
-              content: 'Se monitorea la frecuencia cardíaca (bpm) registrada en la aplicación Google Fit.',
+              content:
+                  'Se monitorea la frecuencia cardíaca (bpm) registrada en la aplicación Google Fit.',
             ),
             VitalSignWidget(
               vitalSignController: suenioController,
               title: 'Sueño',
-              content: 'Se monitorea la duración del sueño (horas) registrada en la aplicación Google Fit.',
+              content:
+                  'Se monitorea la duración del sueño (horas) registrada en la aplicación Google Fit.',
             ),
             VitalSignWidget(
               vitalSignController: presArtController,
               title: 'Presión Arterial',
-              content: 'Se monitorea la presión arterial (mmHg) registrada en la aplicación Google Fit.',
+              content:
+                  'Se monitorea la presión arterial (mmHg) registrada en la aplicación Google Fit.',
             ),
             VitalSignWidget(
               vitalSignController: freRespController,
               title: 'Frecuencia Respiratoria',
-              content: 'Se monitorea la frecuencia respiratoria (rpm) registrada en la aplicación Google Fit.',
+              content:
+                  'Se monitorea la frecuencia respiratoria (rpm) registrada en la aplicación Google Fit.',
             ),
             VitalSignWidget(
               vitalSignController: satOxigController,
               title: 'Saturación de Oxígeno',
-              content: 'Se monitorea la saturación de oxígeno (%) registrada en la aplicación Google Fit.',
+              content:
+                  'Se monitorea la saturación de oxígeno (%) registrada en la aplicación Google Fit.',
             ),
             VitalSignWidget(
               vitalSignController: pesoController,
               title: 'Peso',
-              content: 'Se monitorea el peso gestacional (kg) registrada en la aplicación Google Fit.',
+              content:
+                  'Se monitorea el peso gestacional (kg) registrada en la aplicación Google Fit.',
             ),
             VitalSignWidget(
               vitalSignController: glucoController,
               title: 'Glucosa',
-              content: 'Se monitorea el nivel de glucosa (g/dL) registrada en la aplicación Google Fit.',
+              content:
+                  'Se monitorea el nivel de glucosa (g/dL) registrada en la aplicación Google Fit.',
             ),
             Align(
               alignment: Alignment.centerRight,
@@ -128,6 +136,7 @@ class _FormVitalGestState extends State<FormVitalGest> {
                 child: ElevatedButton(
                   onPressed: () => {
                     insertDataGestante(
+                        user.uid,
                         args.nombre,
                         args.apellido,
                         args.correo,
@@ -145,7 +154,8 @@ class _FormVitalGestState extends State<FormVitalGest> {
                         freRespController.text,
                         satOxigController.text,
                         pesoController.text,
-                        glucoController.text)
+                        glucoController.text,
+                        context)
                   },
                   child: const Text('FINALIZAR'),
                 ),
@@ -159,7 +169,12 @@ class _FormVitalGestState extends State<FormVitalGest> {
 }
 
 class VitalSignWidget extends StatefulWidget {
-  const VitalSignWidget({Key? key, required this.vitalSignController, required this.title, required this.content}) : super(key: key);
+  const VitalSignWidget(
+      {Key? key,
+      required this.vitalSignController,
+      required this.title,
+      required this.content})
+      : super(key: key);
   final TextEditingController vitalSignController;
   final String title;
   final String content;
@@ -185,7 +200,8 @@ class _VitalSignState extends State<VitalSignWidget> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     widget.title,
-                    style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        color: Colors.blue, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Align(
@@ -220,6 +236,7 @@ class _VitalSignState extends State<VitalSignWidget> {
 }
 
 void insertDataGestante(
+    String id,
     String nombre,
     String apellido,
     String correo,
@@ -237,11 +254,32 @@ void insertDataGestante(
     String freResp,
     String satOxig,
     String peso,
-    String gluco) {
+    String gluco,
+    BuildContext context) {
   GestanteService _gestanteService = GestanteService();
 
   final vitals = VitalSign(
-      actFisica: actFisica, freCardi: freCardi, suenio: suenio, presArt: presArt, freResp: freResp, satOxig: satOxig, peso: peso, gluco: gluco);
+      actFisica: actFisica,
+      freCardi: freCardi,
+      suenio: suenio,
+      presArt: presArt,
+      freResp: freResp,
+      satOxig: satOxig,
+      peso: peso,
+      gluco: gluco);
 
-  _gestanteService.createGestante(nombre, apellido, correo, telefono, dni, fechaNacimiento, fechaRegla, fechaEco, fechaCita, codeObs, vitals);
+  _gestanteService.createGestante(
+      id,
+      nombre,
+      apellido,
+      correo,
+      telefono,
+      dni,
+      fechaNacimiento,
+      fechaRegla,
+      fechaEco,
+      fechaCita,
+      codeObs,
+      vitals,
+      context);
 }

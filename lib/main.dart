@@ -6,6 +6,7 @@ import 'package:gest_app/layout/authentication/register_gest.dart';
 import 'package:gest_app/layout/authentication/register_obs.dart';
 import 'package:gest_app/layout/authentication/linkobs_gest.dart';
 import 'package:gest_app/layout/authentication/vitalsigns_gest.dart';
+import 'package:gest_app/layout/gest/tabs.dart';
 import 'package:gest_app/layout/start/start_page.dart';
 import 'package:gest_app/layout/monitoring/monitoring_obstetra.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const MyHomePage(),
+        '/tabs': (context) => const Tabs(),
         '/registerObstetra': (context) => const RegisterObs(),
         '/loginObstetra': (context) => const LoginObsWidget(),
         '/registerGestante': (context) => const RegisterGest(),
@@ -52,6 +54,9 @@ class MyHomePage extends StatelessWidget {
             if (snapshot.hasData && snapshot.data!.emailVerified == false) {
               //emailVerified permite reconocer que el inicio de sesión no es por una cuenta de Google (Gestante)
               return const MonitorObs();
+            } else if (snapshot.hasData &&
+                snapshot.data!.emailVerified == true) {
+              return const Tabs();
             } else {
               return const Start();
             }

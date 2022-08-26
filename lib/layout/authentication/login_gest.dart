@@ -46,16 +46,6 @@ class _LoginGestState extends State<LoginGest> {
                 ),
               ),
             ),
-            Align(
-              alignment: Alignment.center,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: ElevatedButton(
-                  onPressed: () => {logoutGestante()},
-                  child: const Text('CERRAR SESIÓN'),
-                ),
-              ),
-            ),
           ],
         ),
       ),
@@ -67,13 +57,13 @@ GestanteService _gestanteService = GestanteService();
 
 void loginGestante(BuildContext context) {
   _gestanteService.signInGestante(context);
-  Navigator.of(context).push(
-    MaterialPageRoute<void>(builder: (BuildContext context) {
-      return Tabs();
-    }),
-  );
+  // Navigator.of(context).push(
+  //   MaterialPageRoute<void>(builder: (BuildContext context) {
+  //     return Tabs();
+  //   }),
+  // );
 }
 
-void logoutGestante() {
-  _gestanteService.signOutGestante();
+void logoutGestante(BuildContext context) {
+  _gestanteService.signOutGestante(context);
 }
