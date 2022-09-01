@@ -1,5 +1,11 @@
+// ignore_for_file: prefer_const_constructors
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:gest_app/layout/gest/home/goals.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+
 
 class MetricDetailPage extends StatefulWidget {
   const MetricDetailPage({Key? key}) : super(key: key);
@@ -9,6 +15,32 @@ class MetricDetailPage extends StatefulWidget {
 }
 
 class _MetricDetailPageState extends State<MetricDetailPage> {
+  List<_ChartData> chartData = <_ChartData>[];
+
+  @override
+  void initState() {
+    getDataFromFireStore().then((results) {
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+        setState(() {});
+      });
+    });
+    super.initState();
+  }
+
+  Future<void> getDataFromFireStore() async {
+    var snapShotsValue =
+        await FirebaseFirestore.instance.collection("metrics").get();
+    List<_ChartData> list = snapShotsValue.docs
+        .map((e) => _ChartData(
+            x: DateTime.fromMillisecondsSinceEpoch(
+                e.data()['x'].millisecondsSinceEpoch),
+            y: e.data()['y']))
+        .toList();
+    setState(() {
+      chartData = list;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,14 +69,17 @@ class _MetricDetailPageState extends State<MetricDetailPage> {
                       ElevatedButton(onPressed: () {}, child: const Text("3M"))
                     ],
                   ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Image(
-                      image: NetworkImage(
-                          'https://help.highbond.com/helpdocs/highbond/es/Content/images/visualizer/chart_examples/line_chart_simple.png'),
-                      width: 500,
-                    ),
-                  ),
+                  Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: SfCartesianChart(
+                          primaryXAxis: DateTimeAxis(),
+                          primaryYAxis: NumericAxis(),
+                          series: <ChartSeries<_ChartData, DateTime>>[
+                            LineSeries<_ChartData, DateTime>(
+                                dataSource: chartData,
+                                xValueMapper: (_ChartData data, _) => data.x,
+                                yValueMapper: (_ChartData data, _) => data.y),
+                          ])),
                   Container(
                       //! Boton "Ver Metas" si metrica es Actividad
                       child: (true)
@@ -97,4 +132,11 @@ class _MetricDetailPageState extends State<MetricDetailPage> {
               );
             }));
   }
+}
+
+// Class for chart data source, this can be modified based on the data in Firestore
+class _ChartData {
+  _ChartData({this.x, this.y});
+  final DateTime? x;
+  final int? y;
 }
