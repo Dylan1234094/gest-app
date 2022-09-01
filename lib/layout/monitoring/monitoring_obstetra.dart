@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:gest_app/data/model/gestante.dart';
 import 'package:gest_app/data/model/obstetra.dart';
 import 'package:gest_app/service/obstetra_service.dart';
+import 'package:gest_app/shared/chat_gest.dart';
+import 'package:gest_app/shared/chat_obstetra.dart';
 import 'package:gest_app/shared/drawer_obs.dart';
 
 import 'package:intl/intl.dart' as intl;
@@ -31,6 +33,19 @@ class _MonitorObsState extends State<ScreenObs> {
     final user = FirebaseAuth.instance.currentUser!;
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute<void>(builder: (BuildContext context) {
+            return ChatGest(
+              friendName: 'Gestante',
+              friendUid: '8JeF7qmuhQgecJHSjjbNI5Ck1Q32',
+            );
+          }));
+        },
+        backgroundColor: Color(0xFF245470),
+        child: Icon(Icons.sms_outlined),
+      ),
       drawer: const DrawerObs(),
       appBar: AppBar(
         title: const Text(""),
