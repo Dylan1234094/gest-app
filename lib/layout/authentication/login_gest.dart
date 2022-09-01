@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gest_app/layout/gest/tabs.dart';
 import 'package:gest_app/service/gestante_service.dart';
 
 class LoginGestWidget extends StatelessWidget {
@@ -91,11 +92,11 @@ GestanteService _gestanteService = GestanteService();
 
 void loginGestante(BuildContext context) {
   _gestanteService.signInGestante(context);
-  // Navigator.of(context).push(
-  //   MaterialPageRoute<void>(builder: (BuildContext context) {
-  //     return Tabs();
-  //   }),
-  // );
+  Navigator.of(context).push(
+    MaterialPageRoute<void>(builder: (BuildContext context) {
+      return const Tabs();
+    }),
+  );
 }
 
 void logoutGestante(BuildContext context) {
