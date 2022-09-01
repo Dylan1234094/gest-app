@@ -43,6 +43,8 @@ dependencies:
   google_sign_in: ^5.4.0
   health: ^4.0.0
   permission_handler: 8.1.6
+  syncfusion_flutter_charts: ^20.2.46
+  flutter_chat_bubble: ^2.0.0
 
 dev_dependencies:
   flutter_test:
