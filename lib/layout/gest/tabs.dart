@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gest_app/layout/gest/exam/exams.dart';
 import 'package:gest_app/layout/gest/guide/guides.dart';
 import 'package:gest_app/layout/gest/home/home.dart';
-import 'package:gest_app/shared/chat_gest.dart';
+import 'package:gest_app/shared/chat.dart';
 import 'package:gest_app/shared/drawer_gest.dart';
 
 class Tabs extends StatefulWidget {
@@ -28,9 +28,9 @@ class _TabsState extends State<Tabs> {
         onPressed: () {
           Navigator.of(context)
               .push(MaterialPageRoute<void>(builder: (BuildContext context) {
-            return ChatGest(
-              obstetraName: 'Obstetra',
-              obstetraUid: 'lqI9YzdRukhichXsHfx79hXxixu1',
+            return Chat(
+              anotherUserName: 'Obstetra',
+              anotherUserUid: 'lqI9YzdRukhichXsHfx79hXxixu1',
             );
           }));
         },

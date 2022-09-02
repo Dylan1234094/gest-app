@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gest_app/data/model/gestante.dart';
 import 'package:gest_app/data/model/obstetra.dart';
 import 'package:gest_app/service/obstetra_service.dart';
-import 'package:gest_app/shared/chat_obstetra.dart';
+import 'package:gest_app/shared/chat.dart';
 
 class GestanteList extends StatefulWidget {
   const GestanteList({Key? key}) : super(key: key);
@@ -81,9 +81,10 @@ class _GestanteListState extends State<GestanteList> {
                               Navigator.of(context).push(
                                 MaterialPageRoute<void>(
                                     builder: (BuildContext context) {
-                                  return ChatObs(
-                                    gestanteName: gestante.nombre,
-                                    gestanteUid: '8JeF7qmuhQgecJHSjjbNI5Ck1Q32',
+                                  return Chat(
+                                    anotherUserName: gestante.nombre,
+                                    anotherUserUid:
+                                        '8JeF7qmuhQgecJHSjjbNI5Ck1Q32',
                                   );
                                   // Gestante Deyvid        8JeF7qmuhQgecJHSjjbNI5Ck1Q32
                                   // Gestante testcursotdp  5bY1aMCjqXaFzpfWh2dLTm88Oe32

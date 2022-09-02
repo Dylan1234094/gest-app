@@ -4,7 +4,6 @@ import 'package:gest_app/data/model/gestante.dart';
 import 'package:gest_app/data/model/obstetra.dart';
 import 'package:gest_app/layout/monitoring/gest_list.dart';
 import 'package:gest_app/service/obstetra_service.dart';
-import 'package:gest_app/shared/chat_obstetra.dart';
 import 'package:gest_app/shared/drawer_obs.dart';
 
 import 'package:intl/intl.dart' as intl;

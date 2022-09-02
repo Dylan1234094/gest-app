@@ -15,11 +15,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 Future<void> main() async {
   //! Pa web
-  //await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   //! Pa android
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  //WidgetsFlutterBinding.ensureInitialized();
+  //await Firebase.initializeApp();
+
   runApp(const MyApp());
 }
 

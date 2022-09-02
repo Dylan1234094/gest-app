@@ -5,25 +5,25 @@ import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_6.dart';
 
-class ChatObs extends StatefulWidget {
-  final gestanteUid;
-  final gestanteName;
+class Chat extends StatefulWidget {
+  final anotherUserUid;
+  final anotherUserName;
 
-  ChatObs({Key? key, required this.gestanteUid, required this.gestanteName})
+  Chat({Key? key, required this.anotherUserUid, required this.anotherUserName})
       : super(key: key);
 
   @override
-  _ChatObsState createState() => _ChatObsState(gestanteUid, gestanteName);
+  _ChatState createState() => _ChatState(anotherUserUid, anotherUserName);
 }
 
-class _ChatObsState extends State<ChatObs> {
+class _ChatState extends State<Chat> {
   CollectionReference chats = FirebaseFirestore.instance.collection('chats');
-  final gestanteUid;
-  final gestanteName;
+  final anotherUserUid;
+  final anotherUserName;
   final currentUserId = FirebaseAuth.instance.currentUser!.uid;
   var chatDocId;
   var _textController = new TextEditingController();
-  _ChatObsState(this.gestanteUid, this.gestanteName);
+  _ChatState(this.anotherUserUid, this.anotherUserName);
   @override
   void initState() {
     super.initState();
@@ -32,7 +32,7 @@ class _ChatObsState extends State<ChatObs> {
 
   void checkUser() async {
     await chats
-        .where('users', isEqualTo: {gestanteUid: null, currentUserId: null})
+        .where('users', isEqualTo: {anotherUserUid: null, currentUserId: null})
         .limit(1)
         .get()
         .then(
@@ -45,7 +45,7 @@ class _ChatObsState extends State<ChatObs> {
               print(chatDocId);
             } else {
               await chats.add({
-                'users': {currentUserId: null, gestanteUid: null}
+                'users': {currentUserId: null, anotherUserUid: null}
               }).then((value) => {chatDocId = value});
             }
           },
@@ -64,12 +64,12 @@ class _ChatObsState extends State<ChatObs> {
     });
   }
 
-  bool isSender(String gestante) {
-    return gestante == currentUserId;
+  bool isSender(String anotherUser) {
+    return anotherUser == currentUserId;
   }
 
-  Alignment getAlignment(gestante) {
-    if (gestante == currentUserId) {
+  Alignment getAlignment(anotherUser) {
+    if (anotherUser == currentUserId) {
       return Alignment.topRight;
     }
     return Alignment.topLeft;
@@ -104,7 +104,7 @@ class _ChatObsState extends State<ChatObs> {
                   icon: const Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
-                title: Text(gestanteName)),
+                title: Text(anotherUserName)),
             body: Column(
               children: [
                 Expanded(
@@ -116,8 +116,14 @@ class _ChatObsState extends State<ChatObs> {
                         print(document.toString());
                         print(data['msg']);
 
-                        Timestamp CreatedOn = data['createdOn'] as Timestamp;
-                        DateTime dateCreatedOn = CreatedOn.toDate();
+                        //Timestamp CreatedOn;
+
+                        //if (data['createdOn'] == null) {
+                        //  CreatedOn = DateTime.now() as Timestamp;
+                        //} else {
+                        //  CreatedOn = data['createdOn'] as Timestamp;
+                        //}
+                        //DateTime dateCreatedOn = CreatedOn.toDate();
 
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -155,10 +161,11 @@ class _ChatObsState extends State<ChatObs> {
                                           overflow: TextOverflow.ellipsis)
                                     ],
                                   ),
+                                  /*
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      Text(
+                                      Text(r
                                         data['createdOn'] == null
                                             ? DateTime.now().toString()
                                             : '${dateCreatedOn.day}/${dateCreatedOn.month} ${dateCreatedOn.hour}:${dateCreatedOn.minute}',
@@ -170,7 +177,7 @@ class _ChatObsState extends State<ChatObs> {
                                                     : Colors.black),
                                       )
                                     ],
-                                  )
+                                  )*/
                                 ],
                               ),
                             ),
