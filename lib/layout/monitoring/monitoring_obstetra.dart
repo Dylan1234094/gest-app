@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gest_app/data/model/gestante.dart';
 import 'package:gest_app/data/model/obstetra.dart';
+import 'package:gest_app/layout/monitoring/gest_list.dart';
 import 'package:gest_app/service/obstetra_service.dart';
-import 'package:gest_app/shared/chat_gest.dart';
 import 'package:gest_app/shared/chat_obstetra.dart';
 import 'package:gest_app/shared/drawer_obs.dart';
 
@@ -37,10 +37,7 @@ class _MonitorObsState extends State<ScreenObs> {
         onPressed: () {
           Navigator.of(context)
               .push(MaterialPageRoute<void>(builder: (BuildContext context) {
-            return ChatGest(
-              friendName: 'Gestante',
-              friendUid: '8JeF7qmuhQgecJHSjjbNI5Ck1Q32',
-            );
+            return GestanteList();
           }));
         },
         backgroundColor: Color(0xFF245470),

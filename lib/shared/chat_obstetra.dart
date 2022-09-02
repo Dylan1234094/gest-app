@@ -1,29 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_6.dart';
 
 class ChatObs extends StatefulWidget {
-  final friendUid;
-  final friendName;
+  final gestanteUid;
+  final gestanteName;
 
-  ChatObs({Key? key, required this.friendUid, required this.friendName}) : super(key: key);
+  ChatObs({Key? key, required this.gestanteUid, required this.gestanteName})
+      : super(key: key);
 
   @override
-  _ChatObsState createState() => _ChatObsState(friendUid, friendName);
+  _ChatObsState createState() => _ChatObsState(gestanteUid, gestanteName);
 }
 
 class _ChatObsState extends State<ChatObs> {
   CollectionReference chats = FirebaseFirestore.instance.collection('chats');
-  final friendUid;
-  final friendName;
+  final gestanteUid;
+  final gestanteName;
   final currentUserId = FirebaseAuth.instance.currentUser!.uid;
   var chatDocId;
   var _textController = new TextEditingController();
-  _ChatObsState(this.friendUid, this.friendName);
+  _ChatObsState(this.gestanteUid, this.gestanteName);
   @override
   void initState() {
     super.initState();
@@ -32,7 +32,7 @@ class _ChatObsState extends State<ChatObs> {
 
   void checkUser() async {
     await chats
-        .where('users', isEqualTo: {friendUid: null, currentUserId: null})
+        .where('users', isEqualTo: {gestanteUid: null, currentUserId: null})
         .limit(1)
         .get()
         .then(
@@ -45,7 +45,7 @@ class _ChatObsState extends State<ChatObs> {
               print(chatDocId);
             } else {
               await chats.add({
-                'users': {currentUserId: null, friendUid: null}
+                'users': {currentUserId: null, gestanteUid: null}
               }).then((value) => {chatDocId = value});
             }
           },
@@ -64,12 +64,12 @@ class _ChatObsState extends State<ChatObs> {
     });
   }
 
-  bool isSender(String friend) {
-    return friend == currentUserId;
+  bool isSender(String gestante) {
+    return gestante == currentUserId;
   }
 
-  Alignment getAlignment(friend) {
-    if (friend == currentUserId) {
+  Alignment getAlignment(gestante) {
+    if (gestante == currentUserId) {
       return Alignment.topRight;
     }
     return Alignment.topLeft;
@@ -85,122 +85,125 @@ class _ChatObsState extends State<ChatObs> {
           .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
-          return Center(
+          return const Center(
             child: Text("Something went wrong"),
           );
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: Text("Loading"),
+          return const Center(
+            child: CircularProgressIndicator(),
           );
         }
 
         if (snapshot.hasData) {
           var data;
-          return CupertinoPageScaffold(
-            navigationBar: CupertinoNavigationBar(
-              middle: Text(friendName),
-              trailing: CupertinoButton(
-                padding: EdgeInsets.zero,
-                onPressed: () {},
-                child: Icon(CupertinoIcons.phone),
-              ),
-              previousPageTitle: "Back",
-            ),
-            child: SafeArea(
-              child: Column(
-                children: [
-                  Expanded(
-                    child: ListView(
-                      reverse: true,
-                      children: snapshot.data!.docs.map(
-                        (DocumentSnapshot document) {
-                          data = document.data()!;
-                          print(document.toString());
-                          print(data['msg']);
-                          return Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: ChatBubble(
-                              clipper: ChatBubbleClipper6(
-                                nipSize: 0,
-                                radius: 0,
-                                type: isSender(data['uid'].toString())
-                                    ? BubbleType.sendBubble
-                                    : BubbleType.receiverBubble,
+          return Scaffold(
+            appBar: AppBar(
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                title: Text(gestanteName)),
+            body: Column(
+              children: [
+                Expanded(
+                  child: ListView(
+                    reverse: true,
+                    children: snapshot.data!.docs.map(
+                      (DocumentSnapshot document) {
+                        data = document.data()!;
+                        print(document.toString());
+                        print(data['msg']);
+
+                        Timestamp CreatedOn = data['createdOn'] as Timestamp;
+                        DateTime dateCreatedOn = CreatedOn.toDate();
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: ChatBubble(
+                            clipper: ChatBubbleClipper6(
+                              nipSize: 10,
+                              radius: 10,
+                              type: isSender(data['uid'].toString())
+                                  ? BubbleType.sendBubble
+                                  : BubbleType.receiverBubble,
+                            ),
+                            margin: const EdgeInsets.only(top: 10),
+                            alignment: getAlignment(data['uid'].toString()),
+                            backGroundColor: isSender(data['uid'].toString())
+                                ? Colors.blue
+                                : Color(0xffE7E7ED),
+                            child: Container(
+                              constraints: BoxConstraints(
+                                maxWidth:
+                                    MediaQuery.of(context).size.width * 0.7,
                               ),
-                              alignment: getAlignment(data['uid'].toString()),
-                              margin: EdgeInsets.only(top: 20),
-                              backGroundColor: isSender(data['uid'].toString())
-                                  ? Color(0xFF08C187)
-                                  : Color(0xffE7E7ED),
-                              child: Container(
-                                constraints: BoxConstraints(
-                                  maxWidth:
-                                      MediaQuery.of(context).size.width * 0.7,
-                                ),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Text(data['msg'],
-                                            style: TextStyle(
-                                                color: isSender(
-                                                        data['uid'].toString())
-                                                    ? Colors.white
-                                                    : Colors.black),
-                                            maxLines: 100,
-                                            overflow: TextOverflow.ellipsis)
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Text(
-                                          data['createdOn'] == null
-                                              ? DateTime.now().toString()
-                                              : data['createdOn']
-                                                  .toDate()
-                                                  .toString(),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(data['msg'],
                                           style: TextStyle(
-                                              fontSize: 10,
                                               color: isSender(
                                                       data['uid'].toString())
                                                   ? Colors.white
-                                                  : Colors.black),
-                                        )
-                                      ],
-                                    )
-                                  ],
-                                ),
+                                                  : Colors.black,
+                                              fontSize: 16),
+                                          maxLines: 100,
+                                          overflow: TextOverflow.ellipsis)
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        data['createdOn'] == null
+                                            ? DateTime.now().toString()
+                                            : '${dateCreatedOn.day}/${dateCreatedOn.month} ${dateCreatedOn.hour}:${dateCreatedOn.minute}',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color:
+                                                isSender(data['uid'].toString())
+                                                    ? Colors.white
+                                                    : Colors.black),
+                                      )
+                                    ],
+                                  )
+                                ],
                               ),
                             ),
-                          );
-                        },
-                      ).toList(),
-                    ),
+                          ),
+                        );
+                      },
+                    ).toList(),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 18.0),
-                          child: CupertinoTextField(
-                            controller: _textController,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 20, top: 20, bottom: 20),
+                        child: TextField(
+                          controller: _textController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
                           ),
                         ),
                       ),
-                      CupertinoButton(
-                          child: Icon(Icons.send_sharp),
-                          onPressed: () => sendMessage(_textController.text))
-                    ],
-                  )
-                ],
-              ),
+                    ),
+                    IconButton(
+                        onPressed: () => sendMessage(_textController.text),
+                        icon: const Icon(
+                          Icons.send,
+                          color: Colors.blue,
+                        ))
+                  ],
+                )
+              ],
             ),
           );
         } else {

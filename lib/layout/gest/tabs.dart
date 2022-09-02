@@ -29,8 +29,8 @@ class _TabsState extends State<Tabs> {
           Navigator.of(context)
               .push(MaterialPageRoute<void>(builder: (BuildContext context) {
             return ChatGest(
-              friendName: 'Obstetra',
-              friendUid: 'lqI9YzdRukhichXsHfx79hXxixu1',
+              obstetraName: 'Obstetra',
+              obstetraUid: 'lqI9YzdRukhichXsHfx79hXxixu1',
             );
           }));
         },

@@ -17,6 +17,7 @@ Future<void> main() async {
   //! Pa web
   //await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  //! Pa android
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
