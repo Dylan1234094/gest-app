@@ -8,16 +8,18 @@ import 'package:gest_app/layout/authentication/register_obs.dart';
 import 'package:gest_app/layout/authentication/linkobs_gest.dart';
 import 'package:gest_app/layout/authentication/vitalsigns_gest.dart';
 import 'package:gest_app/layout/gest/tabs.dart';
+import 'package:gest_app/layout/profiles/profile_gest.dart';
+import 'package:gest_app/layout/profiles/profile_obs.dart';
 import 'package:gest_app/layout/start/start_page.dart';
 import 'package:gest_app/layout/monitoring/monitoring_obstetra.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 Future<void> main() async {
   //! Pa web
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  //WidgetsFlutterBinding.ensureInitialized();
-  //await Firebase.initializeApp();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -42,6 +44,8 @@ class MyApp extends StatelessWidget {
         '/loginGestante': (context) => const LoginGest(),
         '/linkObstetraGestante': (context) => const LinkObsGest(),
         '/vitalSignsGestante': (context) => const VitalSignsGest(),
+        '/profileGest': (context) => const ProfileGest(),
+        '/profileObs': (context) => const ProfileObs(),
       },
     );
   }
@@ -58,8 +62,7 @@ class MyHomePage extends StatelessWidget {
             if (snapshot.hasData && snapshot.data!.emailVerified == false) {
               //emailVerified permite reconocer que el inicio de sesión no es por una cuenta de Google (Gestante)
               return const MonitorObs();
-            } else if (snapshot.hasData &&
-                snapshot.data!.emailVerified == true) {
+            } else if (snapshot.hasData && snapshot.data!.emailVerified == true) {
               return const Tabs();
             } else {
               return const Start();

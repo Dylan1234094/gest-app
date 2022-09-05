@@ -36,8 +36,7 @@ class _LoginGestState extends State<LoginGest> {
             const Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 25),
-                child: Text(
-                    "Inicie sesión con su cuenta de Google para continuar con la configuración de su cuenta"),
+                child: Text("Inicie sesión con su cuenta de Google para continuar con la configuración de su cuenta"),
               ),
             ),
             InkWell(
@@ -61,9 +60,7 @@ class _LoginGestState extends State<LoginGest> {
                   child: Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      Image.asset('Google_G_icon.png',
-                          width: 25,
-                          height: 25), // <-- Use 'Image.asset(...)' here
+                      Image.asset('assets/Google_G_icon.png', width: 25, height: 25), // <-- Use 'Image.asset(...)' here
                       const SizedBox(width: 4),
                       const Text('Iniciar sesión con Google')
                     ],
@@ -76,8 +73,7 @@ class _LoginGestState extends State<LoginGest> {
               width: 250,
               height: 400,
               decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('Gest_Login.png'), fit: BoxFit.fill),
+                image: DecorationImage(image: AssetImage('assets/Gest_Login.png'), fit: BoxFit.fill),
                 shape: BoxShape.rectangle,
               ),
             ),
@@ -92,11 +88,6 @@ GestanteService _gestanteService = GestanteService();
 
 void loginGestante(BuildContext context) {
   _gestanteService.signInGestante(context);
-  Navigator.of(context).push(
-    MaterialPageRoute<void>(builder: (BuildContext context) {
-      return const Tabs();
-    }),
-  );
 }
 
 void logoutGestante(BuildContext context) {

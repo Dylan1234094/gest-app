@@ -26,8 +26,8 @@ class ObstetraService {
     return codigo;
   }
 
-  bool registerObstetra(
-      String nombre, String apellido, String correo, String telefono, String contrasenia, String codigoObstetra, BuildContext context) {
+  bool registerObstetra(String nombre, String apellido, String correo, String telefono, String contrasenia,
+      String codigoObstetra, BuildContext context) {
     try {
       FirebaseAuth.instance.createUserWithEmailAndPassword(email: correo, password: contrasenia).then((data) async {
         final obstetra = Obstetra(
@@ -61,6 +61,21 @@ class ObstetraService {
     }
   }
 
+  void updateObstetra(String id, String nombre, String apellido, String telefono, BuildContext context) async {
+    final obstetra = Obstetra(id: id, nombre: nombre, apellido: apellido, telefono: telefono);
+
+    final docRef = db
+        .collection("obstetras")
+        .withConverter(
+          fromFirestore: Obstetra.fromFirestore,
+          toFirestore: (Obstetra obstetra, options) => obstetra.toFirestore(),
+        )
+        .doc(id);
+    await docRef
+        .set(obstetra, SetOptions(merge: true))
+        .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
+  }
+
   Future loginObstetra(String email, String contrasenia, BuildContext context) async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: contrasenia);
@@ -81,6 +96,8 @@ class ObstetraService {
     var nombre = "";
     var apellido = "";
     var codigoObstetra = "";
+    var correo = "";
+    var telefono = "";
 
     try {
       final docRef = db.collection("obstetras").doc(uid);
@@ -90,13 +107,21 @@ class ObstetraService {
           nombre = data["nombre"];
           apellido = data["apellido"];
           codigoObstetra = data["codigoObstetra"];
+          correo = data["correo"];
+          telefono = data["telefono"];
         },
         onError: (e) => print("Error al intentar obtener doc $uid"),
       );
     } catch (e) {
       print(e);
     }
-    return obstetra = Obstetra(id: uid, nombre: nombre, apellido: apellido, codigoObstetra: codigoObstetra);
+    return obstetra = Obstetra(
+        id: uid,
+        nombre: nombre,
+        apellido: apellido,
+        codigoObstetra: codigoObstetra,
+        correo: correo,
+        telefono: telefono);
   }
 
   Future<List<Gestante>> getListaGestantes(String codigoObstetra) async {
@@ -107,7 +132,10 @@ class ObstetraService {
       await db.collection("gestantes").where("codigoObstetra", isEqualTo: codigoObstetra).get().then((event) {
         for (var doc in event.docs) {
           gestante = Gestante(
-              nombre: doc.data()["nombre"], apellido: doc.data()["apellido"], fechaRegla: doc.data()["fechaRegla"], vitals: doc.data()["vitals"]);
+              nombre: doc.data()["nombre"],
+              apellido: doc.data()["apellido"],
+              fechaRegla: doc.data()["fechaRegla"],
+              vitals: doc.data()["vitals"]);
           listaGestantes.add(gestante);
         }
       });

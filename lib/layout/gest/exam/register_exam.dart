@@ -1,12 +1,15 @@
 // ignore_for_file: prefer_const_constructors, non_constant_identifier_names
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gest_app/service/exam_result_service.dart';
 import 'package:gest_app/shared/textfield_date.dart';
 
 class RegisterExamPage extends StatefulWidget {
   final String examId;
-  const RegisterExamPage({Key? key, required this.examId}) : super(key: key);
+  final String examName;
+  const RegisterExamPage({Key? key, required this.examId, required this.examName}) : super(key: key);
 
   @override
   State<RegisterExamPage> createState() => _RegisterExamPageState();
@@ -15,8 +18,11 @@ class RegisterExamPage extends StatefulWidget {
 class _RegisterExamPageState extends State<RegisterExamPage> {
   final _keyForm = GlobalKey<FormState>();
   final dateController = TextEditingController();
+  final valueController = TextEditingController();
 
   void ConfirmDialog(BuildContext context) {
+    var uid = FirebaseAuth.instance.currentUser!.uid;
+
     showDialog(
         context: context,
         builder: (BuildContext ctx) {
@@ -31,9 +37,10 @@ class _RegisterExamPageState extends State<RegisterExamPage> {
                   child: const Text('No')),
               TextButton(
                   onPressed: () {
-                    //! Actualizar exam
+                    //! Register exam
+                    registerExam(uid, widget.examName, valueController.text, dateController.text, context);
 
-                    Navigator.of(context).pop();
+                    Navigator.of(context).popUntil(ModalRoute.withName("/"));
                   },
                   child: const Text('Si'))
             ],
@@ -44,6 +51,7 @@ class _RegisterExamPageState extends State<RegisterExamPage> {
   @override
   void dispose() {
     dateController.dispose();
+    valueController.dispose();
     super.dispose();
   }
 
@@ -57,7 +65,7 @@ class _RegisterExamPageState extends State<RegisterExamPage> {
               icon: const Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () => Navigator.of(context).pop(),
             ),
-            title: Text("Nombre del examen")),
+            title: Text("Registrar ${widget.examName}")),
         body: StreamBuilder<Object>(
             stream: null,
             builder: (context, snapshot) {
@@ -70,9 +78,8 @@ class _RegisterExamPageState extends State<RegisterExamPage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(top: 30, bottom: 20),
-                          child: Text("Registro de Examen",
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold)),
+                          child:
+                              Text("Registro de Examen", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                         ),
                         Text(
                             "Luego de realizar este examen en un centro especializado, registre el resultado a continuación",
@@ -80,10 +87,9 @@ class _RegisterExamPageState extends State<RegisterExamPage> {
                         Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: TextFormField(
+                                controller: valueController,
                                 keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly
-                                ],
+                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(),
                                   labelText: "Resultado (g/dL)",
@@ -110,9 +116,7 @@ class _RegisterExamPageState extends State<RegisterExamPage> {
                               }
                             },
                             child: Text("GUARDAR"),
-                            style: ButtonStyle(
-                                fixedSize:
-                                    MaterialStateProperty.all(Size(100, 40))),
+                            style: ButtonStyle(fixedSize: MaterialStateProperty.all(Size(100, 40))),
                           ),
                         )
                       ],
@@ -134,4 +138,9 @@ String? ValidateResult(String result) {
     return 'Resultado no puede ser cero';
   }
   return null;
+}
+
+void registerExam(String gestID, String examType, String value, String date, BuildContext context) {
+  ExamService _examService = ExamService();
+  _examService.registerExamResult(gestID, examType, value, date, context);
 }

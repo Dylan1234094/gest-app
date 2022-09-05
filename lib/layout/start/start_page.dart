@@ -38,7 +38,8 @@ class _StartPageState extends State<StartPage> {
             children: <Widget>[
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(90.0),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 95, vertical: 60),
                   child: Container(
                     decoration: const BoxDecoration(
                       image: DecorationImage(

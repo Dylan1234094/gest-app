@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gest_app/layout/gest/exam/exam_detail.dart';
 import 'package:gest_app/layout/gest/exam/register_exam.dart';
 
 class ExamPage extends StatefulWidget {
@@ -14,10 +15,8 @@ class _ExamPageState extends State<ExamPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: StreamBuilder(
-            stream:
-                FirebaseFirestore.instance.collection('examenes').snapshots(),
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            stream: FirebaseFirestore.instance.collection('examenes').snapshots(),
+            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData) {
                 return Center(
                   child: CircularProgressIndicator(),
@@ -31,9 +30,8 @@ class _ExamPageState extends State<ExamPage> {
                     child: GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                              builder: (BuildContext context) {
-                            return RegisterExamPage(examId: document.id); //! id
+                          MaterialPageRoute<void>(builder: (BuildContext context) {
+                            return ExamDetailPage(examId: document.id, examName: document["name"]); //! id
                           }),
                         );
                       },
@@ -44,22 +42,17 @@ class _ExamPageState extends State<ExamPage> {
                               ListTile(
                                 title: Text(
                                   document['name'],
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.blue,
-                                      fontSize: 24),
+                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 24),
                                 ),
-                                leading: Image.asset(
-                                    'assets/IconsExams/${document['icon']}',
-                                    width: 50,
-                                    height: 50),
+                                leading: Image.asset('assets/IconsExams/${document['icon']}', width: 50, height: 50),
                                 trailing: IconButton(
                                   onPressed: () {
                                     Navigator.of(context).push(
-                                      MaterialPageRoute<void>(
-                                          builder: (BuildContext context) {
-                                        return RegisterExamPage(
-                                            examId: document.id); //! id
+                                      MaterialPageRoute<void>(builder: (BuildContext context) {
+                                        return ExamDetailPage(
+                                          examId: document.id,
+                                          examName: document["name"],
+                                        ); //! id
                                       }),
                                     );
                                   },

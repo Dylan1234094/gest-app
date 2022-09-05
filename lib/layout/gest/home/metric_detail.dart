@@ -27,15 +27,10 @@ class _MetricDetailPageState extends State<MetricDetailPage> {
   }
 
   Future<void> getDataFromFireStore() async {
-    var snapShotsValue = await FirebaseFirestore.instance
-        .collection("metrics")
-        .orderBy('x', descending: false)
-        .get();
+    var snapShotsValue = await FirebaseFirestore.instance.collection("metrics").orderBy('x', descending: false).get();
     List<_ChartData> list = snapShotsValue.docs
-        .map((e) => _ChartData(
-            x: DateTime.fromMillisecondsSinceEpoch(
-                e.data()['x'].millisecondsSinceEpoch),
-            y: e.data()['y']))
+        .map((e) =>
+            _ChartData(x: DateTime.fromMillisecondsSinceEpoch(e.data()['x'].millisecondsSinceEpoch), y: e.data()['y']))
         .toList();
     setState(() {
       chartData = list;
@@ -65,16 +60,11 @@ class _MetricDetailPageState extends State<MetricDetailPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ElevatedButton(
-                            onPressed: () {}, child: const Text("H")),
-                        ElevatedButton(
-                            onPressed: () {}, child: const Text("D")),
-                        ElevatedButton(
-                            onPressed: () {}, child: const Text("S")),
-                        ElevatedButton(
-                            onPressed: () {}, child: const Text("M")),
-                        ElevatedButton(
-                            onPressed: () {}, child: const Text("3M"))
+                        ElevatedButton(onPressed: () {}, child: const Text("H")),
+                        ElevatedButton(onPressed: () {}, child: const Text("D")),
+                        ElevatedButton(onPressed: () {}, child: const Text("S")),
+                        ElevatedButton(onPressed: () {}, child: const Text("M")),
+                        ElevatedButton(onPressed: () {}, child: const Text("3M"))
                       ],
                     ),
                     Padding(
@@ -94,8 +84,7 @@ class _MetricDetailPageState extends State<MetricDetailPage> {
                             ? ElevatedButton(
                                 onPressed: () {
                                   Navigator.of(context).push(
-                                    MaterialPageRoute<void>(
-                                        builder: (BuildContext context) {
+                                    MaterialPageRoute<void>(builder: (BuildContext context) {
                                       return const GoalsPage();
                                     }),
                                   );
@@ -115,8 +104,7 @@ class _MetricDetailPageState extends State<MetricDetailPage> {
                             .collection('metrics')
                             .orderBy('x', descending: false)
                             .snapshots(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<QuerySnapshot> metricsnapshot) {
+                        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> metricsnapshot) {
                           if (!metricsnapshot.hasData) {
                             return Center(child: CircularProgressIndicator());
                           }
@@ -148,6 +136,7 @@ class _MetricCardList extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.all(8),
       child: ListView(
+          primary: false,
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
           padding: const EdgeInsets.only(),
@@ -177,13 +166,10 @@ class _MetricCardDetail extends StatelessWidget {
             Text('${datetime.day}/${datetime.month}/${datetime.year} ',
                 style: TextStyle(fontStyle: FontStyle.italic, fontSize: 16)),
             Text(document['y'].toString() + ' ' + document['unit'],
-                textAlign: TextAlign.left,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
+                textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
           ],
         ),
       ),
     );
   }
 }
-
-// pa pushear :u

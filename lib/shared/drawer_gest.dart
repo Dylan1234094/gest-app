@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:gest_app/data/model/obstetra.dart';
 import 'package:gest_app/service/gestante_service.dart';
 import 'package:gest_app/service/obstetra_service.dart';
-import 'package:googleapis/containeranalysis/v1.dart';
 
 class DrawerGest extends StatelessWidget {
   const DrawerGest({Key? key}) : super(key: key);
@@ -16,38 +15,24 @@ class DrawerGest extends StatelessWidget {
     return Drawer(
       child: ListView(
         children: [
-          FutureBuilder<Obstetra>(
-              future: null, //! getObstetra(user.id)
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  //! invertir !
-                  return UserAccountsDrawerHeader(
-                    accountName: Text(
-                      user.displayName!,
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    accountEmail: Text(user.email!),
-                    currentAccountPicture: CircleAvatar(
-                      backgroundImage: NetworkImage(user.photoURL!),
-                      backgroundColor: Color(0xFF245470),
-                      child: const Text(''),
-                    ),
-                  );
-                } else {
-                  return UserAccountsDrawerHeader(
-                      accountName: Text("accountFirstName + accountLastName"),
-                      accountEmail: Text("accountEmail"),
-                      currentAccountPicture: CircleAvatar(
-                        //!backgroundImage: NetworkImage("Image"),
-                        backgroundColor: Color(0xFF245470),
-                        child: const Text('AH'),
-                      ));
-                }
-              }),
+          UserAccountsDrawerHeader(
+            accountName: Text(
+              user.displayName!,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            accountEmail: Text(user.email!),
+            currentAccountPicture: CircleAvatar(
+              backgroundImage: NetworkImage(user.photoURL!),
+              backgroundColor: Color(0xFF245470),
+              child: const Text(''),
+            ),
+          ),
           ListTile(
             title: Text('Mi Perfil'),
             leading: Icon(Icons.person),
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, '/profileGest');
+            },
           ),
           ListTile(
             title: Text('Configuración'),

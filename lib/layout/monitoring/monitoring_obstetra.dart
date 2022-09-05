@@ -7,8 +7,6 @@ import 'package:gest_app/shared/drawer_obs.dart';
 
 import 'package:intl/intl.dart' as intl;
 
-Obstetra _obstetra = Obstetra();
-
 class MonitorObs extends StatelessWidget {
   const MonitorObs({Key? key}) : super(key: key);
 
@@ -43,8 +41,7 @@ class _MonitorObsState extends State<ScreenObs> {
               return const Align(
                 alignment: Alignment.center,
                 child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    child: CircularProgressIndicator()),
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8), child: CircularProgressIndicator()),
               );
             case ConnectionState.done:
               if (snapshotObs.hasData) {
@@ -56,8 +53,7 @@ class _MonitorObsState extends State<ScreenObs> {
                         return const Align(
                           alignment: Alignment.center,
                           child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 8),
+                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                               child: CircularProgressIndicator()),
                         );
                       case ConnectionState.done:
@@ -66,13 +62,10 @@ class _MonitorObsState extends State<ScreenObs> {
                             return ListView.builder(
                                 itemCount: snapshotGests.data!.length,
                                 itemBuilder: ((context, index) {
-                                  VitalSign vitals = VitalSign.fromJson(
-                                      snapshotGests.data![index].vitals!);
-                                  Gestante gestante =
-                                      snapshotGests.data![index];
+                                  VitalSign vitals = VitalSign.fromJson(snapshotGests.data![index].vitals!);
+                                  Gestante gestante = snapshotGests.data![index];
                                   return Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 8, right: 8, top: 5),
+                                    padding: const EdgeInsets.only(left: 8, right: 8, top: 5),
                                     child: Card(
                                       child: Row(
                                         children: <Widget>[
@@ -85,11 +78,9 @@ class _MonitorObsState extends State<ScreenObs> {
                                                   child: Container(
                                                     height: 45.0,
                                                     width: 45.0,
-                                                    decoration:
-                                                        const BoxDecoration(
+                                                    decoration: const BoxDecoration(
                                                       image: DecorationImage(
-                                                        image: AssetImage(
-                                                            'assets/mini_default_profile_icon.png'),
+                                                        image: AssetImage('assets/mini_default_profile_icon.png'),
                                                         fit: BoxFit.fill,
                                                       ),
                                                       shape: BoxShape.rectangle,
@@ -104,24 +95,17 @@ class _MonitorObsState extends State<ScreenObs> {
                                             child: Column(
                                               children: <Widget>[
                                                 Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          bottom: 5, top: 5),
+                                                  padding: const EdgeInsets.only(bottom: 5, top: 5),
                                                   child: Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
+                                                    alignment: Alignment.centerLeft,
                                                     child: Text(
                                                       "${gestante.nombre!} ${gestante.apellido}",
-                                                      style: const TextStyle(
-                                                          fontSize: 15,
-                                                          fontWeight:
-                                                              FontWeight.bold),
+                                                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                                                     ),
                                                   ),
                                                 ),
                                                 Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
+                                                  alignment: Alignment.centerLeft,
                                                   child: Text(
                                                       "${DateTime.now().difference(intl.DateFormat("dd/MM/yyyy hh:mm:ss").parse(gestante.fechaRegla! + " 00:00:00")).inDays} días de embarazo"),
                                                 ),
@@ -129,43 +113,35 @@ class _MonitorObsState extends State<ScreenObs> {
                                                   children: [
                                                     vitals.actFisica == "true"
                                                         ? const VitalIconWidget(
-                                                            iconPath:
-                                                                'assets/IconsVitals/act_fisica_icon.png')
+                                                            iconPath: 'assets/IconsVitals/act_fisica_icon.png')
                                                         : const Text(""),
                                                     vitals.freCardi == "true"
                                                         ? const VitalIconWidget(
-                                                            iconPath:
-                                                                'assets/IconsVitals/fre_car_icon.png')
+                                                            iconPath: 'assets/IconsVitals/fre_car_icon.png')
                                                         : const Text(""),
                                                     vitals.freResp == "true"
                                                         ? const VitalIconWidget(
-                                                            iconPath:
-                                                                'assets/IconsVitals/fre_resp_icon.png')
+                                                            iconPath: 'assets/IconsVitals/fre_resp_icon.png')
                                                         : const Text(""),
                                                     vitals.gluco == "true"
                                                         ? const VitalIconWidget(
-                                                            iconPath:
-                                                                'assets/IconsVitals/gluco_icon.png')
+                                                            iconPath: 'assets/IconsVitals/gluco_icon.png')
                                                         : const Text(""),
                                                     vitals.peso == "true"
                                                         ? const VitalIconWidget(
-                                                            iconPath:
-                                                                'assets/IconsVitals/peso_icon.png')
+                                                            iconPath: 'assets/IconsVitals/peso_icon.png')
                                                         : const Text(""),
                                                     vitals.presArt == "true"
                                                         ? const VitalIconWidget(
-                                                            iconPath:
-                                                                'assets/IconsVitals/pres_art_icon.png')
+                                                            iconPath: 'assets/IconsVitals/pres_art_icon.png')
                                                         : const Text(""),
                                                     vitals.satOxig == "true"
                                                         ? const VitalIconWidget(
-                                                            iconPath:
-                                                                'assets/IconsVitals/sat_oxig_icon.png')
+                                                            iconPath: 'assets/IconsVitals/sat_oxig_icon.png')
                                                         : const Text(""),
                                                     vitals.suenio == "true"
                                                         ? const VitalIconWidget(
-                                                            iconPath:
-                                                                'assets/IconsVitals/suenio_icon.png')
+                                                            iconPath: 'assets/IconsVitals/suenio_icon.png')
                                                         : const Text(""),
                                                   ],
                                                 ),
@@ -181,18 +157,15 @@ class _MonitorObsState extends State<ScreenObs> {
                             return const Align(
                               alignment: Alignment.center,
                               child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 8),
-                                  child: Text(
-                                      "No se encontraron gestantes registradas")),
+                                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                                  child: Text("No se encontraron gestantes registradas")),
                             );
                           }
                         } else {
                           return const Align(
                             alignment: Alignment.center,
                             child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 8),
+                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                                 child: Text("Algo salió mal")),
                           );
                         }
@@ -200,9 +173,7 @@ class _MonitorObsState extends State<ScreenObs> {
                         return const Align(
                           alignment: Alignment.center,
                           child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 8),
-                              child: Text("Esperando")),
+                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8), child: Text("Esperando")),
                         );
                     }
                   },

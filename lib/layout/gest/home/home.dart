@@ -35,14 +35,11 @@ class _HomePageState extends State<HomePage> {
                               Text(
                                 'Peso',
                                 textAlign: TextAlign.end,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 24),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                               ),
                               Text('Gráfico evolutivo',
                                   textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      fontStyle: FontStyle.italic,
-                                      fontSize: 18))
+                                  style: TextStyle(fontStyle: FontStyle.italic, fontSize: 18))
                             ],
                           ),
                         ),

@@ -23,10 +23,12 @@ class _GuideDetailPageState extends State<GuideDetailPage> {
             ),
             title: Text("Guía Psicoprofilaxis")),
         body: FutureBuilder<Guide>(
-            future: getGuideById(widget.guideId), //! ID
+            future: getGuideById(widget.guideId),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return Center(child: CircularProgressIndicator());
+                return Center(
+                    child: const Text(
+                        "No se encontró información para esta guía"));
               }
               return SingleChildScrollView(
                 child: Padding(

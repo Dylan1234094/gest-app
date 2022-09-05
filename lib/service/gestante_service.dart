@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gest_app/data/model/gestante.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gest_app/data/model/obstetra.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:googleapis/fitness/v1.dart';
@@ -35,13 +36,10 @@ class GestanteService {
 
   void signInGestante(BuildContext context) async {
     try {
-      final GoogleSignInAccount? googleSignInAccount =
-          await _googleSignIn.signIn();
-      final GoogleSignInAuthentication googleSignInAuthentication =
-          await googleSignInAccount!.authentication;
+      final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount!.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleSignInAuthentication.accessToken,
-          idToken: googleSignInAuthentication.idToken);
+          accessToken: googleSignInAuthentication.accessToken, idToken: googleSignInAuthentication.idToken);
       await _auth.signInWithCredential(credential).then((value) async {
         try {
           final docRef = db.collection("gestantes").doc(value.user!.uid);
@@ -53,8 +51,7 @@ class GestanteService {
                 Navigator.pushNamed(context, '/linkObstetraGestante');
               }
             },
-            onError: (e) => print(
-                "Error al intentar obtener doc ${value.user!.uid} en gestante"),
+            onError: (e) => print("Error al intentar obtener doc ${value.user!.uid} en gestante"),
           );
         } catch (e) {
           print(e);
@@ -90,6 +87,7 @@ class GestanteService {
       VitalSign vitals,
       BuildContext context) async {
     final gestante = Gestante(
+        id: id,
         nombre: nombre,
         apellido: apellido,
         correo: correo,
@@ -109,9 +107,31 @@ class GestanteService {
           toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
         )
         .doc(id);
+    await docRef.set(gestante).then((value) => Navigator.pushNamed(context, '/tabs'));
+  }
+
+  void updateGestante(String id, String nombre, String apellido, String telefono, String dni, String fechaNacimiento,
+      String fechaRegla, String fechaEco, String fechaCita, BuildContext context) async {
+    final gestante = Gestante(
+        nombre: nombre,
+        apellido: apellido,
+        dni: dni,
+        telefono: telefono,
+        fechaNacimiento: fechaNacimiento,
+        fechaRegla: fechaRegla,
+        fechaEco: fechaEco,
+        fechaCita: fechaCita);
+
+    final docRef = db
+        .collection("gestantes")
+        .withConverter(
+          fromFirestore: Gestante.fromFirestore,
+          toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
+        )
+        .doc(id);
     await docRef
-        .set(gestante)
-        .then((value) => Navigator.pushNamed(context, '/tabs'));
+        .set(gestante, SetOptions(merge: true))
+        .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
   }
 
   Future<Gestante> getGestante(String uid) async {
@@ -120,6 +140,7 @@ class GestanteService {
     var apellido = "";
     var correo = "";
     var telefono = "";
+    var dni = "";
     var fechaNacimiento = "";
     var fechaRegla = "";
     var fechaEco = "";
@@ -134,6 +155,7 @@ class GestanteService {
           apellido = data["apellido"];
           correo = data["correo"];
           telefono = data["telefono"];
+          dni = data["dni"];
           fechaNacimiento = data["fechaNacimiento"];
           fechaRegla = data["fechaRegla"];
           fechaEco = data["fechaEco"];
@@ -143,11 +165,45 @@ class GestanteService {
       );
     } catch (e) {
       print(e);
+      throw e;
     }
-    return gestante = Gestante(id: uid, nombre: nombre, apellido: apellido);
+    return gestante = Gestante(
+        id: uid,
+        nombre: nombre,
+        apellido: apellido,
+        telefono: telefono,
+        dni: dni,
+        fechaNacimiento: fechaNacimiento,
+        fechaRegla: fechaRegla,
+        fechaEco: fechaEco,
+        fechaCita: fechaCita);
+  }
+
+  Future<Obstetra> validateCodeObstetra(String codeObstetra) async {
+    Obstetra obstetra;
+    var uid = "";
+    var nombre = "";
+    var apellido = "";
+    var codigoObstetra = "";
+
+    try {
+      final docRef =
+          await db.collection("obstetras").where("codigoObstetra", isEqualTo: codeObstetra).get().then((event) {
+        if (event.docs.isNotEmpty) {
+          uid = event.docs.first.data()["id"];
+          nombre = event.docs.first.data()["nombre"];
+          apellido = event.docs.first.data()["apellido"];
+          codigoObstetra = event.docs.first.data()["codigoObstetra"];
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+    return obstetra = Obstetra(id: uid, nombre: nombre, apellido: apellido, codigoObstetra: codigoObstetra);
   }
 
   void testFit() async {
+    // print(_googleSignIn.currentUser);
     DateTime startDate = DateTime.now().add(const Duration(days: -1));
     DateTime endDate = DateTime.now();
     HealthFactory health = HealthFactory();
@@ -161,14 +217,12 @@ class GestanteService {
 
     if (Platform.isAndroid) {
       final permissionStatus = Permission.activityRecognition.request();
-      if (await permissionStatus.isDenied ||
-          await permissionStatus.isPermanentlyDenied) {
+      if (await permissionStatus.isDenied || await permissionStatus.isPermanentlyDenied) {
         return;
       } else if (await permissionStatus.isGranted) {
         if (accessWasGranted) {
           try {
-            List<HealthDataPoint> healthData =
-                await health.getHealthDataFromTypes(startDate, endDate, types);
+            List<HealthDataPoint> healthData = await health.getHealthDataFromTypes(startDate, endDate, types);
 
             print("Obteniendo data del ${startDate} al ${endDate}");
             healthData.forEach((element) {

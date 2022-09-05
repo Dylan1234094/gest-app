@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 
 class MyDateInput extends StatefulWidget {
-  const MyDateInput(
-      {Key? key, required this.label, required this.dateController})
-      : super(key: key);
+  const MyDateInput({Key? key, required this.label, required this.dateController}) : super(key: key);
   final String label;
   final TextEditingController dateController;
 
@@ -21,19 +19,15 @@ class _MyDateState extends State<MyDateInput> {
       children: <Widget>[
         Align(
           alignment: Alignment.centerLeft,
-          child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              child: Text(widget.label)),
+          child: Padding(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8), child: Text(widget.label)),
         ),
         FractionallySizedBox(
           widthFactor: 0.95,
           child: ElevatedButton(
+            style: ElevatedButton.styleFrom(),
             onPressed: () async {
               DateTime? newDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(1900),
-                  lastDate: DateTime(2100));
+                  context: context, initialDate: DateTime.now(), firstDate: DateTime(1900), lastDate: DateTime(2100));
 
               if (newDate == null) return;
               setState(() {
@@ -43,9 +37,9 @@ class _MyDateState extends State<MyDateInput> {
             },
             child: Align(
               alignment: Alignment.centerLeft,
-              child: date == null
-                  ? Text(widget.label)
-                  : Text(widget.dateController.text),
+              child: widget.dateController.text == ""
+                  ? Text(widget.label, style: const TextStyle(color: Colors.white))
+                  : Text(widget.dateController.text, style: const TextStyle(color: Colors.white)),
             ),
           ),
         ),
