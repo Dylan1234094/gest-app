@@ -7,6 +7,7 @@ import 'package:gest_app/layout/authentication/register_gest.dart';
 import 'package:gest_app/layout/authentication/register_obs.dart';
 import 'package:gest_app/layout/authentication/linkobs_gest.dart';
 import 'package:gest_app/layout/authentication/vitalsigns_gest.dart';
+import 'package:gest_app/layout/gest/home/metric_detail.dart';
 import 'package:gest_app/layout/gest/tabs.dart';
 import 'package:gest_app/layout/profiles/profile_gest.dart';
 import 'package:gest_app/layout/profiles/profile_obs.dart';
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const MyHomePage(),
-        '/tabs': (context) => const Tabs(),
+        '/metric': (context) => const MetricDetailPage(),
         '/registerObstetra': (context) => const RegisterObs(),
         '/loginObstetra': (context) => const LoginObsWidget(),
         '/registerGestante': (context) => const RegisterGest(),

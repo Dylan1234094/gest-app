@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gest_app/data/model/gestante.dart';
 import 'package:gest_app/data/model/obstetra.dart';
 import 'package:gest_app/layout/monitoring/detailgest_obstetra.dart';
+import 'package:gest_app/layout/monitoring/gest_list.dart';
 import 'package:gest_app/service/obstetra_service.dart';
 import 'package:gest_app/shared/drawer_obs.dart';
 
@@ -21,6 +22,15 @@ class _MonitorObsState extends State<ScreenObs> {
     final user = FirebaseAuth.instance.currentUser!;
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute<void>(builder: (BuildContext context) {
+            return GestanteList();
+          }));
+        },
+        backgroundColor: Color(0xFF245470),
+        child: Icon(Icons.sms_outlined),
+      ),
       drawer: const DrawerObs(),
       appBar: AppBar(
         title: const Text(""),
