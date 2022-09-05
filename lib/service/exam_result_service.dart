@@ -10,8 +10,8 @@ final db = FirebaseFirestore.instance;
 class ExamService {
   Future<Exam> getExamResult(String uid, String gestID) async {
     Exam exam;
-    var value = "";
-    var dateResult = "";
+    var value = 0;
+    var dateResult = Timestamp.now();
 
     try {
       final docRef = db.collection("gestantes").doc(gestID).collection("resultados_examenes").doc(uid);
@@ -31,21 +31,33 @@ class ExamService {
   }
 
   void registerExamResult(String gestID, String examType, String value, String date, BuildContext context) async {
-    Exam exam = Exam(examType: examType, value: value, dateResult: date, registerStatus: 1);
+    var day = date.substring(0, 2);
+    var month = date.substring(3, 5);
+    var year = date.substring(6, 10);
+    DateTime da = DateTime.parse("$year-$month-$day 00:00:00.000");
+    Timestamp ts = Timestamp.fromDate(da);
+
+    Exam exam = Exam(examType: examType, value: int.parse(value), dateResult: ts, registerStatus: 1);
 
     try {
       final docRef = db.collection("gestantes").doc(gestID).collection("resultados_examenes").withConverter(
             fromFirestore: Exam.fromFirestore,
             toFirestore: (Exam exam, options) => exam.toFirestore(),
           );
-      await docRef.add(exam).then((value) => Navigator.pop(context));
+      await docRef.add(exam);
     } catch (e) {
       print(e);
     }
   }
 
   void updateExamResult(String gestID, String resultExamID, String value, String date, BuildContext context) async {
-    Exam exam = Exam(value: value, dateResult: date, registerStatus: 2);
+    var day = date.substring(0, 2);
+    var month = date.substring(3, 5);
+    var year = date.substring(6, 10);
+    DateTime da = DateTime.parse("$year-$month-$day 00:00:00.000");
+    Timestamp ts = Timestamp.fromDate(da);
+
+    Exam exam = Exam(value: int.parse(value), dateResult: ts, registerStatus: 2);
 
     try {
       final docRef =
@@ -53,14 +65,14 @@ class ExamService {
                 fromFirestore: Exam.fromFirestore,
                 toFirestore: (Exam exam, options) => exam.toFirestore(),
               );
-      await docRef.set(exam, SetOptions(merge: true)).then((value) => Navigator.pop(context));
+      await docRef.set(exam, SetOptions(merge: true));
     } catch (e) {
-      print(e);
+      print("error: $e");
     }
   }
 
   void deleteExamResult(String gestID, String resultExamID, BuildContext context) async {
-    Exam exam = Exam(registerStatus: 3);
+    Exam exam = const Exam(registerStatus: 3);
 
     try {
       final docRef =
@@ -68,7 +80,7 @@ class ExamService {
                 fromFirestore: Exam.fromFirestore,
                 toFirestore: (Exam exam, options) => exam.toFirestore(),
               );
-      await docRef.set(exam, SetOptions(merge: true)).then((value) => Navigator.pop(context));
+      await docRef.set(exam, SetOptions(merge: true));
     } catch (e) {
       print(e);
     }
@@ -84,14 +96,15 @@ class ExamService {
           .doc(gestID)
           .collection("resultados_examenes")
           .where("examType", isEqualTo: examType)
-          .where("registerStatus", isNotEqualTo: 3)
+          .where("registerStatus", whereIn: [1, 2])
+          .orderBy("dateResult", descending: true)
           .get()
           .then((event) {
-        for (var doc in event.docs) {
-          exam = Exam(value: doc.data()["value"], dateResult: doc.data()["dateResult"], id: doc.id);
-          listaResultadoExamenes.add(exam);
-        }
-      });
+            for (var doc in event.docs) {
+              exam = Exam(value: doc.data()["value"], dateResult: doc.data()["dateResult"], id: doc.id);
+              listaResultadoExamenes.add(exam);
+            }
+          });
     } catch (e) {
       print(e);
     }

@@ -2,19 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gest_app/data/model/gestante.dart';
 import 'package:gest_app/data/model/obstetra.dart';
+import 'package:gest_app/layout/monitoring/detailgest_obstetra.dart';
 import 'package:gest_app/service/obstetra_service.dart';
 import 'package:gest_app/shared/drawer_obs.dart';
 
 import 'package:intl/intl.dart' as intl;
-
-class MonitorObs extends StatelessWidget {
-  const MonitorObs({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const ScreenObs();
-  }
-}
 
 class ScreenObs extends StatefulWidget {
   const ScreenObs({Key? key}) : super(key: key);
@@ -60,12 +52,20 @@ class _MonitorObsState extends State<ScreenObs> {
                         if (snapshotGests.hasData) {
                           if (snapshotGests.data!.isNotEmpty) {
                             return ListView.builder(
-                                itemCount: snapshotGests.data!.length,
-                                itemBuilder: ((context, index) {
-                                  VitalSign vitals = VitalSign.fromJson(snapshotGests.data![index].vitals!);
-                                  Gestante gestante = snapshotGests.data![index];
-                                  return Padding(
-                                    padding: const EdgeInsets.only(left: 8, right: 8, top: 5),
+                              itemCount: snapshotGests.data!.length,
+                              itemBuilder: ((context, index) {
+                                VitalSign vitals = VitalSign.fromJson(snapshotGests.data![index].vitals!);
+                                Gestante gestante = snapshotGests.data![index];
+                                return Padding(
+                                  padding: const EdgeInsets.only(left: 8, right: 8, top: 5),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute<void>(builder: (BuildContext context) {
+                                          return DetailMonitorGest(gestID: gestante.id!); //! id
+                                        }),
+                                      );
+                                    },
                                     child: Card(
                                       child: Row(
                                         children: <Widget>[
@@ -75,16 +75,11 @@ class _MonitorObsState extends State<ScreenObs> {
                                               children: <Widget>[
                                                 Align(
                                                   alignment: Alignment.center,
-                                                  child: Container(
-                                                    height: 45.0,
-                                                    width: 45.0,
-                                                    decoration: const BoxDecoration(
-                                                      image: DecorationImage(
-                                                        image: AssetImage('assets/mini_default_profile_icon.png'),
-                                                        fit: BoxFit.fill,
-                                                      ),
-                                                      shape: BoxShape.rectangle,
-                                                    ),
+                                                  child: CircleAvatar(
+                                                    radius: 22,
+                                                    backgroundImage: gestante.photoUrl! != ""
+                                                        ? NetworkImage(gestante.photoUrl!)
+                                                        : Image.asset("assets/mini_default_profile_icon.png").image,
                                                   ),
                                                 ),
                                               ],
@@ -151,8 +146,10 @@ class _MonitorObsState extends State<ScreenObs> {
                                         ],
                                       ),
                                     ),
-                                  );
-                                }));
+                                  ),
+                                );
+                              }),
+                            );
                           } else {
                             return const Align(
                               alignment: Alignment.center,

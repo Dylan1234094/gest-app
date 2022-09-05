@@ -10,7 +10,8 @@ class VitalSign {
   final String? peso;
   final String? gluco;
 
-  const VitalSign({this.actFisica, this.freCardi, this.suenio, this.presArt, this.freResp, this.satOxig, this.peso, this.gluco});
+  const VitalSign(
+      {this.actFisica, this.freCardi, this.suenio, this.presArt, this.freResp, this.satOxig, this.peso, this.gluco});
 
   VitalSign.fromJson(Map<String, dynamic> json)
       : actFisica = json['actFisica'],
@@ -46,6 +47,7 @@ class Gestante {
   final String? fechaEco;
   final String? fechaCita;
   final String? codigoObstetra;
+  final String? photoUrl;
   final Map<String, dynamic>? vitals;
 
   const Gestante(
@@ -60,6 +62,7 @@ class Gestante {
       this.fechaEco,
       this.fechaCita,
       this.codigoObstetra,
+      this.photoUrl,
       this.vitals});
 
   factory Gestante.fromFirestore(
@@ -79,6 +82,7 @@ class Gestante {
       fechaEco: data?['fechaEco'],
       fechaCita: data?['fechaCita'],
       codigoObstetra: data?['codigoObstetra'],
+      photoUrl: data?['photoUrl'],
       vitals: data?['vitals'],
     );
   }
@@ -96,6 +100,7 @@ class Gestante {
       if (fechaEco != null) "fechaEco": fechaEco,
       if (fechaCita != null) "fechaCita": fechaCita,
       if (codigoObstetra != null) "codigoObstetra": codigoObstetra,
+      if (photoUrl != null) "codigoObstetra": photoUrl,
       if (vitals != null) "vitals": vitals,
     };
   }

@@ -7,6 +7,8 @@ import 'package:gest_app/data/model/exam_result.dart';
 import 'package:gest_app/service/exam_result_service.dart';
 import 'package:gest_app/shared/textfield_date.dart';
 
+import 'package:intl/intl.dart' as intl;
+
 class UpdateExamPage extends StatefulWidget {
   final String examId;
   const UpdateExamPage({Key? key, required this.examId}) : super(key: key);
@@ -123,8 +125,8 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
                   );
                 case (ConnectionState.done):
                   if (snapshot.hasData) {
-                    valueController.text = snapshot.data!.value!;
-                    dateController.text = snapshot.data!.dateResult!;
+                    valueController.text = snapshot.data!.value!.toString();
+                    dateController.text = intl.DateFormat('dd/MM/yyyy').format(snapshot.data!.dateResult!.toDate());
                     return SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.all(16),

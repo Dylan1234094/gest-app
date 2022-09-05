@@ -98,6 +98,7 @@ class GestanteService {
         fechaEco: fechaEco,
         fechaCita: fechaCita,
         codigoObstetra: codigoObs,
+        photoUrl: _auth.currentUser!.photoURL,
         vitals: vitals.toJson());
 
     final docRef = db
@@ -145,6 +146,7 @@ class GestanteService {
     var fechaRegla = "";
     var fechaEco = "";
     var fechaCita = "";
+    var photoUrl = "";
 
     try {
       final docRef = db.collection("gestantes").doc(uid);
@@ -160,6 +162,7 @@ class GestanteService {
           fechaRegla = data["fechaRegla"];
           fechaEco = data["fechaEco"];
           fechaCita = data["fechaCita"];
+          photoUrl = data["photoUrl"];
         },
         onError: (e) => print("Error al intentar obtener doc $uid en gestante"),
       );
@@ -176,7 +179,8 @@ class GestanteService {
         fechaNacimiento: fechaNacimiento,
         fechaRegla: fechaRegla,
         fechaEco: fechaEco,
-        fechaCita: fechaCita);
+        fechaCita: fechaCita,
+        photoUrl: photoUrl);
   }
 
   Future<Obstetra> validateCodeObstetra(String codeObstetra) async {

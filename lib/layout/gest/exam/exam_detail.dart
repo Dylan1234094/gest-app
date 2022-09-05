@@ -1,10 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:gest_app/data/model/exam_result.dart';
 import 'package:gest_app/layout/gest/exam/register_exam.dart';
 import 'package:gest_app/layout/gest/exam/update_exam.dart';
-import 'package:gest_app/layout/gest/home/goals.dart';
 import 'package:gest_app/service/exam_result_service.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+
+import 'package:intl/intl.dart' as intl;
 
 class ExamDetailPage extends StatefulWidget {
   final String examId;
@@ -16,9 +20,40 @@ class ExamDetailPage extends StatefulWidget {
 }
 
 class _ExamDetailPageState extends State<ExamDetailPage> {
+  var uid = FirebaseAuth.instance.currentUser!.uid;
+  List<_ChartData> chartData = <_ChartData>[];
+
+  @override
+  void initState() {
+    getDataFromFireStore().then((results) {
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+        setState(() {});
+      });
+    });
+    super.initState();
+  }
+
+  Future<void> getDataFromFireStore() async {
+    var snapShotsValue = await FirebaseFirestore.instance
+        .collection("gestantes")
+        .doc(uid)
+        .collection("resultados_examenes")
+        .where("examType", isEqualTo: widget.examName)
+        .where("registerStatus", whereIn: [1, 2])
+        .orderBy('dateResult', descending: false)
+        .get();
+    List<_ChartData> list = snapShotsValue.docs
+        .map((e) => _ChartData(
+            x: DateTime.fromMillisecondsSinceEpoch(e.data()['dateResult'].millisecondsSinceEpoch),
+            y: e.data()['value']))
+        .toList();
+    setState(() {
+      chartData = list;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    var uid = FirebaseAuth.instance.currentUser!.uid;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -57,6 +92,17 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
                     ElevatedButton(onPressed: () {}, child: const Text("3M"))
                   ],
                 ),
+                Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: SfCartesianChart(
+                        primaryXAxis: DateTimeAxis(),
+                        primaryYAxis: NumericAxis(),
+                        series: <ChartSeries<_ChartData, DateTime>>[
+                          LineSeries<_ChartData, DateTime>(
+                              dataSource: chartData,
+                              xValueMapper: (_ChartData data, _) => data.x,
+                              yValueMapper: (_ChartData data, _) => data.y),
+                        ])),
                 Container(
                   alignment: Alignment.centerLeft,
                   child: const Text(
@@ -103,7 +149,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
                                           children: <Widget>[
                                             Row(
                                               children: [
-                                                Text(exam.dateResult!,
+                                                Text(intl.DateFormat('dd/MM/yyyy').format(exam.dateResult!.toDate()),
                                                     style: TextStyle(fontStyle: FontStyle.italic, fontSize: 16))
                                               ],
                                             ),
@@ -155,4 +201,10 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
 Future<List<Exam>> getListaResultadosExames(String uid, String examType) async {
   ExamService _examService = ExamService();
   return await _examService.getListaResultadosExames(uid, examType);
+}
+
+class _ChartData {
+  _ChartData({this.x, this.y});
+  final DateTime? x;
+  final int? y;
 }

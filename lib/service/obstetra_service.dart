@@ -132,9 +132,11 @@ class ObstetraService {
       await db.collection("gestantes").where("codigoObstetra", isEqualTo: codigoObstetra).get().then((event) {
         for (var doc in event.docs) {
           gestante = Gestante(
+              id: doc.data()["id"],
               nombre: doc.data()["nombre"],
               apellido: doc.data()["apellido"],
               fechaRegla: doc.data()["fechaRegla"],
+              photoUrl: doc.data()["photoUrl"],
               vitals: doc.data()["vitals"]);
           listaGestantes.add(gestante);
         }

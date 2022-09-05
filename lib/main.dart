@@ -61,7 +61,7 @@ class MyHomePage extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.hasData && snapshot.data!.emailVerified == false) {
               //emailVerified permite reconocer que el inicio de sesión no es por una cuenta de Google (Gestante)
-              return const MonitorObs();
+              return const ScreenObs();
             } else if (snapshot.hasData && snapshot.data!.emailVerified == true) {
               return const Tabs();
             } else {

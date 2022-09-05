@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Exam {
   final String? id;
-  final String? value;
-  final String? dateResult;
+  final int? value;
+  final Timestamp? dateResult;
   final String? examType;
   final int? registerStatus;
 
