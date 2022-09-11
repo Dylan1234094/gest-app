@@ -38,7 +38,7 @@ class DrawerGest extends StatelessWidget {
             title: Text('Configuración'),
             leading: Icon(Icons.settings),
             onTap: () {
-              testFit();
+              Navigator.pushNamed(context, '/gestConfig');
             },
           ),
           ListTile(

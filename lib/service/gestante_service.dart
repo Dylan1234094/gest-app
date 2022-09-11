@@ -135,11 +135,42 @@ class GestanteService {
         .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
   }
 
+  void updateGestanteSigns(String id, VitalSign vitals, BuildContext context) async {
+    final gestante = Gestante(vitals: vitals.toJson());
+
+    final docRef = db
+        .collection("gestantes")
+        .withConverter(
+          fromFirestore: Gestante.fromFirestore,
+          toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
+        )
+        .doc(id);
+    await docRef
+        .set(gestante, SetOptions(merge: true))
+        .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
+  }
+
+  void desvincularObstetra(String id, BuildContext context) async {
+    var gestante = const Gestante(codigoObstetra: "");
+
+    final docRef = db
+        .collection("gestantes")
+        .withConverter(
+          fromFirestore: Gestante.fromFirestore,
+          toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
+        )
+        .doc(id);
+    await docRef
+        .set(gestante, SetOptions(merge: true))
+        .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
+  }
+
   Future<Gestante> getGestante(String uid) async {
     Gestante gestante;
     var nombre = "";
     var apellido = "";
     var correo = "";
+    var codigoObs = "";
     var telefono = "";
     var dni = "";
     var fechaNacimiento = "";
@@ -147,6 +178,8 @@ class GestanteService {
     var fechaEco = "";
     var fechaCita = "";
     var photoUrl = "";
+    VitalSign vitals = const VitalSign(
+        actFisica: "", freCardi: "", freResp: "", gluco: "", peso: "", presArt: "", satOxig: "", suenio: "");
 
     try {
       final docRef = db.collection("gestantes").doc(uid);
@@ -156,6 +189,7 @@ class GestanteService {
           nombre = data["nombre"];
           apellido = data["apellido"];
           correo = data["correo"];
+          codigoObs = data["codigoObstetra"];
           telefono = data["telefono"];
           dni = data["dni"];
           fechaNacimiento = data["fechaNacimiento"];
@@ -163,6 +197,15 @@ class GestanteService {
           fechaEco = data["fechaEco"];
           fechaCita = data["fechaCita"];
           photoUrl = data["photoUrl"];
+          vitals = VitalSign(
+              actFisica: data["vitals"]["actFisica"],
+              freCardi: data["vitals"]["freCardi"],
+              freResp: data["vitals"]["freResp"],
+              gluco: data["vitals"]["gluco"],
+              peso: data["vitals"]["peso"],
+              presArt: data["vitals"]["presArt"],
+              satOxig: data["vitals"]["satOxig"],
+              suenio: data["vitals"]["suenio"]);
         },
         onError: (e) => print("Error al intentar obtener doc $uid en gestante"),
       );
@@ -174,13 +217,15 @@ class GestanteService {
         id: uid,
         nombre: nombre,
         apellido: apellido,
+        codigoObstetra: codigoObs,
         telefono: telefono,
         dni: dni,
         fechaNacimiento: fechaNacimiento,
         fechaRegla: fechaRegla,
         fechaEco: fechaEco,
         fechaCita: fechaCita,
-        photoUrl: photoUrl);
+        photoUrl: photoUrl,
+        vitals: vitals.toJson());
   }
 
   Future<Obstetra> validateCodeObstetra(String codeObstetra) async {
@@ -206,8 +251,23 @@ class GestanteService {
     return obstetra = Obstetra(id: uid, nombre: nombre, apellido: apellido, codigoObstetra: codigoObstetra);
   }
 
+  void updateCodeObstetra(String id, String codigoObs, BuildContext context) async {
+    final gestante = Gestante(codigoObstetra: codigoObs);
+
+    final docRef = db
+        .collection("gestantes")
+        .withConverter(
+          fromFirestore: Gestante.fromFirestore,
+          toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
+        )
+        .doc(id);
+    await docRef
+        .set(gestante, SetOptions(merge: true))
+        .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
+  }
+
   void testFit() async {
-    // print(_googleSignIn.currentUser);
+    print(_googleSignIn.currentUser);
     DateTime startDate = DateTime.now().add(const Duration(days: -1));
     DateTime endDate = DateTime.now();
     HealthFactory health = HealthFactory();

@@ -1,26 +1,26 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gest_app/data/model/exam_result.dart';
-import 'package:gest_app/service/exam_result_service.dart';
+import 'package:gest_app/data/model/goals.dart';
+import 'package:gest_app/service/goals_service.dart';
 import 'package:gest_app/shared/textfield_date.dart';
 
 import 'package:intl/intl.dart' as intl;
 
-class UpdateExamPage extends StatefulWidget {
-  final String examId;
-  const UpdateExamPage({Key? key, required this.examId}) : super(key: key);
+class UpdateGoalPage extends StatefulWidget {
+  final String gestId;
+  final String goalId;
+  const UpdateGoalPage({Key? key, required this.gestId, required this.goalId}) : super(key: key);
 
   @override
-  State<UpdateExamPage> createState() => _UpdateExamPageState();
+  State<UpdateGoalPage> createState() => _UpdateGoalPageState();
 }
 
-class _UpdateExamPageState extends State<UpdateExamPage> {
-  final dateController = TextEditingController();
+class _UpdateGoalPageState extends State<UpdateGoalPage> {
+  final startDateController = TextEditingController();
+  final endDateController = TextEditingController();
   final valueController = TextEditingController();
-  var uid = FirebaseAuth.instance.currentUser!.uid;
 
   void ConfirmDialog(BuildContext context) {
     showDialog(
@@ -37,8 +37,8 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
                 child: const Text('No')),
             TextButton(
                 onPressed: () {
-                  //! Update examen
-                  updateExamResult(uid, widget.examId, valueController.text, dateController.text, context);
+                  updateGoal(widget.gestId, widget.goalId, valueController.text, startDateController.text,
+                      endDateController.text, context);
                   Navigator.of(context).popUntil(ModalRoute.withName("/"));
                 },
                 child: const Text('Si'))
@@ -63,8 +63,7 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
                 child: const Text('No')),
             TextButton(
                 onPressed: () {
-                  //! Delete examen
-                  deleteExamResult(uid, widget.examId, context);
+                  deleteGoal(widget.gestId, widget.goalId, context);
                   Navigator.of(context).popUntil(ModalRoute.withName("/"));
                 },
                 child: const Text('Si'))
@@ -76,7 +75,8 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
 
   @override
   void dispose() {
-    dateController.dispose();
+    startDateController.dispose();
+    endDateController.dispose();
     valueController.dispose();
     super.dispose();
   }
@@ -117,9 +117,9 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
               icon: const Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () => Navigator.of(context).pop(),
             ),
-            title: Text("Actualizar Examen")),
-        body: FutureBuilder<Exam>(
-            future: getExamResult(widget.examId, uid),
+            title: Text("Actualizar Meta")),
+        body: FutureBuilder<Goal>(
+            future: getGoal(widget.goalId, widget.gestId),
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case (ConnectionState.waiting):
@@ -129,7 +129,8 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
                 case (ConnectionState.done):
                   if (snapshot.hasData) {
                     valueController.text = snapshot.data!.value!.toString();
-                    dateController.text = intl.DateFormat('dd/MM/yyyy').format(snapshot.data!.dateResult!.toDate());
+                    startDateController.text = intl.DateFormat('dd/MM/yyyy').format(snapshot.data!.startTime!.toDate());
+                    endDateController.text = intl.DateFormat('dd/MM/yyyy').format(snapshot.data!.endTime!.toDate());
                     return SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.all(16),
@@ -137,27 +138,37 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(top: 30, bottom: 20),
-                              child: Text("Actualizar examen",
-                                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                              child:
+                                  Text("Actualizar Meta", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                             ),
-                            Text("Edite el resultado a continuación", textAlign: TextAlign.justify),
+                            Text("Edite la meta a continuación", textAlign: TextAlign.justify),
+                            Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextFormField(
+                                    controller: valueController,
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                    decoration: InputDecoration(
+                                      border: const OutlineInputBorder(),
+                                      labelText: "Tiempo (min.)",
+                                    ),
+                                    validator: (result) {
+                                      return ValidateResult(result!);
+                                    })),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: TextField(
-                                controller: valueController,
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: 'Resultado (g/dL)',
-                                ),
+                              child: MyTextFormDate(
+                                label: "Fecha Inicial",
+                                dateController: startDateController,
+                                continous: true,
                               ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: MyTextFormDate(
-                                label: "Fecha de entrega de resultados",
-                                dateController: dateController,
+                                label: "Fecha Final",
+                                dateController: endDateController,
+                                continous: true,
                               ),
                             ),
                             Padding(
@@ -190,17 +201,27 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
   }
 }
 
-void updateExamResult(String gestID, String examID, String value, String date, BuildContext context) {
-  ExamService _examService = ExamService();
-  _examService.updateExamResult(gestID, examID, value, date, context);
+String? ValidateResult(String result) {
+  if (result.isEmpty) {
+    return 'Resultado no puede estar vacio';
+  }
+  if (result[0] == '0') {
+    return 'Resultado no puede ser cero';
+  }
+  return null;
 }
 
-void deleteExamResult(String gestID, String examID, BuildContext context) {
-  ExamService _examService = ExamService();
-  _examService.deleteExamResult(gestID, examID, context);
+void updateGoal(String gestID, String goalID, String value, String startDate, String endDate, BuildContext context) {
+  GoalService _goalService = GoalService();
+  _goalService.updateGoal(gestID, goalID, value, startDate, endDate, context);
 }
 
-Future<Exam> getExamResult(String examID, String gestID) {
-  ExamService _examService = ExamService();
-  return _examService.getExamResult(examID, gestID);
+void deleteGoal(String gestID, String goalID, BuildContext context) {
+  GoalService _goalService = GoalService();
+  _goalService.deleteGoal(gestID, goalID, context);
+}
+
+Future<Goal> getGoal(String goalID, String gestID) {
+  GoalService _goalService = GoalService();
+  return _goalService.getGoal(goalID, gestID);
 }

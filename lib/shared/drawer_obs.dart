@@ -71,11 +71,11 @@ class DrawerObs extends StatelessWidget {
               Navigator.pushNamed(context, '/profileObs');
             },
           ),
-          ListTile(
-            title: Text('Configuración'),
-            leading: Icon(Icons.settings),
-            onTap: () {},
-          ),
+          // ListTile(
+          //   title: Text('Configuración'),
+          //   leading: Icon(Icons.settings),
+          //   onTap: () {},
+          // ),
           ListTile(
             title: Text('Cerrar sesión'),
             leading: Icon(Icons.logout),

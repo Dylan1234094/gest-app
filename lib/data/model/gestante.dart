@@ -100,7 +100,7 @@ class Gestante {
       if (fechaEco != null) "fechaEco": fechaEco,
       if (fechaCita != null) "fechaCita": fechaCita,
       if (codigoObstetra != null) "codigoObstetra": codigoObstetra,
-      if (photoUrl != null) "codigoObstetra": photoUrl,
+      if (photoUrl != null) "photoUrl": photoUrl,
       if (vitals != null) "vitals": vitals,
     };
   }

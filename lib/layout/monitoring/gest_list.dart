@@ -37,8 +37,7 @@ class _GestanteListState extends State<GestanteList> {
                 return const Center(child: CircularProgressIndicator());
               }
               if (snapshotGests.data!.isEmpty) {
-                return const Center(
-                    child: Text("No se encontraron gestantes registrados"));
+                return const Center(child: Text("No se encontraron gestantes registrados"));
               }
 
               return ListView.builder(
@@ -57,8 +56,7 @@ class _GestanteListState extends State<GestanteList> {
                                 width: 45.0,
                                 decoration: const BoxDecoration(
                                   image: DecorationImage(
-                                    image: AssetImage(
-                                        'assets/mini_default_profile_icon.png'),
+                                    image: AssetImage('assets/mini_default_profile_icon.png'),
                                     fit: BoxFit.fill,
                                   ),
                                   shape: BoxShape.rectangle,
@@ -71,20 +69,17 @@ class _GestanteListState extends State<GestanteList> {
                             child: Text(
                               "${gestante.nombre!} ${gestante.apellido}",
                               textAlign: TextAlign.left,
-                              style: const TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold),
+                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                             ),
                           ),
                           Expanded(
                               child: IconButton(
                             onPressed: () {
                               Navigator.of(context).push(
-                                MaterialPageRoute<void>(
-                                    builder: (BuildContext context) {
+                                MaterialPageRoute<void>(builder: (BuildContext context) {
                                   return Chat(
                                     anotherUserName: gestante.nombre,
-                                    anotherUserUid:
-                                        '8JeF7qmuhQgecJHSjjbNI5Ck1Q32',
+                                    anotherUserUid: gestante.id,
                                   );
                                   // Gestante Deyvid        8JeF7qmuhQgecJHSjjbNI5Ck1Q32
                                   // Gestante testcursotdp  5bY1aMCjqXaFzpfWh2dLTm88Oe32
