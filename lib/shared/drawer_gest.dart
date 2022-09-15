@@ -65,9 +65,3 @@ void logOutGestante(BuildContext context) {
 
   return _gestanteService.signOutGestante(context);
 }
-
-void testFit() {
-  GestanteService _gestanteService = GestanteService();
-
-  _gestanteService.testFit();
-}

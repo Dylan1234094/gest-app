@@ -16,7 +16,6 @@ class _UpdateVitalSignsState extends State<UpdateVitalSigns> {
   final freCardiController = TextEditingController();
   final suenioController = TextEditingController();
   final presArtController = TextEditingController();
-  final freRespController = TextEditingController();
   final satOxigController = TextEditingController();
   final pesoController = TextEditingController();
   final glucoController = TextEditingController();
@@ -27,7 +26,6 @@ class _UpdateVitalSignsState extends State<UpdateVitalSigns> {
     freCardiController.dispose();
     suenioController.dispose();
     presArtController.dispose();
-    freRespController.dispose();
     satOxigController.dispose();
     pesoController.dispose();
     glucoController.dispose();
@@ -63,7 +61,6 @@ class _UpdateVitalSignsState extends State<UpdateVitalSigns> {
                 freCardiController.text = snapshot.data!.vitals!["freCardi"];
                 suenioController.text = snapshot.data!.vitals!["suenio"];
                 presArtController.text = snapshot.data!.vitals!["presArt"];
-                freRespController.text = snapshot.data!.vitals!["freResp"];
                 satOxigController.text = snapshot.data!.vitals!["satOxig"];
                 pesoController.text = snapshot.data!.vitals!["peso"];
                 glucoController.text = snapshot.data!.vitals!["gluco"];
@@ -111,13 +108,6 @@ class _UpdateVitalSignsState extends State<UpdateVitalSigns> {
                         switchState: presArtController.text == "true" ? true : false,
                       ),
                       VitalSignWidget(
-                        vitalSignController: freRespController,
-                        title: 'Frecuencia Respiratoria',
-                        content:
-                            'Se monitorea la frecuencia respiratoria (rpm) registrada en la aplicación Google Fit.',
-                        switchState: freRespController.text == "true" ? true : false,
-                      ),
-                      VitalSignWidget(
                         vitalSignController: satOxigController,
                         title: 'Saturación de Oxígeno',
                         content: 'Se monitorea la saturación de oxígeno (%) registrada en la aplicación Google Fit.',
@@ -147,7 +137,6 @@ class _UpdateVitalSignsState extends State<UpdateVitalSigns> {
                                   freCardiController.text,
                                   suenioController.text,
                                   presArtController.text,
-                                  freRespController.text,
                                   satOxigController.text,
                                   pesoController.text,
                                   glucoController.text,
@@ -233,8 +222,8 @@ class _VitalSignState extends State<VitalSignWidget> {
   }
 }
 
-void updateGestanteVitals(String uid, String actFisica, String freCardi, String suenio, String presArt, String freResp,
-    String satOxig, String peso, String gluco, BuildContext context) {
+void updateGestanteVitals(String uid, String actFisica, String freCardi, String suenio, String presArt, String satOxig,
+    String peso, String gluco, BuildContext context) {
   GestanteService _gestanteService = GestanteService();
 
   final vitals = VitalSign(
@@ -242,7 +231,6 @@ void updateGestanteVitals(String uid, String actFisica, String freCardi, String 
       freCardi: freCardi,
       suenio: suenio,
       presArt: presArt,
-      freResp: freResp,
       satOxig: satOxig,
       peso: peso,
       gluco: gluco);

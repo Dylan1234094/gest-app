@@ -1,13 +1,21 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:gest_app/layout/gest/home/goals.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart' as intl;
 
 class MetricDetailPage extends StatefulWidget {
-  const MetricDetailPage({Key? key}) : super(key: key);
+  const MetricDetailPage({Key? key, required this.vitalSign, required this.unit, required this.rtoken})
+      : super(key: key);
+  final String vitalSign;
+  final String unit;
+  final String rtoken;
 
   @override
   State<MetricDetailPage> createState() => _MetricDetailPageState();
@@ -15,26 +23,132 @@ class MetricDetailPage extends StatefulWidget {
 
 class _MetricDetailPageState extends State<MetricDetailPage> {
   List<_ChartData> chartData = <_ChartData>[];
+  List<_ChartData> chartData2 = <_ChartData>[]; //only for blood pressure data
+
+  String startDate = intl.DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: -7)));
+  String endDate = intl.DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   @override
   void initState() {
-    getDataFromFireStore().then((results) {
-      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-        setState(() {});
-      });
-    });
+    if (widget.vitalSign == "presArt") {
+      getPresArtData().then((results) {});
+    } else {
+      getVitalData().then((results) {});
+    }
     super.initState();
   }
 
-  Future<void> getDataFromFireStore() async {
-    var snapShotsValue = await FirebaseFirestore.instance.collection("metrics").orderBy('x', descending: false).get();
-    List<_ChartData> list = snapShotsValue.docs
-        .map((e) =>
-            _ChartData(x: DateTime.fromMillisecondsSinceEpoch(e.data()['x'].millisecondsSinceEpoch), y: e.data()['y']))
-        .toList();
-    setState(() {
-      chartData = list;
-    });
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  Future<void> getVitalData() async {
+    var url = 'https://upc-cloud-test.azurewebsites.net/api/getVitalData';
+    Map data = {'vitalSign': widget.vitalSign, 'rtoken': widget.rtoken, 'startDate': startDate, 'endDate': endDate};
+    var body = json.encode(data);
+    try {
+      var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
+      var vitalArray = await json.decode(response.body) as List;
+      for (var element in vitalArray) {
+        print(intl.DateFormat('dd/MM/yyyy HH:mm:ss').format(
+            Timestamp.fromMillisecondsSinceEpoch(((int.parse(element['endNanos']) / 1000000) - 1).round()).toDate()));
+        print(element['value']);
+      }
+      List<_ChartData> list = vitalArray
+          .map((e) => _ChartData(
+              x: DateTime.fromMillisecondsSinceEpoch(((int.parse(e['endNanos']) / 1000000) - 1).round()),
+              y: e['value']))
+          .toList();
+      setState(() {
+        chartData = list;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> getPresArtData() async {
+    var url = 'https://upc-cloud-test.azurewebsites.net/api/getVitalData';
+    Map data = {'vitalSign': widget.vitalSign, 'rtoken': widget.rtoken, 'startDate': startDate, 'endDate': endDate};
+    var body = json.encode(data);
+    try {
+      var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
+      var bpJson = await json.decode(response.body);
+
+      var sistolicArray = bpJson["sistolic"] as List;
+      var diastolicArray = bpJson["diastolic"] as List;
+
+      List<_ChartData> listSistolic = sistolicArray
+          .map((e) => _ChartData(
+              x: DateTime.fromMillisecondsSinceEpoch(((int.parse(e['endNanos']) / 1000000) - 1).round()),
+              y: e['value']))
+          .toList();
+      List<_ChartData> listDiastolic = diastolicArray
+          .map((e) => _ChartData(
+              x: DateTime.fromMillisecondsSinceEpoch(((int.parse(e['endNanos']) / 1000000) - 1).round()),
+              y: e['value']))
+          .toList();
+      setState(() {
+        chartData = listSistolic;
+        chartData2 = listDiastolic;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<List<_ChartData>> getVitalDataList() async {
+    List<_ChartData> list = [];
+    var url = 'https://upc-cloud-test.azurewebsites.net/api/getVitalData';
+    Map data = {'vitalSign': widget.vitalSign, 'rtoken': widget.rtoken, 'startDate': startDate, 'endDate': endDate};
+    var body = json.encode(data);
+    try {
+      var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
+      var vitalArray = await json.decode(response.body) as List;
+      for (var element in vitalArray) {
+        print(intl.DateFormat('dd/MM/yyyy HH:mm:ss').format(
+            Timestamp.fromMillisecondsSinceEpoch(((int.parse(element['endNanos']) / 1000000) - 1).round()).toDate()));
+        print(element['value']);
+      }
+      list = vitalArray
+          .map((e) => _ChartData(
+              x: DateTime.fromMillisecondsSinceEpoch(((int.parse(e['endNanos']) / 1000000) - 1).round()),
+              y: e['value']))
+          .toList();
+    } catch (e) {
+      print(e);
+    }
+    return list;
+  }
+
+  Future<List<_ChartData>> getPresArtDataList() async {
+    List<_ChartData> list = [];
+    var url = 'https://upc-cloud-test.azurewebsites.net/api/getVitalData';
+    Map data = {'vitalSign': widget.vitalSign, 'rtoken': widget.rtoken, 'startDate': startDate, 'endDate': endDate};
+    var body = json.encode(data);
+    try {
+      var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
+      var bpJson = await json.decode(response.body);
+
+      var sistolicArray = bpJson["sistolic"] as List;
+      var diastolicArray = bpJson["diastolic"] as List;
+
+      List<_ChartData> listSistolic = sistolicArray
+          .map((e) => _ChartData(
+              x: DateTime.fromMillisecondsSinceEpoch(((int.parse(e['endNanos']) / 1000000) - 1).round()),
+              y: e['value']))
+          .toList();
+      List<_ChartData> listDiastolic = diastolicArray
+          .map((e) => _ChartData(
+              x: DateTime.fromMillisecondsSinceEpoch(((int.parse(e['endNanos']) / 1000000) - 1).round()),
+              y: e['value']))
+          .toList();
+      list = listSistolic;
+    } catch (e) {
+      print(e);
+    }
+    return list;
   }
 
   @override
@@ -48,78 +162,94 @@ class _MetricDetailPageState extends State<MetricDetailPage> {
             ),
             title: const Text("Metric Name")),
         body: SingleChildScrollView(
-          child: FutureBuilder<Object>(
-              future: null,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(onPressed: () {}, child: const Text("H")),
-                        ElevatedButton(onPressed: () {}, child: const Text("D")),
-                        ElevatedButton(onPressed: () {}, child: const Text("S")),
-                        ElevatedButton(onPressed: () {}, child: const Text("M")),
-                        ElevatedButton(onPressed: () {}, child: const Text("3M"))
-                      ],
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        startDate = "2022-09-12";
+                        getVitalData().then((results) {
+                          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+                            setState(() {});
+                          });
+                        });
+                      },
+                      child: const Text("H")),
+                  ElevatedButton(onPressed: () {}, child: const Text("D")),
+                  ElevatedButton(onPressed: () {}, child: const Text("S")),
+                  ElevatedButton(onPressed: () {}, child: const Text("M")),
+                  ElevatedButton(onPressed: () {}, child: const Text("3M"))
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: SfCartesianChart(
+                  primaryXAxis: DateTimeAxis(),
+                  primaryYAxis: NumericAxis(),
+                  series: <ChartSeries<_ChartData, DateTime>>[
+                    LineSeries<_ChartData, DateTime>(
+                      dataSource: chartData,
+                      xValueMapper: (_ChartData data, _) => data.x,
+                      yValueMapper: (_ChartData data, _) => data.y,
                     ),
-                    Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: SfCartesianChart(
-                            primaryXAxis: DateTimeAxis(),
-                            primaryYAxis: NumericAxis(),
-                            series: <ChartSeries<_ChartData, DateTime>>[
-                              LineSeries<_ChartData, DateTime>(
-                                  dataSource: chartData,
-                                  xValueMapper: (_ChartData data, _) => data.x,
-                                  yValueMapper: (_ChartData data, _) => data.y),
-                            ])),
-                    Container(
-                        //! Boton "Ver Metas" si metrica es Actividad
-                        child: (true)
-                            ? ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute<void>(builder: (BuildContext context) {
-                                      return const GoalsPage();
-                                    }),
-                                  );
-                                },
-                                child: const Text("VER METAS"),
-                              )
-                            : null),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: const Text(
-                        "DETALLE DE REGISTROS",
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                    StreamBuilder(
-                        stream: FirebaseFirestore.instance
-                            .collection('metrics')
-                            .orderBy('x', descending: false)
-                            .snapshots(),
-                        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> metricsnapshot) {
-                          if (!metricsnapshot.hasData) {
-                            return Center(child: CircularProgressIndicator());
-                          }
-                          return _MetricCardList(
-                            snapshot: metricsnapshot,
+                    LineSeries<_ChartData, DateTime>(
+                      dataSource: chartData2,
+                      xValueMapper: (_ChartData data, _) => data.x,
+                      yValueMapper: (_ChartData data, _) => data.y,
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                  //! Boton "Ver Metas" si metrica es Actividad
+                  child: (widget.vitalSign == "actFisica")
+                      ? ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute<void>(builder: (BuildContext context) {
+                                return const GoalsPage();
+                              }),
+                            );
+                          },
+                          child: const Text("VER METAS"),
+                        )
+                      : null),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: const Text(
+                  "DETALLE DE REGISTROS",
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              FutureBuilder<List<_ChartData>>(
+                  future: widget.vitalSign == "presArt" ? getPresArtDataList() : getVitalDataList(),
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      case (ConnectionState.waiting):
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      case (ConnectionState.done):
+                        if (!snapshot.hasData) {
+                          return const Center(
+                            child: Text("Algo salió mal..."),
                           );
-                        })
-                  ]),
-                );
-              }),
+                        }
+                        return _MetricCardList(data: snapshot, unit: widget.unit);
+                      default:
+                        return const Text("Algo salió mal");
+                    }
+                  })
+            ]),
+          ),
         ));
   }
 }
 
-// Class for chart data source, this can be modified based on the data in Firestore
+// Class for chart data source, this can be modified
 class _ChartData {
   _ChartData({this.x, this.y});
   final DateTime? x;
@@ -127,35 +257,48 @@ class _ChartData {
 }
 
 class _MetricCardList extends StatelessWidget {
-  final AsyncSnapshot<QuerySnapshot> snapshot;
+  final AsyncSnapshot<List<_ChartData>> data;
+  final String unit;
 
-  const _MetricCardList({Key? key, required this.snapshot}) : super(key: key);
+  const _MetricCardList({Key? key, required this.data, required this.unit}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(8),
-      child: ListView(
-          primary: false,
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          padding: const EdgeInsets.only(),
-          children: snapshot.data!.docs.map((document) {
-            return _MetricCardDetail(document: document);
-          }).toList()),
-    );
+    if (data.data!.isEmpty) {
+      return Center(
+        child: Container(
+          padding: const EdgeInsets.only(top: 10),
+          child: Text("No se encontró ningún registro"),
+        ),
+      );
+    } else {
+      return Padding(
+        padding: EdgeInsets.all(8),
+        child: ListView(
+            primary: false,
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            padding: const EdgeInsets.only(),
+            children: data.data!.map((document) {
+              return _MetricCardDetail(
+                document: document,
+                unit: unit,
+              );
+            }).toList()),
+      );
+    }
   }
 }
 
 class _MetricCardDetail extends StatelessWidget {
-  final QueryDocumentSnapshot<Object?> document;
+  final _ChartData document;
+  final String unit;
 
-  const _MetricCardDetail({Key? key, required this.document}) : super(key: key);
+  const _MetricCardDetail({Key? key, required this.document, required this.unit}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Timestamp time = document['x'] as Timestamp;
-    DateTime datetime = time.toDate();
+    DateTime datetime = document.x!;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(4),
@@ -165,11 +308,23 @@ class _MetricCardDetail extends StatelessWidget {
           children: <Widget>[
             Text('${datetime.day}/${datetime.month}/${datetime.year} ',
                 style: TextStyle(fontStyle: FontStyle.italic, fontSize: 16)),
-            Text(document['y'].toString() + ' ' + document['unit'],
+            Text(document.y.toString() + " " + unit,
                 textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
           ],
         ),
       ),
     );
+  }
+}
+
+void getRefreshToken() async {
+  var url = 'https://upc-cloud-test.azurewebsites.net/api/test/first';
+  Map data = {'name': "Prueba123"};
+  var body = json.encode(data);
+  try {
+    var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
+    print(response.body);
+  } catch (e) {
+    print(e);
   }
 }

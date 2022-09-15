@@ -5,20 +5,17 @@ class VitalSign {
   final String? freCardi;
   final String? suenio;
   final String? presArt;
-  final String? freResp;
   final String? satOxig;
   final String? peso;
   final String? gluco;
 
-  const VitalSign(
-      {this.actFisica, this.freCardi, this.suenio, this.presArt, this.freResp, this.satOxig, this.peso, this.gluco});
+  const VitalSign({this.actFisica, this.freCardi, this.suenio, this.presArt, this.satOxig, this.peso, this.gluco});
 
   VitalSign.fromJson(Map<String, dynamic> json)
       : actFisica = json['actFisica'],
         freCardi = json['freCardi'],
         suenio = json['suenio'],
         presArt = json['presArt'],
-        freResp = json['freResp'],
         satOxig = json['satOxig'],
         peso = json['peso'],
         gluco = json['gluco'];
@@ -28,7 +25,6 @@ class VitalSign {
         'freCardi': freCardi,
         'suenio': suenio,
         'presArt': presArt,
-        'freResp': freResp,
         'satOxig': satOxig,
         'peso': peso,
         'gluco': gluco
@@ -48,6 +44,7 @@ class Gestante {
   final String? fechaCita;
   final String? codigoObstetra;
   final String? photoUrl;
+  final String? rtoken;
   final Map<String, dynamic>? vitals;
 
   const Gestante(
@@ -63,6 +60,7 @@ class Gestante {
       this.fechaCita,
       this.codigoObstetra,
       this.photoUrl,
+      this.rtoken,
       this.vitals});
 
   factory Gestante.fromFirestore(
@@ -83,6 +81,7 @@ class Gestante {
       fechaCita: data?['fechaCita'],
       codigoObstetra: data?['codigoObstetra'],
       photoUrl: data?['photoUrl'],
+      rtoken: data?['rtoken'],
       vitals: data?['vitals'],
     );
   }
@@ -101,6 +100,7 @@ class Gestante {
       if (fechaCita != null) "fechaCita": fechaCita,
       if (codigoObstetra != null) "codigoObstetra": codigoObstetra,
       if (photoUrl != null) "photoUrl": photoUrl,
+      if (rtoken != null) "rtoken": rtoken,
       if (vitals != null) "vitals": vitals,
     };
   }

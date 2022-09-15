@@ -125,10 +125,6 @@ class _MonitorObsState extends State<ScreenObs> {
                                                         ? const VitalIconWidget(
                                                             iconPath: 'assets/IconsVitals/fre_car_icon.png')
                                                         : const Text(""),
-                                                    vitals.freResp == "true"
-                                                        ? const VitalIconWidget(
-                                                            iconPath: 'assets/IconsVitals/fre_resp_icon.png')
-                                                        : const Text(""),
                                                     vitals.gluco == "true"
                                                         ? const VitalIconWidget(
                                                             iconPath: 'assets/IconsVitals/gluco_icon.png')

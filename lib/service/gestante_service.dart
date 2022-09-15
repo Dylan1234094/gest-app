@@ -7,8 +7,6 @@ import 'package:gest_app/data/model/obstetra.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:googleapis/fitness/v1.dart';
-import 'package:health/health.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn _googleSignIn = GoogleSignIn(
@@ -42,12 +40,14 @@ class GestanteService {
           accessToken: googleSignInAuthentication.accessToken, idToken: googleSignInAuthentication.idToken);
       await _auth.signInWithCredential(credential).then((value) async {
         try {
+          print(_googleSignIn.currentUser);
           final docRef = db.collection("gestantes").doc(value.user!.uid);
           await docRef.get().then(
             (DocumentSnapshot doc) {
               if (doc.exists) {
                 Navigator.pushNamed(context, '/tabs');
               } else {
+                //request rtoken, create gest with rtoken then update
                 Navigator.pushNamed(context, '/linkObstetraGestante');
               }
             },
@@ -178,10 +178,12 @@ class GestanteService {
     var fechaEco = "";
     var fechaCita = "";
     var photoUrl = "";
-    VitalSign vitals = const VitalSign(
-        actFisica: "", freCardi: "", freResp: "", gluco: "", peso: "", presArt: "", satOxig: "", suenio: "");
+    var rtoken = "";
+    VitalSign vitals =
+        const VitalSign(actFisica: "", freCardi: "", gluco: "", peso: "", presArt: "", satOxig: "", suenio: "");
 
     try {
+      print(uid);
       final docRef = db.collection("gestantes").doc(uid);
       await docRef.get().then(
         (DocumentSnapshot doc) {
@@ -197,10 +199,10 @@ class GestanteService {
           fechaEco = data["fechaEco"];
           fechaCita = data["fechaCita"];
           photoUrl = data["photoUrl"];
+          rtoken = data["rtoken"];
           vitals = VitalSign(
               actFisica: data["vitals"]["actFisica"],
               freCardi: data["vitals"]["freCardi"],
-              freResp: data["vitals"]["freResp"],
               gluco: data["vitals"]["gluco"],
               peso: data["vitals"]["peso"],
               presArt: data["vitals"]["presArt"],
@@ -225,6 +227,7 @@ class GestanteService {
         fechaEco: fechaEco,
         fechaCita: fechaCita,
         photoUrl: photoUrl,
+        rtoken: rtoken,
         vitals: vitals.toJson());
   }
 
@@ -264,41 +267,5 @@ class GestanteService {
     await docRef
         .set(gestante, SetOptions(merge: true))
         .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
-  }
-
-  void testFit() async {
-    print(_googleSignIn.currentUser);
-    DateTime startDate = DateTime.now().add(const Duration(days: -1));
-    DateTime endDate = DateTime.now();
-    HealthFactory health = HealthFactory();
-
-    List<HealthDataType> types = [
-      HealthDataType.STEPS,
-    ];
-
-    bool accessWasGranted = await health.requestAuthorization(types);
-    int steps = 0;
-
-    if (Platform.isAndroid) {
-      final permissionStatus = Permission.activityRecognition.request();
-      if (await permissionStatus.isDenied || await permissionStatus.isPermanentlyDenied) {
-        return;
-      } else if (await permissionStatus.isGranted) {
-        if (accessWasGranted) {
-          try {
-            List<HealthDataPoint> healthData = await health.getHealthDataFromTypes(startDate, endDate, types);
-
-            print("Obteniendo data del ${startDate} al ${endDate}");
-            healthData.forEach((element) {
-              print("Data point: ${element}");
-            });
-          } catch (e) {
-            print("FIT ERROR: ${e}");
-          }
-        } else {
-          print("No Authorization given");
-        }
-      }
-    }
   }
 }

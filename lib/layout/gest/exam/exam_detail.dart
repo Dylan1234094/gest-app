@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -6,7 +5,6 @@ import 'package:gest_app/data/model/exam_result.dart';
 import 'package:gest_app/layout/gest/exam/register_exam.dart';
 import 'package:gest_app/layout/gest/exam/update_exam.dart';
 import 'package:gest_app/service/exam_result_service.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 import 'package:intl/intl.dart' as intl;
 
@@ -25,31 +23,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
 
   @override
   void initState() {
-    getDataFromFireStore().then((results) {
-      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-        setState(() {});
-      });
-    });
     super.initState();
-  }
-
-  Future<void> getDataFromFireStore() async {
-    var snapShotsValue = await FirebaseFirestore.instance
-        .collection("gestantes")
-        .doc(uid)
-        .collection("resultados_examenes")
-        .where("examType", isEqualTo: widget.examName)
-        .where("registerStatus", whereIn: [1, 2])
-        .orderBy('dateResult', descending: false)
-        .get();
-    List<_ChartData> list = snapShotsValue.docs
-        .map((e) => _ChartData(
-            x: DateTime.fromMillisecondsSinceEpoch(e.data()['dateResult'].millisecondsSinceEpoch),
-            y: e.data()['value']))
-        .toList();
-    setState(() {
-      chartData = list;
-    });
   }
 
   @override
@@ -82,27 +56,6 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
             padding: const EdgeInsets.all(8.0),
             child: SingleChildScrollView(
               child: Column(children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(onPressed: () {}, child: const Text("H")),
-                    ElevatedButton(onPressed: () {}, child: const Text("D")),
-                    ElevatedButton(onPressed: () {}, child: const Text("S")),
-                    ElevatedButton(onPressed: () {}, child: const Text("M")),
-                    ElevatedButton(onPressed: () {}, child: const Text("3M"))
-                  ],
-                ),
-                Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: SfCartesianChart(
-                        primaryXAxis: DateTimeAxis(),
-                        primaryYAxis: NumericAxis(),
-                        series: <ChartSeries<_ChartData, DateTime>>[
-                          LineSeries<_ChartData, DateTime>(
-                              dataSource: chartData,
-                              xValueMapper: (_ChartData data, _) => data.x,
-                              yValueMapper: (_ChartData data, _) => data.y),
-                        ])),
                 Container(
                   alignment: Alignment.centerLeft,
                   child: const Text(

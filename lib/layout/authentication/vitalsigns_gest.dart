@@ -26,7 +26,6 @@ class _FormVitalGestState extends State<FormVitalGest> {
   final freCardiController = TextEditingController();
   final suenioController = TextEditingController();
   final presArtController = TextEditingController();
-  final freRespController = TextEditingController();
   final satOxigController = TextEditingController();
   final pesoController = TextEditingController();
   final glucoController = TextEditingController();
@@ -37,7 +36,6 @@ class _FormVitalGestState extends State<FormVitalGest> {
     freCardiController.dispose();
     suenioController.dispose();
     presArtController.dispose();
-    freRespController.dispose();
     satOxigController.dispose();
     pesoController.dispose();
     glucoController.dispose();
@@ -47,13 +45,11 @@ class _FormVitalGestState extends State<FormVitalGest> {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
-    final args =
-        ModalRoute.of(context)!.settings.arguments as registerGestArguments;
+    final args = ModalRoute.of(context)!.settings.arguments as registerGestArguments;
     actFisicaController.text = "true";
     freCardiController.text = "true";
     suenioController.text = "true";
     presArtController.text = "true";
-    freRespController.text = "true";
     satOxigController.text = "true";
     pesoController.text = "true";
     glucoController.text = "true";
@@ -84,50 +80,37 @@ class _FormVitalGestState extends State<FormVitalGest> {
             VitalSignWidget(
               vitalSignController: actFisicaController,
               title: 'Actividad Física',
-              content:
-                  'Se monitorea el número de pasos de la aplicación Google Fit.',
+              content: 'Se monitorea el número de pasos de la aplicación Google Fit.',
             ),
             VitalSignWidget(
               vitalSignController: freCardiController,
               title: 'Frecuencia Cardíaca',
-              content:
-                  'Se monitorea la frecuencia cardíaca (bpm) registrada en la aplicación Google Fit.',
+              content: 'Se monitorea la frecuencia cardíaca (bpm) registrada en la aplicación Google Fit.',
             ),
             VitalSignWidget(
               vitalSignController: suenioController,
               title: 'Sueño',
-              content:
-                  'Se monitorea la duración del sueño (horas) registrada en la aplicación Google Fit.',
+              content: 'Se monitorea la duración del sueño (horas) registrada en la aplicación Google Fit.',
             ),
             VitalSignWidget(
               vitalSignController: presArtController,
               title: 'Presión Arterial',
-              content:
-                  'Se monitorea la presión arterial (mmHg) registrada en la aplicación Google Fit.',
-            ),
-            VitalSignWidget(
-              vitalSignController: freRespController,
-              title: 'Frecuencia Respiratoria',
-              content:
-                  'Se monitorea la frecuencia respiratoria (rpm) registrada en la aplicación Google Fit.',
+              content: 'Se monitorea la presión arterial (mmHg) registrada en la aplicación Google Fit.',
             ),
             VitalSignWidget(
               vitalSignController: satOxigController,
               title: 'Saturación de Oxígeno',
-              content:
-                  'Se monitorea la saturación de oxígeno (%) registrada en la aplicación Google Fit.',
+              content: 'Se monitorea la saturación de oxígeno (%) registrada en la aplicación Google Fit.',
             ),
             VitalSignWidget(
               vitalSignController: pesoController,
               title: 'Peso',
-              content:
-                  'Se monitorea el peso gestacional (kg) registrada en la aplicación Google Fit.',
+              content: 'Se monitorea el peso gestacional (kg) registrada en la aplicación Google Fit.',
             ),
             VitalSignWidget(
               vitalSignController: glucoController,
               title: 'Glucosa',
-              content:
-                  'Se monitorea el nivel de glucosa (g/dL) registrada en la aplicación Google Fit.',
+              content: 'Se monitorea el nivel de glucosa (g/dL) registrada en la aplicación Google Fit.',
             ),
             Align(
               alignment: Alignment.centerRight,
@@ -151,7 +134,6 @@ class _FormVitalGestState extends State<FormVitalGest> {
                         freCardiController.text,
                         suenioController.text,
                         presArtController.text,
-                        freRespController.text,
                         satOxigController.text,
                         pesoController.text,
                         glucoController.text,
@@ -169,11 +151,7 @@ class _FormVitalGestState extends State<FormVitalGest> {
 }
 
 class VitalSignWidget extends StatefulWidget {
-  const VitalSignWidget(
-      {Key? key,
-      required this.vitalSignController,
-      required this.title,
-      required this.content})
+  const VitalSignWidget({Key? key, required this.vitalSignController, required this.title, required this.content})
       : super(key: key);
   final TextEditingController vitalSignController;
   final String title;
@@ -200,8 +178,7 @@ class _VitalSignState extends State<VitalSignWidget> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     widget.title,
-                    style: const TextStyle(
-                        color: Colors.blue, fontWeight: FontWeight.bold),
+                    style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Align(
@@ -251,7 +228,6 @@ void insertDataGestante(
     String freCardi,
     String suenio,
     String presArt,
-    String freResp,
     String satOxig,
     String peso,
     String gluco,
@@ -263,23 +239,10 @@ void insertDataGestante(
       freCardi: freCardi,
       suenio: suenio,
       presArt: presArt,
-      freResp: freResp,
       satOxig: satOxig,
       peso: peso,
       gluco: gluco);
 
-  _gestanteService.createGestante(
-      id,
-      nombre,
-      apellido,
-      correo,
-      telefono,
-      dni,
-      fechaNacimiento,
-      fechaRegla,
-      fechaEco,
-      fechaCita,
-      codeObs,
-      vitals,
-      context);
+  _gestanteService.createGestante(id, nombre, apellido, correo, telefono, dni, fechaNacimiento, fechaRegla, fechaEco,
+      fechaCita, codeObs, vitals, context);
 }

@@ -1,12 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:gest_app/data/model/gestante.dart';
-import 'package:gest_app/layout/gest/exam/exam_detail.dart';
-import 'package:gest_app/layout/monitoring/monitor_exams/monitor_exams.dart';
+import 'package:gest_app/layout/gest/home/home.dart';
 import 'package:gest_app/service/gestante_service.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart' as intl;
 
 class DetailMonitorGest extends StatefulWidget {
@@ -18,36 +15,30 @@ class DetailMonitorGest extends StatefulWidget {
 }
 
 class _DetailMonitorGestState extends State<DetailMonitorGest> {
-  List<_ChartData> chartData = <_ChartData>[];
   late TabController tabController;
+  final actFisicaController = TextEditingController();
+  final freCardiController = TextEditingController();
+  final suenioController = TextEditingController();
+  final presArtController = TextEditingController();
+  final satOxigController = TextEditingController();
+  final pesoController = TextEditingController();
+  final glucoController = TextEditingController();
 
   @override
   void initState() {
-    getColesterolDataFromFireStore().then((results) {
-      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-        setState(() {});
-      });
-    });
     super.initState();
   }
 
-  Future<void> getColesterolDataFromFireStore() async {
-    var snapShotsValue = await FirebaseFirestore.instance
-        .collection("gestantes")
-        .doc(widget.gestId)
-        .collection("resultados_examenes")
-        .where("examType", isEqualTo: "Colesterol")
-        .where("registerStatus", whereIn: [1, 2])
-        .orderBy('dateResult', descending: false)
-        .get();
-    List<_ChartData> list = snapShotsValue.docs
-        .map((e) => _ChartData(
-            x: DateTime.fromMillisecondsSinceEpoch(e.data()['dateResult'].millisecondsSinceEpoch),
-            y: e.data()['value']))
-        .toList();
-    setState(() {
-      chartData = list;
-    });
+  @override
+  void dispose() {
+    actFisicaController.dispose();
+    freCardiController.dispose();
+    suenioController.dispose();
+    presArtController.dispose();
+    satOxigController.dispose();
+    pesoController.dispose();
+    glucoController.dispose();
+    super.dispose();
   }
 
   @override
@@ -67,6 +58,13 @@ class _DetailMonitorGestState extends State<DetailMonitorGest> {
                       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12), child: CircularProgressIndicator()),
                 );
               case ConnectionState.done:
+                actFisicaController.text = snapshotGest.data!.vitals!["actFisica"];
+                freCardiController.text = snapshotGest.data!.vitals!["freCardi"];
+                suenioController.text = snapshotGest.data!.vitals!["suenio"];
+                presArtController.text = snapshotGest.data!.vitals!["presArt"];
+                satOxigController.text = snapshotGest.data!.vitals!["satOxig"];
+                pesoController.text = snapshotGest.data!.vitals!["peso"];
+                glucoController.text = snapshotGest.data!.vitals!["gluco"];
                 if (snapshotGest.hasData) {
                   return Column(
                     children: <Widget>[
@@ -130,43 +128,75 @@ class _DetailMonitorGestState extends State<DetailMonitorGest> {
                         ),
                       ),
                       Container(
-                        width: 360,
-                        padding: const EdgeInsets.all(8),
-                        child: GestureDetector(
-                          onTap: () {},
-                          child: Card(
-                            elevation: 10,
-                            child: Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    children: const <Widget>[
-                                      Text(
-                                        'Colesterol',
-                                        textAlign: TextAlign.end,
-                                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                    height: 200,
-                                    width: 300,
-                                    child: SfCartesianChart(
-                                        primaryXAxis: DateTimeAxis(),
-                                        primaryYAxis: NumericAxis(),
-                                        series: <ChartSeries<_ChartData, DateTime>>[
-                                          LineSeries<_ChartData, DateTime>(
-                                              dataSource: chartData,
-                                              xValueMapper: (_ChartData data, _) => data.x,
-                                              yValueMapper: (_ChartData data, _) => data.y),
-                                        ])),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                          child: (actFisicaController.text == "true")
+                              ? VitalCard(
+                                  title: "Actividad Física",
+                                  iconPath: "assets/IconsVitals/act_fisica_icon.png",
+                                  vitalSign: "actFisica",
+                                  unit: "Pasos",
+                                  rtoken: snapshotGest.data!.rtoken!,
+                                )
+                              : null),
+                      Container(
+                          child: (freCardiController.text == "true")
+                              ? VitalCard(
+                                  title: "Frecuencia Cardíaca",
+                                  iconPath: "assets/IconsVitals/fre_car_icon.png",
+                                  vitalSign: "freCardi",
+                                  unit: "bpm",
+                                  rtoken: snapshotGest.data!.rtoken!,
+                                )
+                              : null),
+                      Container(
+                          child: (glucoController.text == "true")
+                              ? VitalCard(
+                                  title: "Glucosa",
+                                  iconPath: "assets/IconsVitals/gluco_icon.png",
+                                  vitalSign: "gluco",
+                                  unit: "mmol/L",
+                                  rtoken: snapshotGest.data!.rtoken!,
+                                )
+                              : null),
+                      Container(
+                          child: (pesoController.text == "true")
+                              ? VitalCard(
+                                  title: "Peso",
+                                  iconPath: "assets/IconsVitals/peso_icon.png",
+                                  vitalSign: "peso",
+                                  unit: "kg",
+                                  rtoken: snapshotGest.data!.rtoken!,
+                                )
+                              : null),
+                      Container(
+                          child: (presArtController.text == "true")
+                              ? VitalCard(
+                                  title: "Presión Arterial",
+                                  iconPath: "assets/IconsVitals/pres_art_icon.png",
+                                  vitalSign: "presArt",
+                                  unit: "mmHg",
+                                  rtoken: snapshotGest.data!.rtoken!,
+                                )
+                              : null),
+                      Container(
+                          child: (satOxigController.text == "true")
+                              ? VitalCard(
+                                  title: "Saturación de Oxígeno",
+                                  iconPath: "assets/IconsVitals/sat_oxig_icon.png",
+                                  vitalSign: "satOxig",
+                                  unit: "%",
+                                  rtoken: snapshotGest.data!.rtoken!,
+                                )
+                              : null),
+                      Container(
+                          child: (suenioController.text == "true")
+                              ? VitalCard(
+                                  title: "Sueño",
+                                  iconPath: "assets/IconsVitals/suenio_icon.png",
+                                  vitalSign: "suenio",
+                                  unit: "h",
+                                  rtoken: snapshotGest.data!.rtoken!,
+                                )
+                              : null),
                     ],
                   );
                 } else {
