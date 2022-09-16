@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gest_app/data/model/gestante.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +7,8 @@ import 'package:gest_app/data/model/obstetra.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:googleapis/fitness/v1.dart';
+
+import 'package:http/http.dart' as http;
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn _googleSignIn = GoogleSignIn(
@@ -43,12 +45,26 @@ class GestanteService {
           print(_googleSignIn.currentUser);
           final docRef = db.collection("gestantes").doc(value.user!.uid);
           await docRef.get().then(
-            (DocumentSnapshot doc) {
+            (DocumentSnapshot doc) async {
               if (doc.exists) {
                 Navigator.pushNamed(context, '/tabs');
               } else {
                 //request rtoken, create gest with rtoken then update
-                Navigator.pushNamed(context, '/linkObstetraGestante');
+                var rtoken = "";
+                var url = 'https://upc-cloud-test.azurewebsites.net/api/getVitalData';
+                Map data = {
+                  'email': _googleSignIn.currentUser!.email,
+                  'serverToken': _googleSignIn.currentUser!.serverAuthCode,
+                };
+                var body = json.encode(data);
+                try {
+                  var response =
+                      await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
+                  rtoken = response.body;
+                } catch (e) {
+                  print(e);
+                }
+                createGestante(value.user!.uid, rtoken, context);
               }
             },
             onError: (e) => print("Error al intentar obtener doc ${value.user!.uid} en gestante"),
@@ -72,7 +88,23 @@ class GestanteService {
     }
   }
 
-  void createGestante(
+  void createGestante(String id, String rtoken, BuildContext context) async {
+    final gestante = Gestante(
+      id: id,
+      rtoken: rtoken,
+    );
+
+    final docRef = db
+        .collection("gestantes")
+        .withConverter(
+          fromFirestore: Gestante.fromFirestore,
+          toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
+        )
+        .doc(id);
+    await docRef.set(gestante).then((value) => Navigator.pushNamed(context, '/linkObstetraGestante'));
+  }
+
+  void createDataGestante(
       String id,
       String nombre,
       String apellido,
@@ -108,7 +140,9 @@ class GestanteService {
           toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
         )
         .doc(id);
-    await docRef.set(gestante).then((value) => Navigator.pushNamed(context, '/tabs'));
+    await docRef
+        .set(gestante, SetOptions(merge: true))
+        .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
   }
 
   void updateGestante(String id, String nombre, String apellido, String telefono, String dni, String fechaNacimiento,

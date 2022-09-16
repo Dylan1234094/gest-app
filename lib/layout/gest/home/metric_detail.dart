@@ -23,7 +23,7 @@ class MetricDetailPage extends StatefulWidget {
 
 class _MetricDetailPageState extends State<MetricDetailPage> {
   List<_ChartData> chartData = <_ChartData>[];
-  List<_ChartData> chartData2 = <_ChartData>[]; //only for blood pressure data
+  String bpType = "sistolic"; //only for blood pressure data
 
   String startDate = intl.DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: -7)));
   String endDate = intl.DateFormat('yyyy-MM-dd').format(DateTime.now());
@@ -69,6 +69,7 @@ class _MetricDetailPageState extends State<MetricDetailPage> {
   }
 
   Future<void> getPresArtData() async {
+    List<_ChartData> list;
     var url = 'https://upc-cloud-test.azurewebsites.net/api/getVitalData';
     Map data = {'vitalSign': widget.vitalSign, 'rtoken': widget.rtoken, 'startDate': startDate, 'endDate': endDate};
     var body = json.encode(data);
@@ -79,19 +80,21 @@ class _MetricDetailPageState extends State<MetricDetailPage> {
       var sistolicArray = bpJson["sistolic"] as List;
       var diastolicArray = bpJson["diastolic"] as List;
 
-      List<_ChartData> listSistolic = sistolicArray
-          .map((e) => _ChartData(
-              x: DateTime.fromMillisecondsSinceEpoch(((int.parse(e['endNanos']) / 1000000) - 1).round()),
-              y: e['value']))
-          .toList();
-      List<_ChartData> listDiastolic = diastolicArray
-          .map((e) => _ChartData(
-              x: DateTime.fromMillisecondsSinceEpoch(((int.parse(e['endNanos']) / 1000000) - 1).round()),
-              y: e['value']))
-          .toList();
+      if (bpType == "sistolic") {
+        list = sistolicArray
+            .map((e) => _ChartData(
+                x: DateTime.fromMillisecondsSinceEpoch(((int.parse(e['endNanos']) / 1000000) - 1).round()),
+                y: e['value']))
+            .toList();
+      } else {
+        list = diastolicArray
+            .map((e) => _ChartData(
+                x: DateTime.fromMillisecondsSinceEpoch(((int.parse(e['endNanos']) / 1000000) - 1).round()),
+                y: e['value']))
+            .toList();
+      }
       setState(() {
-        chartData = listSistolic;
-        chartData2 = listDiastolic;
+        chartData = list;
       });
     } catch (e) {
       print(e);
@@ -134,17 +137,19 @@ class _MetricDetailPageState extends State<MetricDetailPage> {
       var sistolicArray = bpJson["sistolic"] as List;
       var diastolicArray = bpJson["diastolic"] as List;
 
-      List<_ChartData> listSistolic = sistolicArray
-          .map((e) => _ChartData(
-              x: DateTime.fromMillisecondsSinceEpoch(((int.parse(e['endNanos']) / 1000000) - 1).round()),
-              y: e['value']))
-          .toList();
-      List<_ChartData> listDiastolic = diastolicArray
-          .map((e) => _ChartData(
-              x: DateTime.fromMillisecondsSinceEpoch(((int.parse(e['endNanos']) / 1000000) - 1).round()),
-              y: e['value']))
-          .toList();
-      list = listSistolic;
+      if (bpType == "sistolic") {
+        list = sistolicArray
+            .map((e) => _ChartData(
+                x: DateTime.fromMillisecondsSinceEpoch(((int.parse(e['endNanos']) / 1000000) - 1).round()),
+                y: e['value']))
+            .toList();
+      } else {
+        list = diastolicArray
+            .map((e) => _ChartData(
+                x: DateTime.fromMillisecondsSinceEpoch(((int.parse(e['endNanos']) / 1000000) - 1).round()),
+                y: e['value']))
+            .toList();
+      }
     } catch (e) {
       print(e);
     }
@@ -195,14 +200,34 @@ class _MetricDetailPageState extends State<MetricDetailPage> {
                       xValueMapper: (_ChartData data, _) => data.x,
                       yValueMapper: (_ChartData data, _) => data.y,
                     ),
-                    LineSeries<_ChartData, DateTime>(
-                      dataSource: chartData2,
-                      xValueMapper: (_ChartData data, _) => data.x,
-                      yValueMapper: (_ChartData data, _) => data.y,
-                    )
                   ],
                 ),
               ),
+              Container(
+                  //! Boton "Sistolica y Diastolica" si metrica es Presión Arterial
+                  child: (widget.vitalSign == "presArt")
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                                onPressed: () {
+                                  bpType = "sistolic";
+                                  getPresArtData().then((results) {
+                                    setState(() {});
+                                  });
+                                },
+                                child: const Text("Presión sistólica")),
+                            ElevatedButton(
+                                onPressed: () {
+                                  bpType = "diastolic";
+                                  getPresArtData().then((results) {
+                                    setState(() {});
+                                  });
+                                },
+                                child: const Text("Presión diastólica"))
+                          ],
+                        )
+                      : null),
               Container(
                   //! Boton "Ver Metas" si metrica es Actividad
                   child: (widget.vitalSign == "actFisica")

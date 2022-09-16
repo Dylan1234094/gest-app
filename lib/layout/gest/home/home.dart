@@ -3,6 +3,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gest_app/data/model/gestante.dart';
+import 'package:gest_app/layout/authentication/linkobs_gest.dart';
 import 'package:gest_app/layout/gest/home/metric_detail.dart';
 import 'package:gest_app/service/gestante_service.dart';
 
@@ -53,8 +54,28 @@ class _HomePageState extends State<HomePage> {
                   );
                 case (ConnectionState.done):
                   if (!snapshot.hasData) {
-                    return const Center(
-                      child: Text("Algo salió mal..."),
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text("Si no completó el registro de su perfil\nseleccione la siguiente opción\n",
+                              textAlign: TextAlign.center),
+                          ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute<void>(builder: (BuildContext context) {
+                                    return LinkObsGest();
+                                  }),
+                                );
+                              },
+                              child: Text("Continuar Registro")),
+                          TextButton(
+                            child: const Text("Reintentar"),
+                            style: TextButton.styleFrom(textStyle: Theme.of(context).textTheme.labelLarge),
+                            onPressed: () => setState(() {}),
+                          ),
+                        ],
+                      ),
                     );
                   }
                   actFisicaController.text = snapshot.data!.vitals!["actFisica"];

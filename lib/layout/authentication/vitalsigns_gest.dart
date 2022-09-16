@@ -243,6 +243,6 @@ void insertDataGestante(
       peso: peso,
       gluco: gluco);
 
-  _gestanteService.createGestante(id, nombre, apellido, correo, telefono, dni, fechaNacimiento, fechaRegla, fechaEco,
-      fechaCita, codeObs, vitals, context);
+  _gestanteService.createDataGestante(id, nombre, apellido, correo, telefono, dni, fechaNacimiento, fechaRegla,
+      fechaEco, fechaCita, codeObs, vitals, context);
 }

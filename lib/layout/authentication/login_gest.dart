@@ -87,9 +87,27 @@ class _LoginGestState extends State<LoginGest> {
 GestanteService _gestanteService = GestanteService();
 
 void loginGestante(BuildContext context) {
+  _dialogWait(context);
   _gestanteService.signInGestante(context);
 }
 
 void logoutGestante(BuildContext context) {
   _gestanteService.signOutGestante(context);
+}
+
+Future<void> _dialogWait(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        content: Container(
+          alignment: Alignment.center,
+          width: MediaQuery.of(context).size.width / 10,
+          height: MediaQuery.of(context).size.height / 10,
+          child: const CircularProgressIndicator(),
+        ),
+      );
+    },
+  );
 }
