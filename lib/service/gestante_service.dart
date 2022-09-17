@@ -36,10 +36,13 @@ class GestanteService {
 
   void signInGestante(BuildContext context) async {
     try {
-      final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
-      final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount!.authentication;
+      final GoogleSignInAccount? googleSignInAccount =
+          await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount!.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleSignInAuthentication.accessToken, idToken: googleSignInAuthentication.idToken);
+          accessToken: googleSignInAuthentication.accessToken,
+          idToken: googleSignInAuthentication.idToken);
       await _auth.signInWithCredential(credential).then((value) async {
         try {
           final docRef = db.collection("gestantes").doc(value.user!.uid);
@@ -51,7 +54,8 @@ class GestanteService {
                 Navigator.pushNamed(context, '/linkObstetraGestante');
               }
             },
-            onError: (e) => print("Error al intentar obtener doc ${value.user!.uid} en gestante"),
+            onError: (e) => print(
+                "Error al intentar obtener doc ${value.user!.uid} en gestante"),
           );
         } catch (e) {
           print(e);
@@ -108,11 +112,22 @@ class GestanteService {
           toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
         )
         .doc(id);
-    await docRef.set(gestante).then((value) => Navigator.pushNamed(context, '/tabs'));
+    await docRef
+        .set(gestante)
+        .then((value) => Navigator.pushNamed(context, '/tabs'));
   }
 
-  void updateGestante(String id, String nombre, String apellido, String telefono, String dni, String fechaNacimiento,
-      String fechaRegla, String fechaEco, String fechaCita, BuildContext context) async {
+  void updateGestante(
+      String id,
+      String nombre,
+      String apellido,
+      String telefono,
+      String dni,
+      String fechaNacimiento,
+      String fechaRegla,
+      String fechaEco,
+      String fechaCita,
+      BuildContext context) async {
     final gestante = Gestante(
         nombre: nombre,
         apellido: apellido,
@@ -130,12 +145,12 @@ class GestanteService {
           toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
         )
         .doc(id);
-    await docRef
-        .set(gestante, SetOptions(merge: true))
-        .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
+    await docRef.set(gestante, SetOptions(merge: true)).then(
+        (value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
   }
 
-  void updateGestanteSigns(String id, VitalSign vitals, BuildContext context) async {
+  void updateGestanteSigns(
+      String id, VitalSign vitals, BuildContext context) async {
     final gestante = Gestante(vitals: vitals.toJson());
 
     final docRef = db
@@ -145,9 +160,8 @@ class GestanteService {
           toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
         )
         .doc(id);
-    await docRef
-        .set(gestante, SetOptions(merge: true))
-        .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
+    await docRef.set(gestante, SetOptions(merge: true)).then(
+        (value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
   }
 
   void desvincularObstetra(String id, BuildContext context) async {
@@ -160,9 +174,8 @@ class GestanteService {
           toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
         )
         .doc(id);
-    await docRef
-        .set(gestante, SetOptions(merge: true))
-        .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
+    await docRef.set(gestante, SetOptions(merge: true)).then(
+        (value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
   }
 
   Future<Gestante> getGestante(String uid) async {
@@ -179,7 +192,14 @@ class GestanteService {
     var fechaCita = "";
     var photoUrl = "";
     VitalSign vitals = const VitalSign(
-        actFisica: "", freCardi: "", freResp: "", gluco: "", peso: "", presArt: "", satOxig: "", suenio: "");
+        actFisica: "",
+        freCardi: "",
+        freResp: "",
+        gluco: "",
+        peso: "",
+        presArt: "",
+        satOxig: "",
+        suenio: "");
 
     try {
       final docRef = db.collection("gestantes").doc(uid);
@@ -236,8 +256,11 @@ class GestanteService {
     var codigoObstetra = "";
 
     try {
-      final docRef =
-          await db.collection("obstetras").where("codigoObstetra", isEqualTo: codeObstetra).get().then((event) {
+      final docRef = await db
+          .collection("obstetras")
+          .where("codigoObstetra", isEqualTo: codeObstetra)
+          .get()
+          .then((event) {
         if (event.docs.isNotEmpty) {
           uid = event.docs.first.data()["id"];
           nombre = event.docs.first.data()["nombre"];
@@ -248,10 +271,15 @@ class GestanteService {
     } catch (e) {
       print(e);
     }
-    return obstetra = Obstetra(id: uid, nombre: nombre, apellido: apellido, codigoObstetra: codigoObstetra);
+    return obstetra = Obstetra(
+        id: uid,
+        nombre: nombre,
+        apellido: apellido,
+        codigoObstetra: codigoObstetra);
   }
 
-  void updateCodeObstetra(String id, String codigoObs, BuildContext context) async {
+  void updateCodeObstetra(
+      String id, String codigoObs, BuildContext context) async {
     final gestante = Gestante(codigoObstetra: codigoObs);
 
     final docRef = db
@@ -261,9 +289,8 @@ class GestanteService {
           toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
         )
         .doc(id);
-    await docRef
-        .set(gestante, SetOptions(merge: true))
-        .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
+    await docRef.set(gestante, SetOptions(merge: true)).then(
+        (value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
   }
 
   void testFit() async {
@@ -281,12 +308,14 @@ class GestanteService {
 
     if (Platform.isAndroid) {
       final permissionStatus = Permission.activityRecognition.request();
-      if (await permissionStatus.isDenied || await permissionStatus.isPermanentlyDenied) {
+      if (await permissionStatus.isDenied ||
+          await permissionStatus.isPermanentlyDenied) {
         return;
       } else if (await permissionStatus.isGranted) {
         if (accessWasGranted) {
           try {
-            List<HealthDataPoint> healthData = await health.getHealthDataFromTypes(startDate, endDate, types);
+            List<HealthDataPoint> healthData =
+                await health.getHealthDataFromTypes(startDate, endDate, types);
 
             print("Obteniendo data del ${startDate} al ${endDate}");
             healthData.forEach((element) {

@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:gest_app/chats/pages/home_page.dart';
 import 'package:gest_app/data/model/gestante.dart';
 import 'package:gest_app/data/model/obstetra.dart';
-import 'package:gest_app/layout/monitoring/detailgest_obstetra.dart';
-import 'package:gest_app/layout/monitoring/gest_list.dart';
 import 'package:gest_app/layout/monitoring/tabs_monitor.dart';
 import 'package:gest_app/service/obstetra_service.dart';
 import 'package:gest_app/shared/drawer_obs.dart';

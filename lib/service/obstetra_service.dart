@@ -14,7 +14,11 @@ class ObstetraService {
     int codigo = 0;
     try {
       final docRef = db.collection("obstetras");
-      await docRef.orderBy("codigoObstetra", descending: true).limit(1).get().then((querySnapshot) {
+      await docRef
+          .orderBy("codigoObstetra", descending: true)
+          .limit(1)
+          .get()
+          .then((querySnapshot) {
         if (querySnapshot.size == 1) {
           var querydocumentSnapshot = querySnapshot.docs[0];
           codigo = int.parse(querydocumentSnapshot["codigoObstetra"]);
@@ -26,10 +30,18 @@ class ObstetraService {
     return codigo;
   }
 
-  bool registerObstetra(String nombre, String apellido, String correo, String telefono, String contrasenia,
-      String codigoObstetra, BuildContext context) {
+  bool registerObstetra(
+      String nombre,
+      String apellido,
+      String correo,
+      String telefono,
+      String contrasenia,
+      String codigoObstetra,
+      BuildContext context) {
     try {
-      FirebaseAuth.instance.createUserWithEmailAndPassword(email: correo, password: contrasenia).then((data) async {
+      FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: correo, password: contrasenia)
+          .then((data) async {
         final obstetra = Obstetra(
             id: data.user?.uid,
             nombre: nombre,
@@ -42,10 +54,12 @@ class ObstetraService {
             .collection("obstetras")
             .withConverter(
               fromFirestore: Obstetra.fromFirestore,
-              toFirestore: (Obstetra obstetra, options) => obstetra.toFirestore(),
+              toFirestore: (Obstetra obstetra, options) =>
+                  obstetra.toFirestore(),
             )
             .doc(data.user?.uid);
-        await docRef.set(obstetra).then((data) => Navigator.popUntil(context, ModalRoute.withName('/')));
+        await docRef.set(obstetra).then(
+            (data) => Navigator.popUntil(context, ModalRoute.withName('/')));
       }, onError: (e) => print("Algo salió mal al registrar a la Obstetra"));
       return true;
     } on FirebaseAuthException catch (e) {
@@ -61,8 +75,10 @@ class ObstetraService {
     }
   }
 
-  void updateObstetra(String id, String nombre, String apellido, String telefono, BuildContext context) async {
-    final obstetra = Obstetra(id: id, nombre: nombre, apellido: apellido, telefono: telefono);
+  void updateObstetra(String id, String nombre, String apellido,
+      String telefono, BuildContext context) async {
+    final obstetra = Obstetra(
+        id: id, nombre: nombre, apellido: apellido, telefono: telefono);
 
     final docRef = db
         .collection("obstetras")
@@ -71,14 +87,15 @@ class ObstetraService {
           toFirestore: (Obstetra obstetra, options) => obstetra.toFirestore(),
         )
         .doc(id);
-    await docRef
-        .set(obstetra, SetOptions(merge: true))
-        .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
+    await docRef.set(obstetra, SetOptions(merge: true)).then(
+        (value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
   }
 
-  Future loginObstetra(String email, String contrasenia, BuildContext context) async {
+  Future loginObstetra(
+      String email, String contrasenia, BuildContext context) async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: contrasenia);
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: contrasenia);
       Navigator.popUntil(context, ModalRoute.withName('/'));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -129,7 +146,11 @@ class ObstetraService {
     Gestante gestante;
 
     try {
-      await db.collection("gestantes").where("codigoObstetra", isEqualTo: codigoObstetra).get().then((event) {
+      await db
+          .collection("gestantes")
+          .where("codigoObstetra", isEqualTo: codigoObstetra)
+          .get()
+          .then((event) {
         for (var doc in event.docs) {
           gestante = Gestante(
               id: doc.data()["id"],

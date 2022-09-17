@@ -165,7 +165,7 @@ class GestListChatState extends State<GestListChat> {
                   Expanded(
                     child: StreamBuilder<QuerySnapshot>(
                       stream: homeProvider.getGestantList(
-                          'lqI9YzdRukhichXsHfx79hXxixu1'), //! Codigo de obstetra : currentUserId
+                          currentUserId), //! Codigo de obstetra : currentUserId
                       builder: (BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (snapshot.hasData) {
