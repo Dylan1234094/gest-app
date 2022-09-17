@@ -7,19 +7,18 @@ class HomeProvider {
 
   HomeProvider({required this.firebaseFirestore});
 
-  Future<void> updateDataFirestore(String collectionPath, String path, Map<String, String> dataNeedUpdate) {
-    return firebaseFirestore.collection(collectionPath).doc(path).update(dataNeedUpdate);
+  Future<void> updateDataFirestore(
+      String collectionPath, String path, Map<String, String> dataNeedUpdate) {
+    return firebaseFirestore
+        .collection(collectionPath)
+        .doc(path)
+        .update(dataNeedUpdate);
   }
 
-  Stream<QuerySnapshot> getStreamFireStore(String pathCollection, int limit, String? textSearch) {
-    if (textSearch?.isNotEmpty == true) {
-      return firebaseFirestore
-          .collection(pathCollection)
-          .limit(limit)
-          .where(FirestoreConstants.nickname, isEqualTo: textSearch)
-          .snapshots();
-    } else {
-      return firebaseFirestore.collection(pathCollection).limit(limit).snapshots();
-    }
+  Stream<QuerySnapshot> getStreamFireStore(String pathCollection, int limit) {
+    return firebaseFirestore
+        .collection(pathCollection)
+        .limit(limit)
+        .snapshots();
   }
 }

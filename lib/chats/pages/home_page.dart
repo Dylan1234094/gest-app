@@ -3,7 +3,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
-import '../constants/app_constants.dart';
 import '../constants/constants.dart';
 import '../models/models.dart';
 import '../providers/providers.dart';
@@ -20,6 +18,7 @@ import '../utils/utils.dart';
 import '../widgets/widgets.dart';
 import 'pages.dart';
 
+//! HomePage -> GestListChat
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
 
@@ -38,15 +37,12 @@ class HomePageState extends State<HomePage> {
 
   int _limit = 20;
   int _limitIncrement = 20;
-  String _textSearch = "";
   bool isLoading = false;
 
   late AuthProvider authProvider;
   late String currentUserId;
   late HomeProvider homeProvider;
   Debouncer searchDebouncer = Debouncer(milliseconds: 300);
-  StreamController<bool> btnClearController = StreamController<bool>();
-  TextEditingController searchBarTec = TextEditingController();
 
   List<PopupChoices> choices = <PopupChoices>[
     PopupChoices(title: 'Settings', icon: Icons.settings),
@@ -75,7 +71,6 @@ class HomePageState extends State<HomePage> {
   @override
   void dispose() {
     super.dispose();
-    btnClearController.close();
   }
 
   void registerNotification() {
@@ -132,15 +127,6 @@ class HomePageState extends State<HomePage> {
     }
   }
 
-  void onItemMenuPress(PopupChoices choice) {
-    if (choice.title == 'Log out') {
-      handleSignOut();
-    } else {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => SettingsPage()));
-    }
-  }
-
   void showNotification(RemoteNotification remoteNotification) async {
     AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
@@ -168,121 +154,15 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  Future<bool> onBackPress() {
-    openDialog();
-    return Future.value(false);
-  }
-
-  Future<void> openDialog() async {
-    switch (await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            clipBehavior: Clip.hardEdge,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            contentPadding: EdgeInsets.zero,
-            children: <Widget>[
-              Container(
-                color: ColorConstants.themeColor,
-                padding: EdgeInsets.only(bottom: 10, top: 10),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Container(
-                      child: Icon(
-                        Icons.exit_to_app,
-                        size: 30,
-                        color: Colors.white,
-                      ),
-                      margin: EdgeInsets.only(bottom: 10),
-                    ),
-                    Text(
-                      'Exit app',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Are you sure to exit app?',
-                      style: TextStyle(color: Colors.white70, fontSize: 14),
-                    ),
-                  ],
-                ),
-              ),
-              SimpleDialogOption(
-                onPressed: () {
-                  Navigator.pop(context, 0);
-                },
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      child: Icon(
-                        Icons.cancel,
-                        color: ColorConstants.primaryColor,
-                      ),
-                      margin: EdgeInsets.only(right: 10),
-                    ),
-                    Text(
-                      'Cancel',
-                      style: TextStyle(
-                          color: ColorConstants.primaryColor,
-                          fontWeight: FontWeight.bold),
-                    )
-                  ],
-                ),
-              ),
-              SimpleDialogOption(
-                onPressed: () {
-                  Navigator.pop(context, 1);
-                },
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      child: Icon(
-                        Icons.check_circle,
-                        color: ColorConstants.primaryColor,
-                      ),
-                      margin: EdgeInsets.only(right: 10),
-                    ),
-                    Text(
-                      'Yes',
-                      style: TextStyle(
-                          color: ColorConstants.primaryColor,
-                          fontWeight: FontWeight.bold),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          );
-        })) {
-      case 0:
-        break;
-      case 1:
-        exit(0);
-    }
-  }
-
-  Future<void> handleSignOut() async {
-    authProvider.handleSignOut();
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => LoginPage()),
-      (Route<dynamic> route) => false,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppConstants.homeTitle,
-          style: TextStyle(color: ColorConstants.primaryColor),
+          "Conversaciones",
+          style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
-        actions: <Widget>[buildPopupMenu()],
       ),
       body: SafeArea(
         child: WillPopScope(
@@ -291,13 +171,10 @@ class HomePageState extends State<HomePage> {
               // List
               Column(
                 children: [
-                  buildSearchBar(),
                   Expanded(
                     child: StreamBuilder<QuerySnapshot>(
                       stream: homeProvider.getStreamFireStore(
-                          FirestoreConstants.pathUserCollection,
-                          _limit,
-                          _textSearch),
+                          FirestoreConstants.pathUserCollection, _limit),
                       builder: (BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (snapshot.hasData) {
@@ -333,98 +210,9 @@ class HomePageState extends State<HomePage> {
               )
             ],
           ),
-          onWillPop: onBackPress,
+          onWillPop: null,
         ),
       ),
-    );
-  }
-
-  Widget buildSearchBar() {
-    return Container(
-      height: 40,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(Icons.search, color: ColorConstants.greyColor, size: 20),
-          SizedBox(width: 5),
-          Expanded(
-            child: TextFormField(
-              textInputAction: TextInputAction.search,
-              controller: searchBarTec,
-              onChanged: (value) {
-                searchDebouncer.run(() {
-                  if (value.isNotEmpty) {
-                    btnClearController.add(true);
-                    setState(() {
-                      _textSearch = value;
-                    });
-                  } else {
-                    btnClearController.add(false);
-                    setState(() {
-                      _textSearch = "";
-                    });
-                  }
-                });
-              },
-              decoration: InputDecoration.collapsed(
-                hintText: 'Search nickname (you have to type exactly string)',
-                hintStyle:
-                    TextStyle(fontSize: 13, color: ColorConstants.greyColor),
-              ),
-              style: TextStyle(fontSize: 13),
-            ),
-          ),
-          StreamBuilder<bool>(
-              stream: btnClearController.stream,
-              builder: (context, snapshot) {
-                return snapshot.data == true
-                    ? GestureDetector(
-                        onTap: () {
-                          searchBarTec.clear();
-                          btnClearController.add(false);
-                          setState(() {
-                            _textSearch = "";
-                          });
-                        },
-                        child: Icon(Icons.clear_rounded,
-                            color: ColorConstants.greyColor, size: 20))
-                    : SizedBox.shrink();
-              }),
-        ],
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: ColorConstants.greyColor2,
-      ),
-      padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-      margin: EdgeInsets.fromLTRB(16, 8, 16, 8),
-    );
-  }
-
-  Widget buildPopupMenu() {
-    return PopupMenuButton<PopupChoices>(
-      onSelected: onItemMenuPress,
-      itemBuilder: (BuildContext context) {
-        return choices.map((PopupChoices choice) {
-          return PopupMenuItem<PopupChoices>(
-              value: choice,
-              child: Row(
-                children: <Widget>[
-                  Icon(
-                    choice.icon,
-                    color: ColorConstants.primaryColor,
-                  ),
-                  Container(
-                    width: 10,
-                  ),
-                  Text(
-                    choice.title,
-                    style: TextStyle(color: ColorConstants.primaryColor),
-                  ),
-                ],
-              ));
-        }).toList();
-      },
     );
   }
 
@@ -485,24 +273,15 @@ class HomePageState extends State<HomePage> {
                       children: <Widget>[
                         Container(
                           child: Text(
-                            'Nickname: ${userChat.nickname}',
+                            userChat.nickname, //! Nombre
                             maxLines: 1,
-                            style:
-                                TextStyle(color: ColorConstants.primaryColor),
+                            style: TextStyle(
+                                color: ColorConstants.primaryColor,
+                                fontSize: 20),
                           ),
                           alignment: Alignment.centerLeft,
                           margin: EdgeInsets.fromLTRB(10, 0, 0, 5),
                         ),
-                        Container(
-                          child: Text(
-                            'About me: ${userChat.aboutMe}',
-                            maxLines: 1,
-                            style:
-                                TextStyle(color: ColorConstants.primaryColor),
-                          ),
-                          alignment: Alignment.centerLeft,
-                          margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                        )
                       ],
                     ),
                     margin: EdgeInsets.only(left: 20),
