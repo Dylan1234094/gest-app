@@ -28,7 +28,7 @@ class SplashPageState extends State<SplashPage> {
     if (isLoggedIn) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomePage()),
+        MaterialPageRoute(builder: (context) => GestListChat()),
       );
       return;
     }
@@ -54,7 +54,8 @@ class SplashPageState extends State<SplashPage> {
             Container(
               width: 20,
               height: 20,
-              child: CircularProgressIndicator(color: ColorConstants.themeColor),
+              child:
+                  CircularProgressIndicator(color: ColorConstants.themeColor),
             ),
           ],
         ),

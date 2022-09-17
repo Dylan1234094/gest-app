@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gest_app/layout/monitoring/monitoring_obstetra.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/app_constants.dart';
@@ -50,7 +51,7 @@ class LoginPageState extends State<LoginPage> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => HomePage(),
+                          builder: (context) => GestListChat(),
                         ),
                       );
                     }
@@ -66,7 +67,8 @@ class LoginPageState extends State<LoginPage> {
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.resolveWith<Color>(
                     (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.pressed)) return Color(0xffdd4b39).withOpacity(0.8);
+                      if (states.contains(MaterialState.pressed))
+                        return Color(0xffdd4b39).withOpacity(0.8);
                       return Color(0xffdd4b39);
                     },
                   ),
@@ -79,7 +81,9 @@ class LoginPageState extends State<LoginPage> {
             ),
             // Loading
             Positioned(
-              child: authProvider.status == Status.authenticating ? LoadingView() : SizedBox.shrink(),
+              child: authProvider.status == Status.authenticating
+                  ? LoadingView()
+                  : SizedBox.shrink(),
             ),
           ],
         ));

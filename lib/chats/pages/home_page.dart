@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -18,16 +19,16 @@ import '../utils/utils.dart';
 import '../widgets/widgets.dart';
 import 'pages.dart';
 
-//! HomePage -> GestListChat
-class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
+//! GestListChat -> GestListChat
+class GestListChat extends StatefulWidget {
+  GestListChat({Key? key}) : super(key: key);
 
   @override
-  State createState() => HomePageState();
+  State createState() => GestListChatState();
 }
 
-class HomePageState extends State<HomePage> {
-  HomePageState({Key? key});
+class GestListChatState extends State<GestListChat> {
+  GestListChatState({Key? key});
 
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -40,14 +41,10 @@ class HomePageState extends State<HomePage> {
   bool isLoading = false;
 
   late AuthProvider authProvider;
+  late User currentUser;
   late String currentUserId;
   late HomeProvider homeProvider;
   Debouncer searchDebouncer = Debouncer(milliseconds: 300);
-
-  List<PopupChoices> choices = <PopupChoices>[
-    PopupChoices(title: 'Settings', icon: Icons.settings),
-    PopupChoices(title: 'Log out', icon: Icons.exit_to_app),
-  ];
 
   @override
   void initState() {
@@ -55,14 +52,8 @@ class HomePageState extends State<HomePage> {
     authProvider = context.read<AuthProvider>();
     homeProvider = context.read<HomeProvider>();
 
-    if (authProvider.getUserFirebaseId()?.isNotEmpty == true) {
-      currentUserId = authProvider.getUserFirebaseId()!;
-    } else {
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => LoginPage()),
-        (Route<dynamic> route) => false,
-      );
-    }
+    currentUser = FirebaseAuth.instance.currentUser!;
+    currentUserId = FirebaseAuth.instance.currentUser!.uid;
     registerNotification();
     configLocalNotification();
     listScrollController.addListener(scrollListener);
@@ -173,8 +164,8 @@ class HomePageState extends State<HomePage> {
                 children: [
                   Expanded(
                     child: StreamBuilder<QuerySnapshot>(
-                      stream: homeProvider.getStreamFireStore(
-                          FirestoreConstants.pathUserCollection, _limit),
+                      stream: homeProvider.getGestantList(
+                          'lqI9YzdRukhichXsHfx79hXxixu1'), //! Codigo de obstetra : currentUserId
                       builder: (BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (snapshot.hasData) {
@@ -273,7 +264,9 @@ class HomePageState extends State<HomePage> {
                       children: <Widget>[
                         Container(
                           child: Text(
-                            userChat.nickname, //! Nombre
+                            userChat.nickname +
+                                ' ' +
+                                userChat.aboutMe, //! Nombre
                             maxLines: 1,
                             style: TextStyle(
                                 color: ColorConstants.primaryColor,

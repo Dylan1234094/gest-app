@@ -21,4 +21,11 @@ class HomeProvider {
         .limit(limit)
         .snapshots();
   }
+
+  Stream<QuerySnapshot> getGestantList(String codigoObstetra) {
+    return firebaseFirestore
+        .collection('gestantes')
+        .where("codigoObstetra", isEqualTo: codigoObstetra)
+        .snapshots();
+  }
 }

@@ -57,13 +57,6 @@ class MyApp extends StatelessWidget {
             firebaseFirestore: this.firebaseFirestore,
           ),
         ),
-        Provider<SettingProvider>(
-          create: (_) => SettingProvider(
-            prefs: this.prefs,
-            firebaseFirestore: this.firebaseFirestore,
-            firebaseStorage: this.firebaseStorage,
-          ),
-        ),
         Provider<HomeProvider>(
           create: (_) => HomeProvider(
             firebaseFirestore: this.firebaseFirestore,
@@ -83,7 +76,7 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: '/',
         routes: {
-          '/': (context) => SplashPage(),
+          '/': (context) => MyHomePage(),
           '/tabs': (context) => const Tabs(),
           '/registerObstetra': (context) => const RegisterObs(),
           '/loginObstetra': (context) => const LoginObsWidget(),
