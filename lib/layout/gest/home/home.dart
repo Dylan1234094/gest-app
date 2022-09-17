@@ -86,11 +86,13 @@ class _HomePageState extends State<HomePage> {
                   pesoController.text = snapshot.data!.vitals!["peso"];
                   glucoController.text = snapshot.data!.vitals!["gluco"];
                   return SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
                     child: Column(
                       children: <Widget>[
                         Container(
                             child: (actFisicaController.text == "true")
                                 ? VitalCard(
+                                    userType: "gest",
                                     title: "Actividad Física",
                                     iconPath: "assets/IconsVitals/act_fisica_icon.png",
                                     vitalSign: "actFisica",
@@ -101,6 +103,7 @@ class _HomePageState extends State<HomePage> {
                         Container(
                             child: (freCardiController.text == "true")
                                 ? VitalCard(
+                                    userType: "gest",
                                     title: "Frecuencia Cardíaca",
                                     iconPath: "assets/IconsVitals/fre_car_icon.png",
                                     vitalSign: "freCardi",
@@ -111,6 +114,7 @@ class _HomePageState extends State<HomePage> {
                         Container(
                             child: (glucoController.text == "true")
                                 ? VitalCard(
+                                    userType: "gest",
                                     title: "Glucosa",
                                     iconPath: "assets/IconsVitals/gluco_icon.png",
                                     vitalSign: "gluco",
@@ -121,6 +125,7 @@ class _HomePageState extends State<HomePage> {
                         Container(
                             child: (pesoController.text == "true")
                                 ? VitalCard(
+                                    userType: "gest",
                                     title: "Peso",
                                     iconPath: "assets/IconsVitals/peso_icon.png",
                                     vitalSign: "peso",
@@ -131,6 +136,7 @@ class _HomePageState extends State<HomePage> {
                         Container(
                             child: (presArtController.text == "true")
                                 ? VitalCard(
+                                    userType: "gest",
                                     title: "Presión Arterial",
                                     iconPath: "assets/IconsVitals/pres_art_icon.png",
                                     vitalSign: "presArt",
@@ -141,6 +147,7 @@ class _HomePageState extends State<HomePage> {
                         Container(
                             child: (satOxigController.text == "true")
                                 ? VitalCard(
+                                    userType: "gest",
                                     title: "Saturación de Oxígeno",
                                     iconPath: "assets/IconsVitals/sat_oxig_icon.png",
                                     vitalSign: "satOxig",
@@ -151,6 +158,7 @@ class _HomePageState extends State<HomePage> {
                         Container(
                             child: (suenioController.text == "true")
                                 ? VitalCard(
+                                    userType: "gest",
                                     title: "Sueño",
                                     iconPath: "assets/IconsVitals/suenio_icon.png",
                                     vitalSign: "suenio",
@@ -173,12 +181,14 @@ class _HomePageState extends State<HomePage> {
 class VitalCard extends StatefulWidget {
   VitalCard(
       {Key? key,
+      required this.userType,
       required this.title,
       required this.iconPath,
       required this.vitalSign,
       required this.unit,
       required this.rtoken})
       : super(key: key);
+  final String userType;
   final String title;
   final String iconPath;
   final String vitalSign;
@@ -200,6 +210,8 @@ class _VitalCardState extends State<VitalCard> {
           Navigator.of(context).push(
             MaterialPageRoute<void>(builder: (BuildContext context) {
               return MetricDetailPage(
+                userType: widget.userType,
+                vitalSignName: widget.title,
                 vitalSign: widget.vitalSign,
                 unit: widget.unit,
                 rtoken: widget.rtoken,

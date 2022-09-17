@@ -58,7 +58,6 @@ class _RegisterGoalPageState extends State<RegisterGoalPage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
             leading: IconButton(

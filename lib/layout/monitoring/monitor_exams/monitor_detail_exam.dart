@@ -31,106 +31,107 @@ class _MonitorExamDetailPageState extends State<MonitorExamDetailPage> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           title: Text("Exámenes de ${widget.examName}")),
-      body: FutureBuilder<Object>(
-        future: null,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SingleChildScrollView(
-              child: Column(children: <Widget>[
-                Container(
-                  alignment: Alignment.centerLeft,
-                  child: const Text(
-                    "DETALLE DE EXÁMENES",
-                    textAlign: TextAlign.left,
+      body: RefreshIndicator(
+        onRefresh: () {
+          return Future(() {
+            setState(() {});
+          });
+        },
+        child: FutureBuilder<Object>(
+          future: null,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                child: Column(children: <Widget>[
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text(
+                      "DETALLE DE EXÁMENES",
+                      textAlign: TextAlign.left,
+                    ),
                   ),
-                ),
-                FutureBuilder<List<Exam>>(
-                  future: getListaResultadosExames(widget.gestId, widget.examName),
-                  builder: (context, snapshotExams) {
-                    switch (snapshotExams.connectionState) {
-                      case ConnectionState.waiting:
-                        return const Align(
-                          alignment: Alignment.center,
-                          child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                              child: CircularProgressIndicator()),
-                        );
-                      case ConnectionState.done:
-                        if (snapshotExams.hasData) {
-                          if (snapshotExams.data!.isNotEmpty) {
-                            return ListView.builder(
-                              primary: false,
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemCount: snapshotExams.data!.length,
-                              itemBuilder: ((context, index) {
-                                Exam exam = snapshotExams.data![index];
-                                return Padding(
-                                  padding: const EdgeInsets.only(left: 8, right: 8, top: 5),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute<void>(builder: (BuildContext context) {
-                                          return UpdateExamPage(examId: exam.id!); //! id
-                                        }),
-                                      );
-                                    },
-                                    child: Card(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(4),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            Row(
-                                              children: [
-                                                Text(intl.DateFormat('dd/MM/yyyy').format(exam.dateResult!.toDate()),
-                                                    style: TextStyle(fontStyle: FontStyle.italic, fontSize: 16))
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [Text("${exam.value!} g/dL", style: TextStyle(fontSize: 24))],
-                                            ),
-                                          ],
+                  FutureBuilder<List<Exam>>(
+                    future: getListaResultadosExames(widget.gestId, widget.examName),
+                    builder: (context, snapshotExams) {
+                      switch (snapshotExams.connectionState) {
+                        case ConnectionState.waiting:
+                          return const Align(
+                            alignment: Alignment.center,
+                            child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                                child: CircularProgressIndicator()),
+                          );
+                        case ConnectionState.done:
+                          if (snapshotExams.hasData) {
+                            if (snapshotExams.data!.isNotEmpty) {
+                              return ListView.builder(
+                                primary: false,
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemCount: snapshotExams.data!.length,
+                                itemBuilder: ((context, index) {
+                                  Exam exam = snapshotExams.data![index];
+                                  return Padding(
+                                    padding: const EdgeInsets.only(left: 8, right: 8, top: 5),
+                                    child: GestureDetector(
+                                      child: Card(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(4),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: <Widget>[
+                                              Row(
+                                                children: [
+                                                  Text(intl.DateFormat('dd/MM/yyyy').format(exam.dateResult!.toDate()),
+                                                      style: TextStyle(fontStyle: FontStyle.italic, fontSize: 16))
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [Text("${exam.value!} g/dL", style: TextStyle(fontSize: 24))],
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              }),
-                            );
+                                  );
+                                }),
+                              );
+                            } else {
+                              return const Align(
+                                alignment: Alignment.center,
+                                child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                                    child: Text("No se encontraron exámenes registrados")),
+                              );
+                            }
                           } else {
                             return const Align(
                               alignment: Alignment.center,
                               child: Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                                  child: Text("No se encontraron exámenes registrados")),
+                                  child: Text("Algo salió mal")),
                             );
                           }
-                        } else {
+                        default:
                           return const Align(
                             alignment: Alignment.center,
                             child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                                child: Text("Algo salió mal")),
+                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8), child: Text("Esperando")),
                           );
-                        }
-                      default:
-                        return const Align(
-                          alignment: Alignment.center,
-                          child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8), child: Text("Esperando")),
-                        );
-                    }
-                  },
-                ),
-              ]),
-            ),
-          );
-        },
+                      }
+                    },
+                  ),
+                ]),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

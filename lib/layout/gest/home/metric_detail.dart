@@ -11,8 +11,16 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart' as intl;
 
 class MetricDetailPage extends StatefulWidget {
-  const MetricDetailPage({Key? key, required this.vitalSign, required this.unit, required this.rtoken})
+  const MetricDetailPage(
+      {Key? key,
+      required this.userType,
+      required this.vitalSignName,
+      required this.vitalSign,
+      required this.unit,
+      required this.rtoken})
       : super(key: key);
+  final String userType;
+  final String vitalSignName;
   final String vitalSign;
   final String unit;
   final String rtoken;
@@ -165,7 +173,7 @@ class _MetricDetailPageState extends State<MetricDetailPage> {
               icon: const Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () => Navigator.of(context).pop(),
             ),
-            title: const Text("Metric Name")),
+            title: Text(widget.vitalSignName)),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -230,7 +238,7 @@ class _MetricDetailPageState extends State<MetricDetailPage> {
                       : null),
               Container(
                   //! Boton "Ver Metas" si metrica es Actividad
-                  child: (widget.vitalSign == "actFisica")
+                  child: (widget.vitalSign == "actFisica" && widget.userType == "gest")
                       ? ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).push(

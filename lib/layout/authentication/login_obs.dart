@@ -98,9 +98,7 @@ class _LoginObsState extends State<LoginObs> {
                                       _passwordVisible = !_passwordVisible;
                                     });
                                   },
-                                  icon: Icon(_passwordVisible
-                                      ? Icons.visibility
-                                      : Icons.visibility_off))),
+                                  icon: Icon(_passwordVisible ? Icons.visibility : Icons.visibility_off))),
                           validator: (value) {
                             return ValidatePassword(value!);
                           })),
@@ -112,19 +110,13 @@ class _LoginObsState extends State<LoginObs> {
               child: ElevatedButton(
                 style: ButtonStyle(
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18))),
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        const Color.fromRGBO(4, 121, 189, 1)),
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
+                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(18))),
+                    backgroundColor: MaterialStateProperty.all<Color>(const Color.fromRGBO(4, 121, 189, 1)),
+                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
                     fixedSize: MaterialStateProperty.all(const Size(180, 40))),
                 onPressed: () => {
                   if (_keyForm.currentState!.validate())
-                    {
-                      loginObstetra(correoController.text,
-                          contraseniaController.text, context)
-                    }
+                    {loginObstetra(correoController.text, contraseniaController.text, context)}
                 },
                 child: const Text('INICIAR SESIÓN'),
               ),
@@ -179,6 +171,7 @@ class _LoginObsState extends State<LoginObs> {
 ObstetraService _obstetraService = ObstetraService();
 
 void loginObstetra(String correo, String contrasenia, BuildContext context) {
+  _dialogWait(context);
   _obstetraService.loginObstetra(correo, contrasenia, context);
 }
 
@@ -202,4 +195,21 @@ String? ValidatePassword(String value) {
     return 'Contraseña debe tener mínimo 6 carácteres';
   }
   return null;
+}
+
+Future<void> _dialogWait(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        content: Container(
+          alignment: Alignment.center,
+          width: MediaQuery.of(context).size.width / 10,
+          height: MediaQuery.of(context).size.height / 10,
+          child: const CircularProgressIndicator(),
+        ),
+      );
+    },
+  );
 }

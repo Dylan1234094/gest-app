@@ -36,160 +36,169 @@ class _MonitorObsState extends State<ScreenObs> {
       appBar: AppBar(
         title: const Text(""),
       ),
-      body: FutureBuilder<Obstetra>(
-        future: getObstetra(user.uid),
-        builder: (context, snapshotObs) {
-          switch (snapshotObs.connectionState) {
-            case ConnectionState.waiting:
-              return const Align(
-                alignment: Alignment.center,
-                child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8), child: CircularProgressIndicator()),
-              );
-            case ConnectionState.done:
-              if (snapshotObs.hasData) {
-                return FutureBuilder<List<Gestante>>(
-                  future: getListaGestantes(snapshotObs.data!.codigoObstetra!),
-                  builder: (context, snapshotGests) {
-                    switch (snapshotGests.connectionState) {
-                      case ConnectionState.waiting:
-                        return const Align(
-                          alignment: Alignment.center,
-                          child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                              child: CircularProgressIndicator()),
-                        );
-                      case ConnectionState.done:
-                        if (snapshotGests.hasData) {
-                          if (snapshotGests.data!.isNotEmpty) {
-                            return ListView.builder(
-                              itemCount: snapshotGests.data!.length,
-                              itemBuilder: ((context, index) {
-                                VitalSign vitals = VitalSign.fromJson(snapshotGests.data![index].vitals!);
-                                Gestante gestante = snapshotGests.data![index];
-                                return Padding(
-                                  padding: const EdgeInsets.only(left: 8, right: 8, top: 5),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute<void>(builder: (BuildContext context) {
-                                          return TabsMonitor(gestId: gestante.id!); //! id
-                                        }),
-                                      );
-                                    },
-                                    child: Card(
-                                      child: Row(
-                                        children: <Widget>[
-                                          Expanded(
-                                            flex: 2,
-                                            child: Column(
-                                              children: <Widget>[
-                                                Align(
-                                                  alignment: Alignment.center,
-                                                  child: CircleAvatar(
-                                                    radius: 22,
-                                                    backgroundImage: gestante.photoUrl! != ""
-                                                        ? NetworkImage(gestante.photoUrl!)
-                                                        : Image.asset("assets/mini_default_profile_icon.png").image,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Expanded(
-                                            flex: 8,
-                                            child: Column(
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding: const EdgeInsets.only(bottom: 5, top: 5),
-                                                  child: Align(
-                                                    alignment: Alignment.centerLeft,
-                                                    child: Text(
-                                                      "${gestante.nombre!} ${gestante.apellido}",
-                                                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+      body: RefreshIndicator(
+        onRefresh: () {
+          return Future(() {
+            setState(() {});
+          });
+        },
+        child: FutureBuilder<Obstetra>(
+          future: getObstetra(user.uid),
+          builder: (context, snapshotObs) {
+            switch (snapshotObs.connectionState) {
+              case ConnectionState.waiting:
+                return const Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8), child: CircularProgressIndicator()),
+                );
+              case ConnectionState.done:
+                if (snapshotObs.hasData) {
+                  return FutureBuilder<List<Gestante>>(
+                    future: getListaGestantes(snapshotObs.data!.codigoObstetra!),
+                    builder: (context, snapshotGests) {
+                      switch (snapshotGests.connectionState) {
+                        case ConnectionState.waiting:
+                          return const Align(
+                            alignment: Alignment.center,
+                            child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                                child: CircularProgressIndicator()),
+                          );
+                        case ConnectionState.done:
+                          if (snapshotGests.hasData) {
+                            if (snapshotGests.data!.isNotEmpty) {
+                              return ListView.builder(
+                                physics: AlwaysScrollableScrollPhysics(),
+                                itemCount: snapshotGests.data!.length,
+                                itemBuilder: ((context, index) {
+                                  VitalSign vitals = VitalSign.fromJson(snapshotGests.data![index].vitals!);
+                                  Gestante gestante = snapshotGests.data![index];
+                                  return Padding(
+                                    padding: const EdgeInsets.only(left: 8, right: 8, top: 5),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute<void>(builder: (BuildContext context) {
+                                            return TabsMonitor(gestId: gestante.id!); //! id
+                                          }),
+                                        );
+                                      },
+                                      child: Card(
+                                        child: Row(
+                                          children: <Widget>[
+                                            Expanded(
+                                              flex: 2,
+                                              child: Column(
+                                                children: <Widget>[
+                                                  Align(
+                                                    alignment: Alignment.center,
+                                                    child: CircleAvatar(
+                                                      radius: 22,
+                                                      backgroundImage: gestante.photoUrl! != ""
+                                                          ? NetworkImage(gestante.photoUrl!)
+                                                          : Image.asset("assets/mini_default_profile_icon.png").image,
                                                     ),
                                                   ),
-                                                ),
-                                                Align(
-                                                  alignment: Alignment.centerLeft,
-                                                  child: Text(
-                                                      "${DateTime.now().difference(intl.DateFormat("dd/MM/yyyy hh:mm:ss").parse(gestante.fechaRegla! + " 00:00:00")).inDays} días de embarazo"),
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    vitals.actFisica == "true"
-                                                        ? const VitalIconWidget(
-                                                            iconPath: 'assets/IconsVitals/act_fisica_icon.png')
-                                                        : const Text(""),
-                                                    vitals.freCardi == "true"
-                                                        ? const VitalIconWidget(
-                                                            iconPath: 'assets/IconsVitals/fre_car_icon.png')
-                                                        : const Text(""),
-                                                    vitals.gluco == "true"
-                                                        ? const VitalIconWidget(
-                                                            iconPath: 'assets/IconsVitals/gluco_icon.png')
-                                                        : const Text(""),
-                                                    vitals.peso == "true"
-                                                        ? const VitalIconWidget(
-                                                            iconPath: 'assets/IconsVitals/peso_icon.png')
-                                                        : const Text(""),
-                                                    vitals.presArt == "true"
-                                                        ? const VitalIconWidget(
-                                                            iconPath: 'assets/IconsVitals/pres_art_icon.png')
-                                                        : const Text(""),
-                                                    vitals.satOxig == "true"
-                                                        ? const VitalIconWidget(
-                                                            iconPath: 'assets/IconsVitals/sat_oxig_icon.png')
-                                                        : const Text(""),
-                                                    vitals.suenio == "true"
-                                                        ? const VitalIconWidget(
-                                                            iconPath: 'assets/IconsVitals/suenio_icon.png')
-                                                        : const Text(""),
-                                                  ],
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                            Expanded(
+                                              flex: 8,
+                                              child: Column(
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(bottom: 5, top: 5),
+                                                    child: Align(
+                                                      alignment: Alignment.centerLeft,
+                                                      child: Text(
+                                                        "${gestante.nombre!} ${gestante.apellido}",
+                                                        style:
+                                                            const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Align(
+                                                    alignment: Alignment.centerLeft,
+                                                    child: Text(
+                                                        "${DateTime.now().difference(intl.DateFormat("dd/MM/yyyy hh:mm:ss").parse(gestante.fechaRegla! + " 00:00:00")).inDays} días de embarazo"),
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      vitals.actFisica == "true"
+                                                          ? const VitalIconWidget(
+                                                              iconPath: 'assets/IconsVitals/act_fisica_icon.png')
+                                                          : const Text(""),
+                                                      vitals.freCardi == "true"
+                                                          ? const VitalIconWidget(
+                                                              iconPath: 'assets/IconsVitals/fre_car_icon.png')
+                                                          : const Text(""),
+                                                      vitals.gluco == "true"
+                                                          ? const VitalIconWidget(
+                                                              iconPath: 'assets/IconsVitals/gluco_icon.png')
+                                                          : const Text(""),
+                                                      vitals.peso == "true"
+                                                          ? const VitalIconWidget(
+                                                              iconPath: 'assets/IconsVitals/peso_icon.png')
+                                                          : const Text(""),
+                                                      vitals.presArt == "true"
+                                                          ? const VitalIconWidget(
+                                                              iconPath: 'assets/IconsVitals/pres_art_icon.png')
+                                                          : const Text(""),
+                                                      vitals.satOxig == "true"
+                                                          ? const VitalIconWidget(
+                                                              iconPath: 'assets/IconsVitals/sat_oxig_icon.png')
+                                                          : const Text(""),
+                                                      vitals.suenio == "true"
+                                                          ? const VitalIconWidget(
+                                                              iconPath: 'assets/IconsVitals/suenio_icon.png')
+                                                          : const Text(""),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              }),
-                            );
+                                  );
+                                }),
+                              );
+                            } else {
+                              return const Align(
+                                alignment: Alignment.center,
+                                child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                                    child: Text("No se encontraron gestantes registradas")),
+                              );
+                            }
                           } else {
                             return const Align(
                               alignment: Alignment.center,
                               child: Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                                  child: Text("No se encontraron gestantes registradas")),
+                                  child: Text("Algo salió mal")),
                             );
                           }
-                        } else {
+                        default:
                           return const Align(
                             alignment: Alignment.center,
                             child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                                child: Text("Algo salió mal")),
+                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8), child: Text("Esperando")),
                           );
-                        }
-                      default:
-                        return const Align(
-                          alignment: Alignment.center,
-                          child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8), child: Text("Esperando")),
-                        );
-                    }
-                  },
-                );
-              } else {
-                //GET ERROR BODY
-                return const Text("ERROR BODY");
-              }
-            default:
-              return Text("data");
-          }
-        },
+                      }
+                    },
+                  );
+                } else {
+                  //GET ERROR BODY
+                  return const Text("ERROR BODY");
+                }
+              default:
+                return Text("data");
+            }
+          },
+        ),
       ),
     );
   }

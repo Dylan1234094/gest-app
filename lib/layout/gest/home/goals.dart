@@ -31,6 +31,14 @@ class GoalsPage extends StatelessWidget {
                   child: CircularProgressIndicator(),
                 );
               }
+              if (snapshot.data!.size == 0) {
+                return const Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                      child: Text("No se encontraron metas registradas")),
+                );
+              }
               return ListView(
                 children: snapshot.data!.docs.map((document) {
                   Timestamp startTime = document['startTime'] as Timestamp;
