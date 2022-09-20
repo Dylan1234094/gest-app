@@ -32,10 +32,11 @@ class registerGestArguments {
   final String fechaRegla;
   final String fechaEco;
   final String fechaCita;
+  final String fcmTokenObs;
   final String codigoObs;
 
   registerGestArguments(this.nombre, this.apellido, this.correo, this.telefono, this.dni, this.fechaNacimiento,
-      this.fechaRegla, this.fechaEco, this.fechaCita, this.codigoObs);
+      this.fechaRegla, this.fechaEco, this.fechaCita, this.fcmTokenObs, this.codigoObs);
 }
 
 class _FormGestState extends State<FormGest> {
@@ -49,6 +50,7 @@ class _FormGestState extends State<FormGest> {
   final fechaEcoController = TextEditingController();
   final fechaCitaController = TextEditingController();
   final linkObsController = TextEditingController();
+  final fcmTokenObsController = TextEditingController();
 
   @override
   void dispose() {
@@ -62,6 +64,7 @@ class _FormGestState extends State<FormGest> {
     fechaEcoController.dispose();
     fechaCitaController.dispose();
     linkObsController.dispose();
+    fcmTokenObsController.dispose();
     super.dispose();
   }
 
@@ -72,6 +75,7 @@ class _FormGestState extends State<FormGest> {
     var correo = FirebaseAuth.instance.currentUser!.email;
 
     linkObsController.text = args.codigoObs;
+    fcmTokenObsController.text = args.fcmTokenObs;
     correoController.text = correo!;
 
     return Scaffold(
@@ -223,6 +227,7 @@ class _FormGestState extends State<FormGest> {
                                   fechaReglaController.text,
                                   fechaEcoController.text,
                                   fechaCitaController.text,
+                                  fcmTokenObsController.text,
                                   linkObsController.text))
                         }
                     },

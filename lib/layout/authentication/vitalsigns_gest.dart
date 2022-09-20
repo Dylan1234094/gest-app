@@ -130,6 +130,7 @@ class _FormVitalGestState extends State<FormVitalGest> {
                         args.fechaEco,
                         args.fechaCita,
                         args.codigoObs,
+                        args.fcmTokenObs,
                         actFisicaController.text,
                         freCardiController.text,
                         suenioController.text,
@@ -224,6 +225,7 @@ void insertDataGestante(
     String fechaEco,
     String fechaCita,
     String codeObs,
+    String fcmTokenObs,
     String actFisica,
     String freCardi,
     String suenio,
@@ -244,5 +246,5 @@ void insertDataGestante(
       gluco: gluco);
 
   _gestanteService.createDataGestante(id, nombre, apellido, correo, telefono, dni, fechaNacimiento, fechaRegla,
-      fechaEco, fechaCita, codeObs, vitals, context);
+      fechaEco, fechaCita, codeObs, fcmTokenObs, vitals, context);
 }

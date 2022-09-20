@@ -23,8 +23,9 @@ class LinkObs extends StatefulWidget {
 
 class linkObsArguments {
   final String codigoObs;
+  final String fcmTokenObs;
 
-  linkObsArguments(this.codigoObs);
+  linkObsArguments(this.codigoObs, this.fcmTokenObs);
 }
 
 class _LinkObsState extends State<LinkObs> {
@@ -162,7 +163,7 @@ Future<void> _dialogCodeFound(BuildContext context, Obstetra obstetra) {
             onPressed: () => Navigator.pushNamed(
               context,
               '/registerGestante',
-              arguments: linkObsArguments(obstetra.codigoObstetra!),
+              arguments: linkObsArguments(obstetra.codigoObstetra!, obstetra.fcmToken!),
             ),
           )
         ],

@@ -286,7 +286,7 @@ class _MetricDetailPageState extends State<MetricDetailPage> {
 class _ChartData {
   _ChartData({this.x, this.y});
   final DateTime? x;
-  final int? y;
+  final double? y;
 }
 
 class _MetricCardList extends StatelessWidget {

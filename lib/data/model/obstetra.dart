@@ -8,8 +8,17 @@ class Obstetra {
   final String? telefono;
   final String? contrasenia;
   final String? codigoObstetra;
+  final String? fcmToken;
 
-  const Obstetra({this.id, this.nombre, this.apellido, this.correo, this.telefono, this.contrasenia, this.codigoObstetra});
+  const Obstetra(
+      {this.id,
+      this.nombre,
+      this.apellido,
+      this.correo,
+      this.telefono,
+      this.contrasenia,
+      this.codigoObstetra,
+      this.fcmToken});
 
   factory Obstetra.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -23,7 +32,8 @@ class Obstetra {
         correo: data?['correo'],
         telefono: data?['telefono'],
         contrasenia: data?['contrasenia'],
-        codigoObstetra: data?['codigoObstetra']);
+        codigoObstetra: data?['codigoObstetra'],
+        fcmToken: data?['fcmToken']);
   }
 
   Map<String, dynamic> toFirestore() {
@@ -35,6 +45,7 @@ class Obstetra {
       if (telefono != null) "telefono": telefono,
       if (contrasenia != null) "contrasenia": contrasenia,
       if (codigoObstetra != null) "codigoObstetra": codigoObstetra,
+      if (fcmToken != null) "fcmToken": fcmToken,
     };
   }
 }

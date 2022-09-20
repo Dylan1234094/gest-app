@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:gest_app/data/model/gestante.dart';
 import 'package:gest_app/data/model/obstetra.dart';
@@ -78,8 +79,12 @@ class _GestanteListState extends State<GestanteList> {
                               Navigator.of(context).push(
                                 MaterialPageRoute<void>(builder: (BuildContext context) {
                                   return Chat(
-                                    anotherUserName: gestante.nombre,
-                                    anotherUserUid: gestante.id,
+                                    nombreSender: snapshotObs.data!.nombre!,
+                                    apellidoSender: snapshotObs.data!.apellido!,
+                                    anotherUserName: gestante.nombre!,
+                                    anotherUserSurname: gestante.apellido!,
+                                    anotherUserUid: gestante.id!,
+                                    anotherUserFCMToken: gestante.fcmToken!,
                                   );
                                   // Gestante Deyvid        8JeF7qmuhQgecJHSjjbNI5Ck1Q32
                                   // Gestante testcursotdp  5bY1aMCjqXaFzpfWh2dLTm88Oe32
@@ -106,6 +111,6 @@ Future<Obstetra> getObstetra(String id) {
   return _obstetraService.getObstetra(id);
 }
 
-Future<List<Gestante>> getListaGestantes(String codigoObstetra) {
+Future<List<Gestante>> getListaGestantes(String codigoObstetra) async {
   return _obstetraService.getListaGestantes(codigoObstetra);
 }

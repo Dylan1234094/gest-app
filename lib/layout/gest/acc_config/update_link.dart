@@ -139,6 +139,23 @@ Future<void> _dialogCodeNotFound(BuildContext context, String codeObs) {
 Future<void> _dialogCodeFound(BuildContext context, Obstetra obstetra) {
   var uid = FirebaseAuth.instance.currentUser!.uid;
 
+  Future<void> _dialogWait(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Container(
+            alignment: Alignment.center,
+            width: MediaQuery.of(context).size.width / 10,
+            height: MediaQuery.of(context).size.height / 10,
+            child: const CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
+  }
+
   return showDialog<void>(
     context: context,
     builder: (BuildContext context) {
@@ -147,7 +164,10 @@ Future<void> _dialogCodeFound(BuildContext context, Obstetra obstetra) {
           TextButton(
             child: const Text("Aceptar"),
             style: TextButton.styleFrom(textStyle: Theme.of(context).textTheme.labelLarge),
-            onPressed: () => updateCodigoObstetra(uid, obstetra.codigoObstetra!, context),
+            onPressed: () {
+              _dialogWait(context);
+              updateCodigoObstetra(uid, obstetra.codigoObstetra!, obstetra.fcmToken!, context);
+            },
           )
         ],
         title: const Text("Código Válido"),
@@ -173,10 +193,10 @@ Future<Obstetra> validateCodeObstetra(String codeObs) async {
   return await _gestanteService.validateCodeObstetra(codeObs);
 }
 
-void updateCodigoObstetra(String id, String codigoObs, BuildContext context) {
+void updateCodigoObstetra(String id, String codigoObs, String fcmToken, BuildContext context) {
   GestanteService _gestanteService = GestanteService();
 
-  return _gestanteService.updateCodeObstetra(id, codigoObs, context);
+  return _gestanteService.updateCodeObstetra(id, codigoObs, fcmToken, context);
 }
 
 String? ValidateCodeFormat(String value) {

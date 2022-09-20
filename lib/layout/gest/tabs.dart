@@ -1,9 +1,14 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_final_fields
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gest_app/data/model/gestante.dart';
+import 'package:gest_app/data/model/obstetra.dart';
 import 'package:gest_app/layout/gest/exam/exams.dart';
 import 'package:gest_app/layout/gest/guide/guides.dart';
 import 'package:gest_app/layout/gest/home/home.dart';
+import 'package:gest_app/service/gestante_service.dart';
+import 'package:gest_app/service/obstetra_service.dart';
 import 'package:gest_app/shared/chat.dart';
 import 'package:gest_app/shared/drawer_gest.dart';
 
@@ -16,6 +21,7 @@ class Tabs extends StatefulWidget {
 
 class _TabsState extends State<Tabs> {
   int _currentIndex = 0;
+  var uid = FirebaseAuth.instance.currentUser!.uid;
 
   final List<Widget> _tabs = [HomePage(), GuidePage(), ExamPage()];
   final _tabsName = ["INICIO", "GUÍAS", "EXÁMENES"];
@@ -24,18 +30,31 @@ class _TabsState extends State<Tabs> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: DrawerGest(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute<void>(builder: (BuildContext context) {
-            return Chat(
-              anotherUserName: 'Obstetra',
-              anotherUserUid: 'lqI9YzdRukhichXsHfx79hXxixu1',
-            );
-          }));
-        },
-        backgroundColor: Color(0xFF245470),
-        child: Icon(Icons.sms_outlined),
+      floatingActionButton: FutureBuilder<Obstetra>(
+        future: getObstetraChat(uid),
+        builder: ((context, snapshotObs) {
+          return FutureBuilder<Gestante>(
+            future: getGestante(uid),
+            builder: ((context, snapshotGest) {
+              return FloatingActionButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute<void>(builder: (BuildContext context) {
+                    return Chat(
+                      nombreSender: snapshotGest.data!.nombre!,
+                      apellidoSender: snapshotGest.data!.apellido!,
+                      anotherUserName: 'Obstetra ${snapshotObs.data!.nombre}',
+                      anotherUserSurname: '${snapshotObs.data!.apellido}',
+                      anotherUserUid: snapshotObs.data!.id!,
+                      anotherUserFCMToken: snapshotObs.data!.fcmToken!,
+                    );
+                  }));
+                },
+                backgroundColor: Color(0xFF245470),
+                child: Icon(Icons.sms_outlined),
+              );
+            }),
+          );
+        }),
       ),
       body: _tabs[_currentIndex],
       appBar: AppBar(title: Text(_tabsName[_currentIndex])),
@@ -52,12 +71,14 @@ class _TabsState extends State<Tabs> {
           type: BottomNavigationBarType.fixed,
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: "INICIO"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.feed_outlined), label: "GUÍAS"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.health_and_safety_outlined),
-                label: "EXÁMENES"),
+            BottomNavigationBarItem(icon: Icon(Icons.feed_outlined), label: "GUÍAS"),
+            BottomNavigationBarItem(icon: Icon(Icons.health_and_safety_outlined), label: "EXÁMENES"),
           ]),
     );
   }
+}
+
+Future<Obstetra> getObstetraChat(String gestID) {
+  GestanteService _gestanteService = GestanteService();
+  return _gestanteService.getObstetraChat(gestID);
 }

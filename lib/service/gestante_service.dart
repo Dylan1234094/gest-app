@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:gest_app/data/model/gestante.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gest_app/data/model/obstetra.dart';
@@ -47,7 +48,20 @@ class GestanteService {
           await docRef.get().then(
             (DocumentSnapshot doc) async {
               if (doc.exists) {
-                Navigator.pushNamed(context, '/tabs');
+                //get fcmToken and update it on firestore
+                final fcmtoken = await FirebaseMessaging.instance.getToken();
+                final gestante = Gestante(fcmToken: fcmtoken);
+
+                final docRef = db
+                    .collection("gestantes")
+                    .withConverter(
+                      fromFirestore: Gestante.fromFirestore,
+                      toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
+                    )
+                    .doc(value.user!.uid);
+                await docRef
+                    .set(gestante, SetOptions(merge: true))
+                    .then((value) => Navigator.pushNamed(context, '/tabs'));
               } else {
                 //request rtoken, create gest with rtoken then update
                 var rtoken = "";
@@ -80,18 +94,33 @@ class GestanteService {
 
   void signOutGestante(BuildContext context) async {
     try {
+      var uid = _auth.currentUser!.uid;
       await _googleSignIn.signOut();
-      await _auth.signOut();
-      Navigator.popUntil(context, ModalRoute.withName('/'));
+      await _auth.signOut().then((data) async {
+        final gestante = Gestante(fcmToken: "");
+
+        final docRef = db
+            .collection("gestantes")
+            .withConverter(
+              fromFirestore: Gestante.fromFirestore,
+              toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
+            )
+            .doc(uid);
+        await docRef
+            .set(gestante, SetOptions(merge: true))
+            .then((value) => Navigator.popUntil(context, ModalRoute.withName('/')));
+      });
     } on FirebaseAuthException catch (e) {
       print(e.message);
     }
   }
 
   void createGestante(String id, String rtoken, BuildContext context) async {
+    final fcmtoken = await FirebaseMessaging.instance.getToken();
     final gestante = Gestante(
       id: id,
       rtoken: rtoken,
+      fcmToken: fcmtoken,
     );
 
     final docRef = db
@@ -116,6 +145,7 @@ class GestanteService {
       String fechaEco,
       String fechaCita,
       String codigoObs,
+      String fcmTokenObs,
       VitalSign vitals,
       BuildContext context) async {
     final gestante = Gestante(
@@ -140,9 +170,19 @@ class GestanteService {
           toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
         )
         .doc(id);
-    await docRef
-        .set(gestante, SetOptions(merge: true))
-        .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
+    await docRef.set(gestante, SetOptions(merge: true)).then((value) async {
+      Navigator.of(context).popUntil(ModalRoute.withName("/"));
+
+      var url = 'https://upc-cloud-test.azurewebsites.net/api/sendLinkNotification';
+      Map data = {'nameGest': nombre, 'surnameGest': apellido, 'idGest': id, 'fcmReceiverToken': "fcmtoken"};
+      var body = json.encode(data);
+      try {
+        var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
+        print(response.body);
+      } catch (e) {
+        print(e);
+      }
+    });
   }
 
   void updateGestante(String id, String nombre, String apellido, String telefono, String dni, String fechaNacimiento,
@@ -270,6 +310,7 @@ class GestanteService {
     var uid = "";
     var nombre = "";
     var apellido = "";
+    var fcmToken = "";
     var codigoObstetra = "";
 
     try {
@@ -279,17 +320,21 @@ class GestanteService {
           uid = event.docs.first.data()["id"];
           nombre = event.docs.first.data()["nombre"];
           apellido = event.docs.first.data()["apellido"];
+          fcmToken = event.docs.first.data()["fcmToken"];
           codigoObstetra = event.docs.first.data()["codigoObstetra"];
         }
       });
     } catch (e) {
       print(e);
     }
-    return obstetra = Obstetra(id: uid, nombre: nombre, apellido: apellido, codigoObstetra: codigoObstetra);
+    return obstetra =
+        Obstetra(id: uid, nombre: nombre, apellido: apellido, fcmToken: fcmToken, codigoObstetra: codigoObstetra);
   }
 
-  void updateCodeObstetra(String id, String codigoObs, BuildContext context) async {
+  void updateCodeObstetra(String id, String codigoObs, String fcmToken, BuildContext context) async {
     final gestante = Gestante(codigoObstetra: codigoObs);
+    var nombreGest = "";
+    var apellidoGest = "";
 
     final docRef = db
         .collection("gestantes")
@@ -298,8 +343,59 @@ class GestanteService {
           toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
         )
         .doc(id);
-    await docRef
-        .set(gestante, SetOptions(merge: true))
-        .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
+    await docRef.set(gestante, SetOptions(merge: true)).then((value) async {
+      final docRef = db.collection("gestantes").doc(id);
+      await docRef.get().then(
+        (DocumentSnapshot doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          nombreGest = data["nombre"];
+          apellidoGest = data["apellido"];
+        },
+        onError: (e) => print("Error al intentar obtener doc $id en gestante"),
+      );
+      Navigator.of(context).popUntil(ModalRoute.withName("/"));
+
+      var url = 'https://upc-cloud-test.azurewebsites.net/api/sendLinkNotification';
+      Map data = {'nameGest': nombreGest, 'surnameGest': apellidoGest, 'idGest': id, 'fcmReceiverToken': fcmToken};
+      var body = json.encode(data);
+      try {
+        var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
+        print(response.body);
+      } catch (e) {
+        print(e);
+      }
+    });
+  }
+
+  Future<Obstetra> getObstetraChat(String gestID) async {
+    Obstetra obstetra;
+    var uid = "";
+    var nombre = "";
+    var apellido = "";
+    var codigoObstetra = "";
+    var fcmToken = "";
+
+    try {
+      final gestRef = await db.collection("gestantes").doc(gestID).get().then((DocumentSnapshot doc) async {
+        final data = doc.data() as Map<String, dynamic>;
+        final docRef = await db
+            .collection("obstetras")
+            .where("codigoObstetra", isEqualTo: data["codigoObstetra"])
+            .get()
+            .then((event) {
+          if (event.docs.isNotEmpty) {
+            uid = event.docs.first.data()["id"];
+            nombre = event.docs.first.data()["nombre"];
+            apellido = event.docs.first.data()["apellido"];
+            codigoObstetra = event.docs.first.data()["codigoObstetra"];
+            fcmToken = event.docs.first.data()["fcmToken"];
+          }
+        });
+      });
+    } catch (e) {
+      print(e);
+    }
+    return obstetra =
+        Obstetra(id: uid, nombre: nombre, apellido: apellido, codigoObstetra: codigoObstetra, fcmToken: fcmToken);
   }
 }

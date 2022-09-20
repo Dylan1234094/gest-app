@@ -45,6 +45,7 @@ class Gestante {
   final String? codigoObstetra;
   final String? photoUrl;
   final String? rtoken;
+  final String? fcmToken;
   final Map<String, dynamic>? vitals;
 
   const Gestante(
@@ -61,6 +62,7 @@ class Gestante {
       this.codigoObstetra,
       this.photoUrl,
       this.rtoken,
+      this.fcmToken,
       this.vitals});
 
   factory Gestante.fromFirestore(
@@ -82,6 +84,7 @@ class Gestante {
       codigoObstetra: data?['codigoObstetra'],
       photoUrl: data?['photoUrl'],
       rtoken: data?['rtoken'],
+      fcmToken: data?['fcmToken'],
       vitals: data?['vitals'],
     );
   }
@@ -101,6 +104,7 @@ class Gestante {
       if (codigoObstetra != null) "codigoObstetra": codigoObstetra,
       if (photoUrl != null) "photoUrl": photoUrl,
       if (rtoken != null) "rtoken": rtoken,
+      if (fcmToken != null) "fcmToken": fcmToken,
       if (vitals != null) "vitals": vitals,
     };
   }

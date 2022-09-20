@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:async';
+import 'dart:convert';
+
 import 'package:intl/intl.dart' as intl;
+import 'package:http/http.dart' as http;
 
 import 'package:gest_app/data/model/exam_result.dart';
 
@@ -45,6 +48,44 @@ class ExamService {
             toFirestore: (Exam exam, options) => exam.toFirestore(),
           );
       await docRef.add(exam);
+
+      var nombreGest = "";
+      var apellidoGest = "";
+      var codigoObsGest = "";
+      var obsFcmToken = "";
+      final gestRef = db.collection("gestantes").doc(gestID);
+      await gestRef.get().then(
+        (DocumentSnapshot doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          nombreGest = data["nombre"];
+          apellidoGest = data["apellido"];
+          codigoObsGest = data["codigoObstetra"];
+        },
+        onError: (e) => print("Error al intentar obtener doc $gestID en gestante"),
+      );
+
+      final obsRef =
+          await db.collection("obstetras").where("codigoObstetra", isEqualTo: codigoObsGest).get().then((event) {
+        if (event.docs.isNotEmpty) {
+          obsFcmToken = event.docs.first.data()["fcmToken"];
+        }
+      });
+
+      var url = 'https://upc-cloud-test.azurewebsites.net/api/sendExamNotification';
+      Map data = {
+        'examType': examType,
+        'nameGest': nombreGest,
+        'surnameGest': apellidoGest,
+        'idGest': gestID,
+        'fcmReceiverToken': obsFcmToken
+      };
+      var body = json.encode(data);
+      try {
+        var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
+        print(response.body);
+      } catch (e) {
+        print(e);
+      }
     } catch (e) {
       print(e);
     }

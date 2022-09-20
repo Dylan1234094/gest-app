@@ -96,5 +96,6 @@ Future<Obstetra> getObstetra(String id) {
 }
 
 void logOutObstetra() {
-  FirebaseAuth.instance.signOut();
+  ObstetraService _obstetraService = ObstetraService();
+  _obstetraService.logoutObstetra();
 }

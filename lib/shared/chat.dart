@@ -5,25 +5,36 @@ import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_6.dart';
 
-class Chat extends StatefulWidget {
-  final anotherUserUid;
-  final anotherUserName;
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-  Chat({Key? key, required this.anotherUserUid, required this.anotherUserName})
+class Chat extends StatefulWidget {
+  final String nombreSender;
+  final String apellidoSender;
+  final String anotherUserUid;
+  final String anotherUserName;
+  final String anotherUserSurname;
+  final String anotherUserFCMToken;
+
+  Chat(
+      {Key? key,
+      required this.nombreSender,
+      required this.apellidoSender,
+      required this.anotherUserUid,
+      required this.anotherUserName,
+      required this.anotherUserSurname,
+      required this.anotherUserFCMToken})
       : super(key: key);
 
   @override
-  _ChatState createState() => _ChatState(anotherUserUid, anotherUserName);
+  _ChatState createState() => _ChatState();
 }
 
 class _ChatState extends State<Chat> {
   CollectionReference chats = FirebaseFirestore.instance.collection('chats');
-  final anotherUserUid;
-  final anotherUserName;
   final currentUserId = FirebaseAuth.instance.currentUser!.uid;
   var chatDocId;
   var _textController = new TextEditingController();
-  _ChatState(this.anotherUserUid, this.anotherUserName);
   @override
   void initState() {
     super.initState();
@@ -32,7 +43,7 @@ class _ChatState extends State<Chat> {
 
   void checkUser() async {
     await chats
-        .where('users', isEqualTo: {anotherUserUid: null, currentUserId: null})
+        .where('users', isEqualTo: {widget.anotherUserUid: null, currentUserId: null})
         .limit(1)
         .get()
         .then(
@@ -45,7 +56,7 @@ class _ChatState extends State<Chat> {
               print(chatDocId);
             } else {
               await chats.add({
-                'users': {currentUserId: null, anotherUserUid: null}
+                'users': {currentUserId: null, widget.anotherUserUid: null}
               }).then((value) => {chatDocId = value});
             }
           },
@@ -55,12 +66,25 @@ class _ChatState extends State<Chat> {
 
   void sendMessage(String msg) {
     if (msg == '') return;
-    chats.doc(chatDocId).collection('messages').add({
-      'createdOn': FieldValue.serverTimestamp(),
-      'uid': currentUserId,
-      'msg': msg
-    }).then((value) {
+    chats
+        .doc(chatDocId)
+        .collection('messages')
+        .add({'createdOn': FieldValue.serverTimestamp(), 'uid': currentUserId, 'msg': msg}).then((value) async {
       _textController.text = '';
+      var url = 'https://upc-cloud-test.azurewebsites.net/api/sendChatNotification';
+      Map data = {
+        'nombreSender': widget.nombreSender,
+        'apellidoSender': widget.apellidoSender,
+        'idSender': currentUserId,
+        'fcmReceiverToken': widget.anotherUserFCMToken
+      };
+      var body = json.encode(data);
+      try {
+        var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
+        print(response.body);
+      } catch (e) {
+        print(e);
+      }
     });
   }
 
@@ -78,11 +102,7 @@ class _ChatState extends State<Chat> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: chats
-          .doc(chatDocId)
-          .collection('messages')
-          .orderBy('createdOn', descending: true)
-          .snapshots(),
+      stream: chats.doc(chatDocId).collection('messages').orderBy('createdOn', descending: true).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return const Center(
@@ -104,7 +124,7 @@ class _ChatState extends State<Chat> {
                   icon: const Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
-                title: Text(anotherUserName)),
+                title: Text("${widget.anotherUserName} ${widget.anotherUserSurname}")),
             body: Column(
               children: [
                 Expanded(
@@ -131,19 +151,15 @@ class _ChatState extends State<Chat> {
                             clipper: ChatBubbleClipper6(
                               nipSize: 10,
                               radius: 10,
-                              type: isSender(data['uid'].toString())
-                                  ? BubbleType.sendBubble
-                                  : BubbleType.receiverBubble,
+                              type:
+                                  isSender(data['uid'].toString()) ? BubbleType.sendBubble : BubbleType.receiverBubble,
                             ),
                             margin: const EdgeInsets.only(top: 10),
                             alignment: getAlignment(data['uid'].toString()),
-                            backGroundColor: isSender(data['uid'].toString())
-                                ? Colors.blue
-                                : Color(0xffE7E7ED),
+                            backGroundColor: isSender(data['uid'].toString()) ? Colors.blue : Color(0xffE7E7ED),
                             child: Container(
                               constraints: BoxConstraints(
-                                maxWidth:
-                                    MediaQuery.of(context).size.width * 0.7,
+                                maxWidth: MediaQuery.of(context).size.width * 0.7,
                               ),
                               child: Column(
                                 children: [
@@ -152,10 +168,7 @@ class _ChatState extends State<Chat> {
                                     children: [
                                       Text(data['msg'],
                                           style: TextStyle(
-                                              color: isSender(
-                                                      data['uid'].toString())
-                                                  ? Colors.white
-                                                  : Colors.black,
+                                              color: isSender(data['uid'].toString()) ? Colors.white : Colors.black,
                                               fontSize: 16),
                                           maxLines: 100,
                                           overflow: TextOverflow.ellipsis)
@@ -192,8 +205,7 @@ class _ChatState extends State<Chat> {
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 20, top: 20, bottom: 20),
+                        padding: const EdgeInsets.only(left: 20, top: 20, bottom: 20),
                         child: TextField(
                           controller: _textController,
                           decoration: const InputDecoration(

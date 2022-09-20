@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:gest_app/data/model/gestante.dart';
 import 'package:gest_app/data/model/obstetra.dart';
@@ -30,6 +31,7 @@ class ObstetraService {
       String codigoObstetra, BuildContext context) {
     try {
       FirebaseAuth.instance.createUserWithEmailAndPassword(email: correo, password: contrasenia).then((data) async {
+        final fcmtoken = await FirebaseMessaging.instance.getToken();
         final obstetra = Obstetra(
             id: data.user?.uid,
             nombre: nombre,
@@ -37,7 +39,8 @@ class ObstetraService {
             correo: correo,
             telefono: telefono,
             contrasenia: contrasenia,
-            codigoObstetra: codigoObstetra);
+            codigoObstetra: codigoObstetra,
+            fcmToken: fcmtoken);
         final docRef = db
             .collection("obstetras")
             .withConverter(
@@ -78,14 +81,47 @@ class ObstetraService {
 
   Future loginObstetra(String email, String contrasenia, BuildContext context) async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: contrasenia);
-      Navigator.popUntil(context, ModalRoute.withName('/'));
+      await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: contrasenia).then((data) async {
+        final fcmtoken = await FirebaseMessaging.instance.getToken();
+        final obstetra = Obstetra(fcmToken: fcmtoken);
+
+        final docRef = db
+            .collection("obstetras")
+            .withConverter(
+              fromFirestore: Obstetra.fromFirestore,
+              toFirestore: (Obstetra obstetra, options) => obstetra.toFirestore(),
+            )
+            .doc(data.user!.uid);
+        await docRef
+            .set(obstetra, SetOptions(merge: true))
+            .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
+      });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print("no se encontró usuario");
       } else if (e.code == "wrong-password") {
         print("contrasenia incorrecta");
       }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future logoutObstetra() async {
+    try {
+      var uid = FirebaseAuth.instance.currentUser!.uid;
+      await FirebaseAuth.instance.signOut().then((data) async {
+        final obstetra = Obstetra(fcmToken: "");
+
+        final docRef = db
+            .collection("obstetras")
+            .withConverter(
+              fromFirestore: Obstetra.fromFirestore,
+              toFirestore: (Obstetra obstetra, options) => obstetra.toFirestore(),
+            )
+            .doc(uid);
+        await docRef.set(obstetra, SetOptions(merge: true));
+      });
     } catch (e) {
       print(e);
     }
@@ -137,6 +173,7 @@ class ObstetraService {
               apellido: doc.data()["apellido"],
               fechaRegla: doc.data()["fechaRegla"],
               photoUrl: doc.data()["photoUrl"],
+              fcmToken: doc.data()["fcmToken"],
               vitals: doc.data()["vitals"]);
           listaGestantes.add(gestante);
         }
