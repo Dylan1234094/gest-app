@@ -214,102 +214,109 @@ class GestListChatState extends State<GestListChat> {
         if (userChat.id == currentUserId) {
           return SizedBox.shrink();
         } else {
-          return Container(
-            child: TextButton(
-              child: Row(
-                children: <Widget>[
-                  Material(
-                    child: userChat.photoUrl.isNotEmpty
-                        ? Image.network(
-                            userChat.photoUrl,
-                            fit: BoxFit.cover,
-                            width: 50,
-                            height: 50,
-                            loadingBuilder: (BuildContext context, Widget child,
-                                ImageChunkEvent? loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Container(
+          return Column(
+            children: [
+              Container(
+                child: TextButton(
+                  child: Row(
+                    children: <Widget>[
+                      Material(
+                        child: userChat.photoUrl.isNotEmpty
+                            ? Image.network(
+                                userChat.photoUrl,
+                                fit: BoxFit.cover,
                                 width: 50,
                                 height: 50,
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    color: ColorConstants.themeColor,
-                                    value: loadingProgress.expectedTotalBytes !=
-                                            null
-                                        ? loadingProgress
-                                                .cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!
-                                        : null,
-                                  ),
-                                ),
-                              );
-                            },
-                            errorBuilder: (context, object, stackTrace) {
-                              return Icon(
+                                loadingBuilder: (BuildContext context,
+                                    Widget child,
+                                    ImageChunkEvent? loadingProgress) {
+                                  if (loadingProgress == null) return child;
+                                  return Container(
+                                    width: 50,
+                                    height: 50,
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        color: ColorConstants.themeColor,
+                                        value: loadingProgress
+                                                    .expectedTotalBytes !=
+                                                null
+                                            ? loadingProgress
+                                                    .cumulativeBytesLoaded /
+                                                loadingProgress
+                                                    .expectedTotalBytes!
+                                            : null,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                errorBuilder: (context, object, stackTrace) {
+                                  return Icon(
+                                    Icons.account_circle,
+                                    size: 50,
+                                    color: ColorConstants.greyColor,
+                                  );
+                                },
+                              )
+                            : Icon(
                                 Icons.account_circle,
                                 size: 50,
                                 color: ColorConstants.greyColor,
-                              );
-                            },
-                          )
-                        : Icon(
-                            Icons.account_circle,
-                            size: 50,
-                            color: ColorConstants.greyColor,
-                          ),
-                    borderRadius: BorderRadius.all(Radius.circular(25)),
-                    clipBehavior: Clip.hardEdge,
-                  ),
-                  Flexible(
-                    child: Container(
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            child: Text(
-                              userChat.nickname,
-                              maxLines: 1,
-                              style: TextStyle(
-                                  color: ColorConstants.primaryColor,
-                                  fontSize: 20),
-                            ),
-                            alignment: Alignment.centerLeft,
-                            margin: EdgeInsets.fromLTRB(10, 0, 0, 5),
-                          ),
-                        ],
+                              ),
+                        borderRadius: BorderRadius.all(Radius.circular(25)),
+                        clipBehavior: Clip.hardEdge,
                       ),
-                      margin: EdgeInsets.only(left: 20),
-                    ),
+                      Flexible(
+                        child: Container(
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                child: Text(
+                                  userChat.nickname,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                      color: ColorConstants.primaryColor,
+                                      fontSize: 20),
+                                ),
+                                alignment: Alignment.centerLeft,
+                                margin: EdgeInsets.fromLTRB(10, 0, 0, 5),
+                              ),
+                            ],
+                          ),
+                          margin: EdgeInsets.only(left: 20),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              onPressed: () {
-                if (Utilities.isKeyboardShowing()) {
-                  Utilities.closeKeyboard(context);
-                }
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChatPage(
-                      arguments: ChatPageArguments(
-                        peerId: userChat.id,
-                        peerAvatar: userChat.photoUrl,
-                        peerNickname: userChat.nickname,
+                  onPressed: () {
+                    if (Utilities.isKeyboardShowing()) {
+                      Utilities.closeKeyboard(context);
+                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChatPage(
+                          arguments: ChatPageArguments(
+                            peerId: userChat.id,
+                            peerAvatar: userChat.photoUrl,
+                            peerNickname: userChat.nickname,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                    shape: MaterialStateProperty.all<OutlinedBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
                     ),
-                  ),
-                );
-              },
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(ColorConstants.greyColor2),
-                shape: MaterialStateProperty.all<OutlinedBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                 ),
+                margin: EdgeInsets.only(bottom: 5, left: 5, right: 5),
               ),
-            ),
-            margin: EdgeInsets.only(bottom: 10, left: 5, right: 5),
+            ],
           );
         }
       } else {
@@ -322,34 +329,34 @@ class GestListChatState extends State<GestListChat> {
 
   Widget buildSearchBar() {
     return Container(
-      height: 40,
+      height: 60,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(Icons.search, color: ColorConstants.greyColor, size: 20),
-          SizedBox(width: 5),
           Expanded(
-            child: TextField(
-              onChanged: (value) {
-                searchDebouncer.run(() {
-                  setState(() {
-                    _textSearch = value;
-                  });
-                });
-              },
-              decoration: InputDecoration.collapsed(
-                hintText: 'Buscar paciente',
-                hintStyle:
-                    TextStyle(fontSize: 13, color: ColorConstants.greyColor),
+            child: Padding(
+              padding: const EdgeInsets.all(1),
+              child: TextField(
+                onChanged: (value) {
+                  searchDebouncer.run(
+                    () {
+                      setState(
+                        () {
+                          _textSearch = value;
+                        },
+                      );
+                    },
+                  );
+                },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  suffixIcon: Icon(Icons.search),
+                  hintText: 'Buscar paciente',
+                ),
               ),
-              style: TextStyle(fontSize: 13),
             ),
           )
         ],
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: ColorConstants.greyColor2,
       ),
       padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
       margin: EdgeInsets.fromLTRB(16, 8, 16, 8),
