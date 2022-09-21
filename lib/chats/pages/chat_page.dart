@@ -216,7 +216,7 @@ class ChatPageState extends State<ChatPage> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text(
-          'ob. ' + this.widget.arguments.peerNickname,
+          this.widget.arguments.peerNickname,
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
