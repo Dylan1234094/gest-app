@@ -10,7 +10,8 @@ class ChatProvider {
   final FirebaseFirestore firebaseFirestore;
   final FirebaseStorage firebaseStorage;
 
-  ChatProvider({required this.firebaseFirestore, required this.firebaseStorage});
+  ChatProvider(
+      {required this.firebaseFirestore, required this.firebaseStorage});
 
   UploadTask uploadFile(File image, String fileName) {
     Reference reference = firebaseStorage.ref().child(fileName);
@@ -18,8 +19,12 @@ class ChatProvider {
     return uploadTask;
   }
 
-  Future<void> updateDataFirestore(String collectionPath, String docPath, Map<String, dynamic> dataNeedUpdate) {
-    return firebaseFirestore.collection(collectionPath).doc(docPath).update(dataNeedUpdate);
+  Future<void> updateDataFirestore(String collectionPath, String docPath,
+      Map<String, dynamic> dataNeedUpdate) {
+    return firebaseFirestore
+        .collection(collectionPath)
+        .doc(docPath)
+        .update(dataNeedUpdate);
   }
 
   Stream<QuerySnapshot> getChatStream(String groupChatId, int limit) {
@@ -32,7 +37,8 @@ class ChatProvider {
         .snapshots();
   }
 
-  void sendMessage(String content, int type, String groupChatId, String currentUserId, String peerId) {
+  void sendMessage(String content, int type, String groupChatId,
+      String currentUserId, String peerId) {
     DocumentReference documentReference = firebaseFirestore
         .collection(FirestoreConstants.pathMessageCollection)
         .doc(groupChatId)
@@ -53,6 +59,20 @@ class ChatProvider {
         messageChat.toJson(),
       );
     });
+  }
+
+  Future<String> getPeerNameById(String uid) async {
+    final docRef = firebaseFirestore.collection("users").doc(uid);
+    late String nickname;
+    try {
+      await docRef.get().then((DocumentSnapshot doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        nickname = data["nickname"];
+      });
+    } catch (e) {
+      nickname = "Error al cargar nombre";
+    }
+    return nickname;
   }
 }
 

@@ -210,15 +210,22 @@ class ChatPageState extends State<ChatPage> {
     return Future.value(false);
   }
 
+  Future<String> getPeerNameById(String peerId) {
+    Future<String> nickname = chatProvider.getPeerNameById(peerId);
+    return nickname;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: Text(
-          this.widget.arguments.peerNickname,
-          style: TextStyle(color: Colors.white),
-        ),
+        title: FutureBuilder(
+            future: getPeerNameById(widget.arguments.peerId),
+            initialData: "Cargando...",
+            builder: (BuildContext context, AsyncSnapshot<String> text) {
+              return Text(text.data!, style: TextStyle(color: Colors.white));
+            }),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -265,7 +272,7 @@ class ChatPageState extends State<ChatPage> {
                     color: ColorConstants.primaryColor, fontSize: 15),
                 controller: textEditingController,
                 decoration: InputDecoration.collapsed(
-                  hintText: 'Type your message...',
+                  hintText: 'Escribe tu mensaje...',
                   hintStyle: TextStyle(color: ColorConstants.greyColor),
                 ),
                 focusNode: focusNode,
@@ -305,27 +312,25 @@ class ChatPageState extends State<ChatPage> {
               stream: chatProvider.getChatStream(groupChatId, _limit),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasData) {
-                  listMessage = snapshot.data!.docs;
-                  if (listMessage.length > 0) {
-                    return ListView.builder(
-                      padding: EdgeInsets.all(10),
-                      itemBuilder: (context, index) =>
-                          buildItem(index, snapshot.data?.docs[index]),
-                      itemCount: snapshot.data?.docs.length,
-                      reverse: true,
-                      controller: listScrollController,
-                    );
-                  } else {
-                    return const Center(child: Text("No message here yet..."));
-                  }
-                } else {
+                if (!snapshot.hasData) {
                   return const Center(
                     child: CircularProgressIndicator(
                       color: Colors.blue,
                     ),
                   );
                 }
+                listMessage = snapshot.data!.docs;
+                if (listMessage.length == 0) {
+                  return const Center(child: Text("No hay mensajes..."));
+                }
+                return ListView.builder(
+                  padding: EdgeInsets.all(10),
+                  itemBuilder: (context, index) =>
+                      buildItem(index, snapshot.data?.docs[index]),
+                  itemCount: snapshot.data?.docs.length,
+                  reverse: true,
+                  controller: listScrollController,
+                );
               },
             )
           : const Center(
