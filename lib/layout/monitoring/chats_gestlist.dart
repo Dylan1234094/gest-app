@@ -9,15 +9,15 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gest_app/chats/pages/chat_page.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
-import '../constants/constants.dart';
-import '../models/models.dart';
-import '../providers/providers.dart';
-import '../utils/utils.dart';
-import '../widgets/widgets.dart';
-import 'pages.dart';
+import '../../chats/constants/constants.dart';
+import '../../chats/models/models.dart';
+import '../../chats/providers/providers.dart';
+import '../../chats/utils/utils.dart';
+import '../../chats/widgets/widgets.dart';
 
 //! GestListChat -> GestListChat
 class GestListChat extends StatefulWidget {
