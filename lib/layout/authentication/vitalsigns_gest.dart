@@ -8,6 +8,8 @@ import '../../data/model/gestante.dart';
 class VitalSignsGest extends StatelessWidget {
   const VitalSignsGest({Key? key}) : super(key: key);
 
+  static String id = 'vitalSignsGestante';
+
   @override
   Widget build(BuildContext context) {
     return const FormVitalGest();
@@ -45,7 +47,8 @@ class _FormVitalGestState extends State<FormVitalGest> {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
-    final args = ModalRoute.of(context)!.settings.arguments as registerGestArguments;
+    final args =
+        ModalRoute.of(context)!.settings.arguments as registerGestArguments;
     actFisicaController.text = "true";
     freCardiController.text = "true";
     suenioController.text = "true";
@@ -80,37 +83,44 @@ class _FormVitalGestState extends State<FormVitalGest> {
             VitalSignWidget(
               vitalSignController: actFisicaController,
               title: 'Actividad Física',
-              content: 'Se monitorea el número de pasos de la aplicación Google Fit.',
+              content:
+                  'Se monitorea el número de pasos de la aplicación Google Fit.',
             ),
             VitalSignWidget(
               vitalSignController: freCardiController,
               title: 'Frecuencia Cardíaca',
-              content: 'Se monitorea la frecuencia cardíaca (bpm) registrada en la aplicación Google Fit.',
+              content:
+                  'Se monitorea la frecuencia cardíaca (bpm) registrada en la aplicación Google Fit.',
             ),
             VitalSignWidget(
               vitalSignController: suenioController,
               title: 'Sueño',
-              content: 'Se monitorea la duración del sueño (horas) registrada en la aplicación Google Fit.',
+              content:
+                  'Se monitorea la duración del sueño (horas) registrada en la aplicación Google Fit.',
             ),
             VitalSignWidget(
               vitalSignController: presArtController,
               title: 'Presión Arterial',
-              content: 'Se monitorea la presión arterial (mmHg) registrada en la aplicación Google Fit.',
+              content:
+                  'Se monitorea la presión arterial (mmHg) registrada en la aplicación Google Fit.',
             ),
             VitalSignWidget(
               vitalSignController: satOxigController,
               title: 'Saturación de Oxígeno',
-              content: 'Se monitorea la saturación de oxígeno (%) registrada en la aplicación Google Fit.',
+              content:
+                  'Se monitorea la saturación de oxígeno (%) registrada en la aplicación Google Fit.',
             ),
             VitalSignWidget(
               vitalSignController: pesoController,
               title: 'Peso',
-              content: 'Se monitorea el peso gestacional (kg) registrada en la aplicación Google Fit.',
+              content:
+                  'Se monitorea el peso gestacional (kg) registrada en la aplicación Google Fit.',
             ),
             VitalSignWidget(
               vitalSignController: glucoController,
               title: 'Glucosa',
-              content: 'Se monitorea el nivel de glucosa (g/dL) registrada en la aplicación Google Fit.',
+              content:
+                  'Se monitorea el nivel de glucosa (g/dL) registrada en la aplicación Google Fit.',
             ),
             Align(
               alignment: Alignment.centerRight,
@@ -151,7 +161,11 @@ class _FormVitalGestState extends State<FormVitalGest> {
 }
 
 class VitalSignWidget extends StatefulWidget {
-  const VitalSignWidget({Key? key, required this.vitalSignController, required this.title, required this.content})
+  const VitalSignWidget(
+      {Key? key,
+      required this.vitalSignController,
+      required this.title,
+      required this.content})
       : super(key: key);
   final TextEditingController vitalSignController;
   final String title;
@@ -178,7 +192,8 @@ class _VitalSignState extends State<VitalSignWidget> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     widget.title,
-                    style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        color: Colors.blue, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Align(
@@ -243,6 +258,18 @@ void insertDataGestante(
       peso: peso,
       gluco: gluco);
 
-  _gestanteService.createDataGestante(id, nombre, apellido, correo, telefono, dni, fechaNacimiento, fechaRegla,
-      fechaEco, fechaCita, codeObs, vitals, context);
+  _gestanteService.createDataGestante(
+      id,
+      nombre,
+      apellido,
+      correo,
+      telefono,
+      dni,
+      fechaNacimiento,
+      fechaRegla,
+      fechaEco,
+      fechaCita,
+      codeObs,
+      vitals,
+      context);
 }

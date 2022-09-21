@@ -9,6 +9,8 @@ import 'package:gest_app/shared/textfield_date.dart';
 class RegisterGest extends StatelessWidget {
   const RegisterGest({Key? key}) : super(key: key);
 
+  static String id = 'registerGestante';
+
   @override
   Widget build(BuildContext context) {
     return const FormGest();
@@ -34,8 +36,17 @@ class registerGestArguments {
   final String fechaCita;
   final String codigoObs;
 
-  registerGestArguments(this.nombre, this.apellido, this.correo, this.telefono, this.dni, this.fechaNacimiento,
-      this.fechaRegla, this.fechaEco, this.fechaCita, this.codigoObs);
+  registerGestArguments(
+      this.nombre,
+      this.apellido,
+      this.correo,
+      this.telefono,
+      this.dni,
+      this.fechaNacimiento,
+      this.fechaRegla,
+      this.fechaEco,
+      this.fechaCita,
+      this.codigoObs);
 }
 
 class _FormGestState extends State<FormGest> {
@@ -207,7 +218,8 @@ class _FormGestState extends State<FormGest> {
               Align(
                 alignment: Alignment.centerRight,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                   child: ElevatedButton(
                     onPressed: () => {
                       if (_keyForm.currentState!.validate())

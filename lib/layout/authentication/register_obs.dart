@@ -7,6 +7,8 @@ import 'package:intl/intl.dart' as intl;
 class RegisterObs extends StatelessWidget {
   const RegisterObs({Key? key}) : super(key: key);
 
+  static String id = 'registerObstetra';
+
   @override
   Widget build(BuildContext context) {
     return const FormObs();

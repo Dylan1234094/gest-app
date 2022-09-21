@@ -17,6 +17,7 @@ import 'package:gest_app/layout/profiles/profile_obs.dart';
 import 'package:gest_app/layout/start/start_page.dart';
 import 'package:gest_app/layout/monitoring/monitoring_obstetra.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gest_app/utilities/designs.dart';
 
 Future<void> main() async {
   //! Pa web
@@ -36,20 +37,26 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Gest App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          primary: colorPrincipal,
+          secondary: colorSecundario,
+        ),
+        textTheme: const TextTheme(
+          bodyText2: TextStyle(color: Colors.black),
+        ),
       ),
-      initialRoute: '/',
+      initialRoute: MyHomePage.id,
       routes: {
-        '/': (context) => const MyHomePage(),
-        '/tabs': (context) => const Tabs(),
-        '/registerObstetra': (context) => const RegisterObs(),
-        '/loginObstetra': (context) => const LoginObsWidget(),
-        '/registerGestante': (context) => const RegisterGest(),
-        '/loginGestante': (context) => const LoginGest(),
+        MyHomePage.id: (context) => const MyHomePage(),
+        Tabs.id: (context) => const Tabs(),
+        RegisterObs.id: (context) => const RegisterObs(),
+        LoginObsWidget.id: (context) => const LoginObsWidget(),
+        RegisterGest.id: (context) => const RegisterGest(),
+        LoginGest.id: (context) => const LoginGest(),
         '/gestConfig': (context) => const GestConfig(),
-        '/linkObstetraGestante': (context) => const LinkObsGest(),
+        LinkObsGest.id: (context) => const LinkObsGest(),
         '/UpdatelinkObstetra': (context) => const UpdateLinkObs(),
-        '/vitalSignsGestante': (context) => const VitalSignsGest(),
+        VitalSignsGest.id: (context) => const VitalSignsGest(),
         '/UpdatevitalSigns': (context) => const UpdateVitalSigns(),
         '/profileGest': (context) => const ProfileGest(),
         '/profileObs': (context) => const ProfileObs(),
@@ -61,6 +68,8 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
+  static String id = 'homePage';
+
   @override
   Widget build(BuildContext context) => Scaffold(
         body: StreamBuilder<User?>(
@@ -69,7 +78,8 @@ class MyHomePage extends StatelessWidget {
             if (snapshot.hasData && snapshot.data!.emailVerified == false) {
               //emailVerified permite reconocer que el inicio de sesión no es por una cuenta de Google (Gestante)
               return const ScreenObs();
-            } else if (snapshot.hasData && snapshot.data!.emailVerified == true) {
+            } else if (snapshot.hasData &&
+                snapshot.data!.emailVerified == true) {
               return const Tabs();
             } else {
               return const Start();

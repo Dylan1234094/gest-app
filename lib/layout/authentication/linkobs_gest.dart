@@ -8,6 +8,8 @@ import 'package:intl/intl.dart' as intl;
 class LinkObsGest extends StatelessWidget {
   const LinkObsGest({Key? key}) : super(key: key);
 
+  static String id = 'linkObstetraGestante';
+
   @override
   Widget build(BuildContext context) {
     return const LinkObs();
@@ -84,19 +86,22 @@ class _LinkObsState extends State<LinkObs> {
               Align(
                 alignment: Alignment.centerRight,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                   child: ElevatedButton(
                     onPressed: () => {
                       if (_keyForm.currentState!.validate())
                         {
                           _dialogWait(context),
-                          validateCodeObstetra(obsCodeController.text).then((value) {
+                          validateCodeObstetra(obsCodeController.text)
+                              .then((value) {
                             if (value.id != "") {
                               Navigator.pop(context);
                               _dialogCodeFound(context, value);
                             } else {
                               Navigator.pop(context);
-                              _dialogCodeNotFound(context, obsCodeController.text);
+                              _dialogCodeNotFound(
+                                  context, obsCodeController.text);
                             }
                           })
                         }
@@ -138,7 +143,8 @@ Future<void> _dialogCodeNotFound(BuildContext context, String codeObs) {
         actions: <Widget>[
           TextButton(
             child: const Text("Aceptar"),
-            style: TextButton.styleFrom(textStyle: Theme.of(context).textTheme.labelLarge),
+            style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge),
             onPressed: () => Navigator.pop(context),
           )
         ],
@@ -158,7 +164,8 @@ Future<void> _dialogCodeFound(BuildContext context, Obstetra obstetra) {
         actions: <Widget>[
           TextButton(
             child: const Text("Continuar"),
-            style: TextButton.styleFrom(textStyle: Theme.of(context).textTheme.labelLarge),
+            style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge),
             onPressed: () => Navigator.pushNamed(
               context,
               '/registerGestante',
@@ -171,7 +178,8 @@ Future<void> _dialogCodeFound(BuildContext context, Obstetra obstetra) {
           text: TextSpan(
             style: const TextStyle(color: Colors.black, fontSize: 16.0),
             children: <TextSpan>[
-              const TextSpan(text: "Sus datos serán compartidos con el/la especialista"),
+              const TextSpan(
+                  text: "Sus datos serán compartidos con el/la especialista"),
               TextSpan(
                   text: " ${obstetra.nombre} ${obstetra.apellido}.",
                   style: const TextStyle(fontWeight: FontWeight.bold))

@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:gest_app/data/model/gestante.dart';
 import 'package:gest_app/layout/authentication/linkobs_gest.dart';
 import 'package:gest_app/layout/gest/home/metric_detail.dart';
+import 'package:gest_app/layout/gest/home/vitals_page.dart';
 import 'package:gest_app/service/gestante_service.dart';
+import 'package:gest_app/utilities/designs.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -45,134 +47,170 @@ class _HomePageState extends State<HomePage> {
           });
         },
         child: FutureBuilder<Gestante>(
-            future: getGestante(uid),
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case (ConnectionState.waiting):
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                case (ConnectionState.done):
-                  if (!snapshot.hasData) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text("Si no completó el registro de su perfil\nseleccione la siguiente opción\n",
-                              textAlign: TextAlign.center),
-                          ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute<void>(builder: (BuildContext context) {
-                                    return LinkObsGest();
-                                  }),
-                                );
-                              },
-                              child: Text("Continuar Registro")),
-                          TextButton(
-                            child: const Text("Reintentar"),
-                            style: TextButton.styleFrom(textStyle: Theme.of(context).textTheme.labelLarge),
-                            onPressed: () => setState(() {}),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  actFisicaController.text = snapshot.data!.vitals!["actFisica"];
-                  freCardiController.text = snapshot.data!.vitals!["freCardi"];
-                  suenioController.text = snapshot.data!.vitals!["suenio"];
-                  presArtController.text = snapshot.data!.vitals!["presArt"];
-                  satOxigController.text = snapshot.data!.vitals!["satOxig"];
-                  pesoController.text = snapshot.data!.vitals!["peso"];
-                  glucoController.text = snapshot.data!.vitals!["gluco"];
-                  return SingleChildScrollView(
-                    physics: AlwaysScrollableScrollPhysics(),
+          future: getGestante(uid),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case (ConnectionState.waiting):
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              case (ConnectionState.done):
+                if (!snapshot.hasData) {
+                  return Center(
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Container(
-                            child: (actFisicaController.text == "true")
-                                ? VitalCard(
-                                    userType: "gest",
-                                    title: "Actividad Física",
-                                    iconPath: "assets/IconsVitals/act_fisica_icon.png",
-                                    vitalSign: "actFisica",
-                                    unit: "Pasos",
-                                    rtoken: snapshot.data!.rtoken!,
-                                  )
-                                : null),
-                        Container(
-                            child: (freCardiController.text == "true")
-                                ? VitalCard(
-                                    userType: "gest",
-                                    title: "Frecuencia Cardíaca",
-                                    iconPath: "assets/IconsVitals/fre_car_icon.png",
-                                    vitalSign: "freCardi",
-                                    unit: "bpm",
-                                    rtoken: snapshot.data!.rtoken!,
-                                  )
-                                : null),
-                        Container(
-                            child: (glucoController.text == "true")
-                                ? VitalCard(
-                                    userType: "gest",
-                                    title: "Glucosa",
-                                    iconPath: "assets/IconsVitals/gluco_icon.png",
-                                    vitalSign: "gluco",
-                                    unit: "mmol/L",
-                                    rtoken: snapshot.data!.rtoken!,
-                                  )
-                                : null),
-                        Container(
-                            child: (pesoController.text == "true")
-                                ? VitalCard(
-                                    userType: "gest",
-                                    title: "Peso",
-                                    iconPath: "assets/IconsVitals/peso_icon.png",
-                                    vitalSign: "peso",
-                                    unit: "kg",
-                                    rtoken: snapshot.data!.rtoken!,
-                                  )
-                                : null),
-                        Container(
-                            child: (presArtController.text == "true")
-                                ? VitalCard(
-                                    userType: "gest",
-                                    title: "Presión Arterial",
-                                    iconPath: "assets/IconsVitals/pres_art_icon.png",
-                                    vitalSign: "presArt",
-                                    unit: "mmHg",
-                                    rtoken: snapshot.data!.rtoken!,
-                                  )
-                                : null),
-                        Container(
-                            child: (satOxigController.text == "true")
-                                ? VitalCard(
-                                    userType: "gest",
-                                    title: "Saturación de Oxígeno",
-                                    iconPath: "assets/IconsVitals/sat_oxig_icon.png",
-                                    vitalSign: "satOxig",
-                                    unit: "%",
-                                    rtoken: snapshot.data!.rtoken!,
-                                  )
-                                : null),
-                        Container(
-                            child: (suenioController.text == "true")
-                                ? VitalCard(
-                                    userType: "gest",
-                                    title: "Sueño",
-                                    iconPath: "assets/IconsVitals/suenio_icon.png",
-                                    vitalSign: "suenio",
-                                    unit: "h",
-                                    rtoken: snapshot.data!.rtoken!,
-                                  )
-                                : null),
+                        Text(
+                            "Si no completó el registro de su perfil\nseleccione la siguiente opción\n",
+                            textAlign: TextAlign.center),
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                    builder: (BuildContext context) {
+                                  return LinkObsGest();
+                                }),
+                              );
+                            },
+                            child: Text("Continuar Registro")),
+                        TextButton(
+                          child: const Text("Reintentar"),
+                          style: TextButton.styleFrom(
+                              textStyle:
+                                  Theme.of(context).textTheme.labelLarge),
+                          onPressed: () => setState(() {}),
+                        ),
                       ],
                     ),
                   );
-                default:
-                  return const Text("Algo salió mal");
-              }
-            }),
+                }
+                actFisicaController.text = snapshot.data!.vitals!["actFisica"];
+                freCardiController.text = snapshot.data!.vitals!["freCardi"];
+                suenioController.text = snapshot.data!.vitals!["suenio"];
+                presArtController.text = snapshot.data!.vitals!["presArt"];
+                satOxigController.text = snapshot.data!.vitals!["satOxig"];
+                pesoController.text = snapshot.data!.vitals!["peso"];
+                glucoController.text = snapshot.data!.vitals!["gluco"];
+                return Scaffold(
+                  backgroundColor: Colors.white,
+                  body: ListView(
+                    children: [
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(10.0),
+                        width: MediaQuery.of(context).size.width - 30,
+                        height: MediaQuery.of(context).size.height - 50,
+                        child: GridView.count(
+                          crossAxisCount: 2,
+                          primary: false,
+                          crossAxisSpacing: 5.0,
+                          mainAxisSpacing: 5.0,
+                          childAspectRatio: 0.8,
+                          children: [
+                            Container(
+                              child: (actFisicaController.text == "true")
+                                  ? VitalCard(
+                                      userType: "gest",
+                                      title: "Actividad Física",
+                                      iconPath:
+                                          "assets/IconsVitals/act_fisica_icon.png",
+                                      vitalSign: "actFisica",
+                                      unit: "Pasos",
+                                      rtoken: snapshot.data!.rtoken!,
+                                    )
+                                  : null,
+                            ),
+                            Container(
+                              child: (freCardiController.text == "true")
+                                  ? VitalCard(
+                                      userType: "gest",
+                                      title: "Frecuencia Cardíaca",
+                                      iconPath:
+                                          "assets/IconsVitals/fre_car_icon.png",
+                                      vitalSign: "freCardi",
+                                      unit: "bpm",
+                                      rtoken: snapshot.data!.rtoken!,
+                                    )
+                                  : null,
+                            ),
+                            Container(
+                              child: (glucoController.text == "true")
+                                  ? VitalCard(
+                                      userType: "gest",
+                                      title: "Glucosa",
+                                      iconPath:
+                                          "assets/IconsVitals/gluco_icon.png",
+                                      vitalSign: "gluco",
+                                      unit: "mmol/L",
+                                      rtoken: snapshot.data!.rtoken!,
+                                    )
+                                  : null,
+                            ),
+                            Container(
+                              child: (pesoController.text == "true")
+                                  ? VitalCard(
+                                      userType: "gest",
+                                      title: "Peso",
+                                      iconPath:
+                                          "assets/IconsVitals/peso_icon.png",
+                                      vitalSign: "peso",
+                                      unit: "kg",
+                                      rtoken: snapshot.data!.rtoken!,
+                                    )
+                                  : null,
+                            ),
+                            Container(
+                              child: (presArtController.text == "true")
+                                  ? VitalCard(
+                                      userType: "gest",
+                                      title: "Presión Arterial",
+                                      iconPath:
+                                          "assets/IconsVitals/pres_art_icon.png",
+                                      vitalSign: "presArt",
+                                      unit: "mmHg",
+                                      rtoken: snapshot.data!.rtoken!,
+                                    )
+                                  : null,
+                            ),
+                            Container(
+                              child: (satOxigController.text == "true")
+                                  ? VitalCard(
+                                      userType: "gest",
+                                      title: "Saturación de Oxígeno",
+                                      iconPath:
+                                          "assets/IconsVitals/sat_oxig_icon.png",
+                                      vitalSign: "satOxig",
+                                      unit: "%",
+                                      rtoken: snapshot.data!.rtoken!,
+                                    )
+                                  : null,
+                            ),
+                            Container(
+                              child: (suenioController.text == "true")
+                                  ? VitalCard(
+                                      userType: "gest",
+                                      title: "Sueño",
+                                      iconPath:
+                                          "assets/IconsVitals/suenio_icon.png",
+                                      vitalSign: "suenio",
+                                      unit: "h",
+                                      rtoken: snapshot.data!.rtoken!,
+                                    )
+                                  : null,
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              default:
+                return const Text("Algo salió mal");
+            }
+          },
+        ),
       ),
     );
   }
@@ -180,14 +218,13 @@ class _HomePageState extends State<HomePage> {
 
 class VitalCard extends StatefulWidget {
   VitalCard(
-      {Key? key,
-      required this.userType,
+      {required this.userType,
       required this.title,
       required this.iconPath,
       required this.vitalSign,
       required this.unit,
-      required this.rtoken})
-      : super(key: key);
+      required this.rtoken});
+
   final String userType;
   final String title;
   final String iconPath;
@@ -202,10 +239,44 @@ class VitalCard extends StatefulWidget {
 class _VitalCardState extends State<VitalCard> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 700,
-      padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
-      child: GestureDetector(
+    return Padding(
+      padding: EdgeInsets.all(5.0),
+      child: InkWell(
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                blurRadius: 3.0,
+              )
+            ],
+            color: Colors.white,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: 70.0,
+                width: 70.0,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(widget.iconPath),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  widget.title,
+                  style: kTituloGrafico,
+                  textAlign: TextAlign.center,
+                ),
+              )
+            ],
+          ),
+        ),
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute<void>(builder: (BuildContext context) {
@@ -219,46 +290,6 @@ class _VitalCardState extends State<VitalCard> {
             }),
           );
         },
-        child: Card(
-          child: Row(children: <Widget>[
-            Expanded(
-              flex: 2,
-              child: Align(
-                alignment: Alignment.center,
-                child: Padding(
-                    padding: const EdgeInsets.only(right: 4, top: 3, bottom: 6),
-                    child: Container(
-                      height: 35.0,
-                      width: 35.0,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(widget.iconPath),
-                          fit: BoxFit.fill,
-                        ),
-                        shape: BoxShape.rectangle,
-                      ),
-                    )),
-              ),
-            ),
-            Expanded(
-              flex: 8,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      widget.title,
-                      textAlign: TextAlign.end,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                    ),
-                    Text('Gráfico evolutivo',
-                        textAlign: TextAlign.left, style: TextStyle(fontStyle: FontStyle.italic, fontSize: 18))
-                  ],
-                ),
-              ),
-            ),
-          ]),
-        ),
       ),
     );
   }
