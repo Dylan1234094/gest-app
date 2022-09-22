@@ -65,9 +65,8 @@ class ChatPageState extends State<ChatPage> {
   }
 
   void readLocal() {
-    if (authProvider.getUserFirebaseId()?.isNotEmpty == true) {
-      currentUserId = FirebaseAuth.instance.currentUser!.uid;
-    }
+    currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
     String peerId = widget.arguments.peerId;
     if (currentUserId.compareTo(peerId) > 0) {
       groupChatId = '$currentUserId-$peerId';
