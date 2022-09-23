@@ -48,21 +48,19 @@ class _TabsState extends State<Tabs> {
         child: Icon(Icons.sms_outlined),
       ),
       body: _tabs[_selectedIndex],
-      appBar: AppBar(
-          //title: Text(_tabsName[_selectedIndex]),
-          ),
+      appBar: AppBar(),
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.home, size: 40.0),
             label: "INICIO",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.feed_outlined),
+            icon: Icon(Icons.feed_outlined, size: 40.0),
             label: "GUÍAS",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.monitor_heart_outlined),
+            icon: Icon(Icons.monitor_heart_outlined, size: 40.0),
             label: "EXÁMENES",
           ),
         ],

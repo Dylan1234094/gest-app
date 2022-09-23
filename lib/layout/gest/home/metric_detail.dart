@@ -226,7 +226,8 @@ class _MetricDetailPageState extends State<MetricDetailPage>
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.of(context).pop(),
           ),
-          title: Text(widget.vitalSignName, style: kTituloCabezera),
+          title: Text(widget.vitalSignName,
+              style: kTituloCabezera.copyWith(fontSize: 15)),
           centerTitle: true,
           bottom: TabBar(
             labelPadding: EdgeInsets.symmetric(horizontal: 5),
@@ -319,11 +320,7 @@ class _MetricDetailPageState extends State<MetricDetailPage>
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
-                      child: Container(
-                        height: 1.00,
-                        width: MediaQuery.of(context).size.width,
-                        color: Color(0xF212121),
-                      ),
+                      child: Divider(color: colorSecundario),
                     ),
                     FutureBuilder<List<_ChartData>>(
                       future: widget.vitalSign == "presArt"

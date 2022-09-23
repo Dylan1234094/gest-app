@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 
+import '../utilities/designs.dart';
+
 class MyTextFormDate extends StatefulWidget {
   final String label;
   final TextEditingController dateController;
   final bool? continous;
-  const MyTextFormDate({Key? key, required this.label, required this.dateController, this.continous}) : super(key: key);
+  const MyTextFormDate(
+      {Key? key,
+      required this.label,
+      required this.dateController,
+      this.continous})
+      : super(key: key);
 
   @override
   State<MyTextFormDate> createState() => _MyTextFormDate();
@@ -31,16 +38,23 @@ class _MyTextFormDate extends State<MyTextFormDate> {
               context: context,
               initialDate: DateTime.now(),
               firstDate: DateTime(1900),
-              lastDate: widget.continous == true ? DateTime(2100) : DateTime.now());
+              lastDate:
+                  widget.continous == true ? DateTime(2100) : DateTime.now());
 
           if (pickedDate != null) {
             setState(() {
-              widget.dateController.text = intl.DateFormat('dd/MM/yyyy').format(pickedDate);
+              widget.dateController.text =
+                  intl.DateFormat('dd/MM/yyyy').format(pickedDate);
             });
             FocusScope.of(context).nextFocus();
           }
         },
         decoration: InputDecoration(
-            border: const OutlineInputBorder(), labelText: widget.label, suffixIcon: const Icon(Icons.calendar_month)));
+            border: const OutlineInputBorder(),
+            labelText: widget.label,
+            suffixIcon: const Icon(
+              Icons.calendar_month,
+              color: colorPrincipal,
+            )));
   }
 }

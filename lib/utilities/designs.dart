@@ -17,7 +17,7 @@ const kInfo = TextStyle(
 const kTituloCabezera = TextStyle(
   color: Colors.white,
   fontWeight: FontWeight.bold,
-  fontSize: 15.0,
+  fontSize: 20.0,
 );
 
 const kTituloGrafico = TextStyle(
@@ -26,7 +26,7 @@ const kTituloGrafico = TextStyle(
 );
 
 const kTextoBoton = TextStyle(
-  fontSize: 18.0,
+  fontSize: 14.0,
 );
 
 const kFechaDato = TextStyle(
@@ -38,10 +38,22 @@ const kDato = TextStyle(
   fontSize: 20.0,
 );
 
+const kTituloSignoConfig = TextStyle(
+  fontWeight: FontWeight.bold,
+  fontSize: 15.0,
+  color: colorPrincipal,
+);
+
+const kInfoSignoConfig = TextStyle(
+  fontWeight: FontWeight.w300,
+  fontSize: 10.0,
+  color: colorPrincipal,
+);
+
 ButtonStyle estiloBoton = ButtonStyle(
   backgroundColor: MaterialStateProperty.all<Color>(colorPrincipal),
   foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-  fixedSize: MaterialStateProperty.all(const Size(250.0, 46.0)),
+  fixedSize: MaterialStateProperty.all(const Size(160.0, 46.0)),
   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
     RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10.0),

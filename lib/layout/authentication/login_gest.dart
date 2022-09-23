@@ -31,18 +31,23 @@ class _LoginGestState extends State<LoginGest> {
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 20.0),
-              child: Text('Inicio de Sesión', style: kTitulo),
+              padding: EdgeInsets.only(top: 20.0),
+              child: Text('Inicio de Sesión',
+                  textAlign: TextAlign.center, style: kTitulo),
             ),
-            Text(
-              "Inicie sesión con su cuenta de Google para continuar con la configuración de su cuenta",
-              textAlign: TextAlign.justify,
-              style: kInfo,
+            Padding(
+              padding: EdgeInsets.only(top: 20.0),
+              child: Text(
+                'Inicie sesión con su cuenta de Google para continuar con la configuración de su cuenta',
+                textAlign: TextAlign.justify,
+                style: kInfo,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(15.0),

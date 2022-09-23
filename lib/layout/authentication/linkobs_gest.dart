@@ -70,19 +70,21 @@ class _LinkObsState extends State<LinkObs> {
                 ),
               ),
               Padding(
-                  //! Código Obstetra
-                  padding: const EdgeInsets.all(8),
-                  child: TextFormField(
-                      controller: obsCodeController,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: "Código Obstetra",
-                      ),
-                      validator: (value) {
-                        return ValidateCodeFormat(value!);
-                      })),
+                //! Código Obstetra
+                padding: const EdgeInsets.all(8),
+                child: TextFormField(
+                  controller: obsCodeController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Código Obstetra",
+                  ),
+                  validator: (value) {
+                    return ValidateCodeFormat(value!);
+                  },
+                ),
+              ),
               Align(
                 alignment: Alignment.centerRight,
                 child: Padding(

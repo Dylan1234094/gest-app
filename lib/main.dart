@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:gest_app/firebase_options.dart';
 import 'package:gest_app/layout/authentication/login_gest.dart';
 import 'package:gest_app/layout/authentication/login_obs.dart';
 import 'package:gest_app/layout/authentication/register_gest.dart';
 import 'package:gest_app/layout/authentication/register_obs.dart';
 import 'package:gest_app/layout/authentication/linkobs_gest.dart';
 import 'package:gest_app/layout/authentication/vitalsigns_gest.dart';
-import 'package:gest_app/layout/gest/acc_config/gest_config.dart';
-import 'package:gest_app/layout/gest/acc_config/update_link.dart';
-import 'package:gest_app/layout/gest/home/metric_detail.dart';
 import 'package:gest_app/layout/gest/tabs.dart';
 import 'package:gest_app/layout/gest/acc_config/update_vitalsign.dart';
 import 'package:gest_app/layout/profiles/profile_gest.dart';
@@ -18,6 +14,8 @@ import 'package:gest_app/layout/start/start_page.dart';
 import 'package:gest_app/layout/monitoring/monitoring_obstetra.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gest_app/utilities/designs.dart';
+
+import 'layout/gest/acc_config/mi_obstetra.dart';
 
 Future<void> main() async {
   //! Pa web
@@ -53,13 +51,12 @@ class MyApp extends StatelessWidget {
         LoginObsWidget.id: (context) => const LoginObsWidget(),
         RegisterGest.id: (context) => const RegisterGest(),
         LoginGest.id: (context) => const LoginGest(),
-        '/gestConfig': (context) => const GestConfig(),
         LinkObsGest.id: (context) => const LinkObsGest(),
-        '/UpdatelinkObstetra': (context) => const UpdateLinkObs(),
         VitalSignsGest.id: (context) => const VitalSignsGest(),
-        '/UpdatevitalSigns': (context) => const UpdateVitalSigns(),
-        '/profileGest': (context) => const ProfileGest(),
-        '/profileObs': (context) => const ProfileObs(),
+        UpdateVitalSigns.id: (context) => const UpdateVitalSigns(),
+        ProfileGest.id: (context) => const ProfileGest(),
+        ProfileObs.id: (context) => const ProfileObs(),
+        DatosObstetra.id: (context) => const DatosObstetra()
       },
     );
   }

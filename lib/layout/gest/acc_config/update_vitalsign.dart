@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:gest_app/service/gestante_service.dart';
 
 import '../../../data/model/gestante.dart';
+import '../../../utilities/designs.dart';
 
 class UpdateVitalSigns extends StatefulWidget {
   const UpdateVitalSigns({Key? key}) : super(key: key);
+
+  static String id = 'updatevitalSigns';
 
   @override
   State<UpdateVitalSigns> createState() => _UpdateVitalSignsState();
@@ -42,7 +45,7 @@ class _UpdateVitalSignsState extends State<UpdateVitalSigns> {
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.of(context).pop(),
           ),
-          title: Text("Constantes Vitales")),
+          title: Text("Configuración", style: kTituloCabezera)),
       body: FutureBuilder<Gestante>(
           future: getGestante(uid),
           builder: (context, snapshot) {
@@ -64,89 +67,141 @@ class _UpdateVitalSignsState extends State<UpdateVitalSigns> {
                 satOxigController.text = snapshot.data!.vitals!["satOxig"];
                 pesoController.text = snapshot.data!.vitals!["peso"];
                 glucoController.text = snapshot.data!.vitals!["gluco"];
-                return SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.only(top: 10, left: 8, right: 8, bottom: 3),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Constantes Vitales',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 20.0, horizontal: 10.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          'Actualice los datos que desee compartir con su obstetra asignada.',
+                          style: kInfo,
+                          textAlign: TextAlign.justify,
+                        ),
+                        VitalSignWidget(
+                          vitalSignController: actFisicaController,
+                          title: 'Actividad Física',
+                          infoMonitoreo:
+                              'Se monitorea el número de pasos de la aplicación Google Fit.',
+                          switchState:
+                              actFisicaController.text == "true" ? true : false,
+                          instrumento: '\u2022 Contador de Pasos',
+                          infoMedicion:
+                              'La actividad física ayuda a mejorar la condición física de las mujeres, se obtiene un peso más adecuado de la embarazada y se proporciona un mayor bienestar feta.',
+                          imagen: 'assets/IconsVitals/act_fisica_icon.png',
+                        ),
+                        VitalSignWidget(
+                          vitalSignController: freCardiController,
+                          title: 'Frecuencia Cardíaca',
+                          infoMonitoreo:
+                              'Se monitorea la frecuencia cardíaca (bpm) registrada en la aplicación Google Fit.',
+                          switchState:
+                              freCardiController.text == "true" ? true : false,
+                          instrumento: '\u2022 Pulsómetro',
+                          infoMedicion:
+                              'El control de la frecuencia cardíaca fetal es un procedimiento que se utiliza para evaluar el bienestar del feto mediante la determinación de la frecuencia y el ritmo de los latidos del corazón del feto.',
+                          imagen: 'assets/IconsVitals/fre_car_icon.png',
+                        ),
+                        // VitalSignWidget(
+                        //   vitalSignController: suenioController,
+                        //   title: 'Sueño',
+                        //   infoMonitoreo:
+                        //       'Se monitorea la duración del sueño (horas) registrada en la aplicación Google Fit.',
+                        //   switchState:
+                        //       suenioController.text == "true" ? true : false,
+                        //   instrumento: '',
+                        //   infoMedicion: '',
+                        //   imagen: '',
+                        // ),
+                        VitalSignWidget(
+                          vitalSignController: presArtController,
+                          title: 'Presión Arterial',
+                          infoMonitoreo:
+                              'Se monitorea la presión arterial (mmHg) registrada en la aplicación Google Fit.',
+                          switchState:
+                              presArtController.text == "true" ? true : false,
+                          instrumento: '\u2022 Tensiómetro',
+                          infoMedicion:
+                              'La presión arterial ayuda a controlar a que el feto reciba suficiente oxígeno y nutrientes. La presión alta indica la falta de cantidad suficiente de sangre.',
+                          imagen: 'assets/IconsVitals/pres_art_icon.png',
+                        ),
+                        VitalSignWidget(
+                          vitalSignController: satOxigController,
+                          title: 'Saturación de Oxígeno',
+                          infoMonitoreo:
+                              'Se monitorea la saturación de oxígeno (%) registrada en la aplicación Google Fit.',
+                          switchState:
+                              satOxigController.text == "true" ? true : false,
+                          instrumento: '\u2022 Pulsioxímetro',
+                          infoMedicion:
+                              'Se debe controlar el nivel de oxígeno en el cuerpo (%) para evitar problemas de desarrollo en el feto que puede afectar a sus órganos como su cerebro',
+                          imagen: 'assets/IconsVitals/sat_oxig_icon.png',
+                        ),
+                        VitalSignWidget(
+                          vitalSignController: pesoController,
+                          title: 'Peso',
+                          infoMonitoreo:
+                              'Se monitorea el peso gestacional (kg) registrada en la aplicación Google Fit.',
+                          switchState:
+                              pesoController.text == "true" ? true : false,
+                          instrumento: '\u2022 Báscula',
+                          infoMedicion:
+                              'El monitoreo del peso (kg) durante la gestación sirve para identificar una ganancia excesiva de peso y retención de peso postparto.',
+                          imagen: 'assets/IconsVitals/peso_icon.png',
+                        ),
+                        VitalSignWidget(
+                          vitalSignController: glucoController,
+                          title: 'Glucosa',
+                          infoMonitoreo:
+                              'Se monitorea el nivel de glucosa (g/dL) registrada en la aplicación Google Fit.',
+                          switchState:
+                              glucoController.text == "true" ? true : false,
+                          instrumento: '\u2022 Glucómetro',
+                          infoMedicion:
+                              'Los niveles altos de glucosa en la sangre pueden dar indicio a la diabetes gestacional y problemas en el desarollo feto como en el nacimiento del mismo.',
+                          imagen: 'assets/IconsVitals/gluco_icon.png',
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Center(
+                              child: ElevatedButton(
+                                onPressed: () => {
+                                  updateGestanteVitals(
+                                      uid,
+                                      actFisicaController.text,
+                                      freCardiController.text,
+                                      //suenioController.text,
+                                      presArtController.text,
+                                      satOxigController.text,
+                                      pesoController.text,
+                                      glucoController.text,
+                                      context)
+                                },
+                                child: const Text('GUARDAR'),
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          colorPrincipal),
+                                  foregroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.white),
+                                  fixedSize: MaterialStateProperty.all(
+                                      const Size(160.0, 46.0)),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 8, right: 8),
-                        child: Text(
-                          'Los datos serán recopilados a través de la aplicación Google Fit. ',
-                        ),
-                      ),
-                      VitalSignWidget(
-                        vitalSignController: actFisicaController,
-                        title: 'Actividad Física',
-                        content: 'Se monitorea el número de pasos de la aplicación Google Fit.',
-                        switchState: actFisicaController.text == "true" ? true : false,
-                      ),
-                      VitalSignWidget(
-                        vitalSignController: freCardiController,
-                        title: 'Frecuencia Cardíaca',
-                        content: 'Se monitorea la frecuencia cardíaca (bpm) registrada en la aplicación Google Fit.',
-                        switchState: freCardiController.text == "true" ? true : false,
-                      ),
-                      VitalSignWidget(
-                        vitalSignController: suenioController,
-                        title: 'Sueño',
-                        content: 'Se monitorea la duración del sueño (horas) registrada en la aplicación Google Fit.',
-                        switchState: suenioController.text == "true" ? true : false,
-                      ),
-                      VitalSignWidget(
-                        vitalSignController: presArtController,
-                        title: 'Presión Arterial',
-                        content: 'Se monitorea la presión arterial (mmHg) registrada en la aplicación Google Fit.',
-                        switchState: presArtController.text == "true" ? true : false,
-                      ),
-                      VitalSignWidget(
-                        vitalSignController: satOxigController,
-                        title: 'Saturación de Oxígeno',
-                        content: 'Se monitorea la saturación de oxígeno (%) registrada en la aplicación Google Fit.',
-                        switchState: satOxigController.text == "true" ? true : false,
-                      ),
-                      VitalSignWidget(
-                        vitalSignController: pesoController,
-                        title: 'Peso',
-                        content: 'Se monitorea el peso gestacional (kg) registrada en la aplicación Google Fit.',
-                        switchState: pesoController.text == "true" ? true : false,
-                      ),
-                      VitalSignWidget(
-                        vitalSignController: glucoController,
-                        title: 'Glucosa',
-                        content: 'Se monitorea el nivel de glucosa (g/dL) registrada en la aplicación Google Fit.',
-                        switchState: glucoController.text == "true" ? true : false,
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          child: ElevatedButton(
-                            onPressed: () => {
-                              updateGestanteVitals(
-                                  uid,
-                                  actFisicaController.text,
-                                  freCardiController.text,
-                                  suenioController.text,
-                                  presArtController.text,
-                                  satOxigController.text,
-                                  pesoController.text,
-                                  glucoController.text,
-                                  context)
-                            },
-                            child: const Text('GUARDAR'),
-                          ),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               default:
@@ -158,13 +213,23 @@ class _UpdateVitalSignsState extends State<UpdateVitalSigns> {
 }
 
 class VitalSignWidget extends StatefulWidget {
-  VitalSignWidget(
-      {Key? key, required this.vitalSignController, required this.title, required this.content, this.switchState})
-      : super(key: key);
+  VitalSignWidget({
+    required this.vitalSignController,
+    required this.title,
+    required this.infoMonitoreo,
+    this.switchState,
+    required this.instrumento,
+    required this.infoMedicion,
+    required this.imagen,
+  });
+
   final TextEditingController vitalSignController;
   final String title;
-  final String content;
+  final String infoMonitoreo;
   bool? switchState;
+  final String instrumento;
+  final String infoMedicion;
+  final String imagen;
 
   @override
   State<VitalSignWidget> createState() => _VitalSignState();
@@ -176,36 +241,51 @@ class _VitalSignState extends State<VitalSignWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 8, right: 8, top: 14),
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Row(
         children: <Widget>[
           Expanded(
-            flex: 8,
+            flex: 4,
             child: Column(
               children: <Widget>[
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    widget.title,
-                    style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-                  ),
+                Row(
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(widget.title, style: kTituloSignoConfig),
+                    ),
+                    SizedBox(
+                      height: 30.0,
+                      width: 30.0,
+                      child: IconButton(
+                        onPressed: () => infoSigno(context),
+                        icon: Icon(
+                          Icons.info_outline_rounded,
+                          color: colorSecundario,
+                        ),
+                        iconSize: 15.0,
+                      ),
+                    ),
+                  ],
                 ),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    widget.content,
-                    style: const TextStyle(color: Colors.blue),
+                    widget.infoMonitoreo,
+                    style: kInfoSignoConfig,
+                    textAlign: TextAlign.justify,
                   ),
                 ),
               ],
             ),
           ),
           Expanded(
-            flex: 2,
             child: Align(
               alignment: Alignment.centerRight,
               child: Switch(
-                value: widget.switchState != null ? widget.switchState! : _switch,
+                activeColor: colorPrincipal,
+                value:
+                    widget.switchState != null ? widget.switchState! : _switch,
                 onChanged: (value) {
                   setState(() {
                     widget.switchState = value;
@@ -220,16 +300,61 @@ class _VitalSignState extends State<VitalSignWidget> {
       ),
     );
   }
+
+  Future<void> infoSigno(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: Text(
+            widget.title,
+            style: kTituloSignoConfig,
+            textAlign: TextAlign.center,
+          ),
+          children: [
+            SimpleDialogOption(
+              child: Text(
+                widget.infoMedicion,
+                textAlign: TextAlign.justify,
+                style: kInfoSignoConfig,
+              ),
+            ),
+            SimpleDialogOption(
+              child: Image.asset(widget.imagen, height: 80.0, width: 80.0),
+            ),
+            SimpleDialogOption(
+              padding: EdgeInsets.only(left: 25, right: 25, top: 10),
+              child: Text(
+                'Instrumento de medición',
+                style: kTituloSignoConfig.copyWith(fontSize: 10.0),
+                textAlign: TextAlign.start,
+              ),
+            ),
+            SimpleDialogOption(
+                child: Text(widget.instrumento, style: kInfoSignoConfig))
+          ],
+        );
+      },
+    );
+  }
 }
 
-void updateGestanteVitals(String uid, String actFisica, String freCardi, String suenio, String presArt, String satOxig,
-    String peso, String gluco, BuildContext context) {
+void updateGestanteVitals(
+    String uid,
+    String actFisica,
+    String freCardi,
+    //String suenio,
+    String presArt,
+    String satOxig,
+    String peso,
+    String gluco,
+    BuildContext context) {
   GestanteService _gestanteService = GestanteService();
 
   final vitals = VitalSign(
       actFisica: actFisica,
       freCardi: freCardi,
-      suenio: suenio,
+      //suenio: suenio,
       presArt: presArt,
       satOxig: satOxig,
       peso: peso,
@@ -242,10 +367,4 @@ Future<Gestante> getGestante(String id) {
   GestanteService _gestanteService = GestanteService();
 
   return _gestanteService.getGestante(id);
-}
-
-void desvincularObstetra(String id, BuildContext context) {
-  GestanteService _gestanteService = GestanteService();
-
-  return _gestanteService.desvincularObstetra(id, context);
 }

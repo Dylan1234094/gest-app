@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:gest_app/data/model/gestante.dart';
 import 'package:gest_app/layout/authentication/linkobs_gest.dart';
 import 'package:gest_app/layout/gest/home/metric_detail.dart';
-import 'package:gest_app/layout/gest/home/vitals_page.dart';
 import 'package:gest_app/service/gestante_service.dart';
 import 'package:gest_app/utilities/designs.dart';
 

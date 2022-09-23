@@ -35,12 +35,11 @@ class _StartPageState extends State<StartPage> {
               Expanded(
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 95, vertical: 60),
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 50),
                   child: Container(
                     decoration: const BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage('assets/Gest_Icon.png'),
-                        //fit: BoxFit.fill,
                       ),
                       //shape: BoxShape.rectangle,
                     ),
