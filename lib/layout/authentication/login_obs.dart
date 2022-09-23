@@ -5,6 +5,8 @@ import 'package:gest_app/service/obstetra_service.dart';
 class LoginObsWidget extends StatelessWidget {
   const LoginObsWidget({Key? key}) : super(key: key);
 
+  static String id = 'loginObstetra';
+
   @override
   Widget build(BuildContext context) {
     return const LoginObs();

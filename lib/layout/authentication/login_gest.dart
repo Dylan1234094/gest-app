@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gest_app/layout/gest/tabs.dart';
+import '../../utilities/designs.dart';
 import 'package:gest_app/service/gestante_service.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class LoginGestWidget extends StatelessWidget {
   const LoginGestWidget({Key? key}) : super(key: key);
@@ -14,69 +16,68 @@ class LoginGestWidget extends StatelessWidget {
 class LoginGest extends StatefulWidget {
   const LoginGest({Key? key}) : super(key: key);
 
+  static String id = 'loginGestante';
+
   @override
   State<LoginGest> createState() => _LoginGestState();
 }
 
 class _LoginGestState extends State<LoginGest> {
+  final RoundedLoadingButtonController googleController =
+      RoundedLoadingButtonController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: SingleChildScrollView(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            const Padding(
-              padding: EdgeInsets.only(top: 20),
+            Padding(
+              padding: EdgeInsets.only(top: 20.0),
+              child: Text('Inicio de Sesión',
+                  textAlign: TextAlign.center, style: kTitulo),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 20.0),
               child: Text(
-                "Inicio de sesión",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                'Inicie sesión con su cuenta de Google para continuar con la configuración de su cuenta',
+                textAlign: TextAlign.justify,
+                style: kInfo,
               ),
             ),
-            const Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 25),
-                child: Text("Inicie sesión con su cuenta de Google para continuar con la configuración de su cuenta"),
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                loginGestante(context);
-              },
-              child: Ink(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black),
-                  color: Colors.white,
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.grey,
-                      blurRadius: 7,
-                      offset: Offset(0, 3), // changes position of shadow
-                    ),
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: RoundedLoadingButton(
+                controller: googleController,
+                color: Colors.white,
+                valueColor: colorPrincipal,
+                successColor: colorPrincipal,
+                elevation: 10,
+                onPressed: () => {loginGestante(context)},
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/google_icon.png',
+                        width: 30, height: 30),
+                    SizedBox(width: 5.0),
+                    Text(
+                      'Iniciar sesión con Google',
+                      style: TextStyle(
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w500,
+                          color: colorSecundario),
+                    )
                   ],
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(6),
-                  child: Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      Image.asset('assets/Google_G_icon.png', width: 25, height: 25), // <-- Use 'Image.asset(...)' here
-                      const SizedBox(width: 4),
-                      const Text('Iniciar sesión con Google')
-                    ],
-                  ),
-                ),
               ),
             ),
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 20),
-              width: 250,
-              height: 400,
-              decoration: const BoxDecoration(
-                image: DecorationImage(image: AssetImage('assets/Gest_Login.png'), fit: BoxFit.fill),
-                shape: BoxShape.rectangle,
-              ),
-            ),
+            Flexible(
+              child: Image.asset('assets/mujer_embarazada.png'),
+            )
           ],
         ),
       ),
@@ -87,7 +88,7 @@ class _LoginGestState extends State<LoginGest> {
 GestanteService _gestanteService = GestanteService();
 
 void loginGestante(BuildContext context) {
-  _dialogWait(context);
+  //_dialogWait(context);
   _gestanteService.signInGestante(context);
 }
 

@@ -12,19 +12,29 @@ import 'package:gest_app/service/obstetra_service.dart';
 import 'package:gest_app/shared/chat.dart';
 import 'package:gest_app/shared/drawer_gest.dart';
 
+import '../../utilities/designs.dart';
+
 class Tabs extends StatefulWidget {
   const Tabs({Key? key}) : super(key: key);
+
+  static String id = 'tabs';
 
   @override
   _TabsState createState() => _TabsState();
 }
 
 class _TabsState extends State<Tabs> {
-  int _currentIndex = 0;
+  int _selectedIndex = 0;
   var uid = FirebaseAuth.instance.currentUser!.uid;
 
   final List<Widget> _tabs = [HomePage(), GuidePage(), ExamPage()];
-  final _tabsName = ["INICIO", "GUÍAS", "EXÁMENES"];
+  //final _tabsName = ["INICIO", "GUÍAS", "EXÁMENES"];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,24 +66,30 @@ class _TabsState extends State<Tabs> {
           );
         }),
       ),
-      body: _tabs[_currentIndex],
-      appBar: AppBar(title: Text(_tabsName[_currentIndex])),
+      body: _tabs[_selectedIndex],
+      appBar: AppBar(),
       bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          onTap: (int index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          iconSize: 45.0,
-          backgroundColor: Colors.blue,
-          fixedColor: Colors.white,
-          type: BottomNavigationBarType.fixed,
-          items: [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: "INICIO"),
-            BottomNavigationBarItem(icon: Icon(Icons.feed_outlined), label: "GUÍAS"),
-            BottomNavigationBarItem(icon: Icon(Icons.health_and_safety_outlined), label: "EXÁMENES"),
-          ]),
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home, size: 40.0),
+            label: "INICIO",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.feed_outlined, size: 40.0),
+            label: "GUÍAS",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.monitor_heart_outlined, size: 40.0),
+            label: "EXÁMENES",
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        iconSize: 45.0,
+        backgroundColor: colorPrincipal,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white54,
+      ),
     );
   }
 }
