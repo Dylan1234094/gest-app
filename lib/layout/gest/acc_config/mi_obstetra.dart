@@ -307,6 +307,15 @@ Future<void> _dialogCodeNotFound(BuildContext context, String codeObs) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
+        contentPadding:
+            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: EdgeInsets.only(bottom: 10),
+        title: Text('Vinculación exitosa', style: TextStyle(fontSize: 13)),
+        content: Text(
+          'El/La obstetra ${obstetra.nombre} ${obstetra.apellido} estará controlando sus datos a partir del momento.',
+          style: kPopUpInfo,
+          textAlign: TextAlign.justify,
+        ),
         actions: <Widget>[
           TextButton(
             child: const Text("Aceptar"),
@@ -321,6 +330,41 @@ Future<void> _dialogCodeNotFound(BuildContext context, String codeObs) {
     },
   );
 }
+<<<<<<< HEAD
+
+Future<void> _dialogCodeNotFound(BuildContext context, String codeObs) {
+  return showDialog<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        actions: <Widget>[
+          TextButton(
+            child: const Text("Aceptar"),
+            style: TextButton.styleFrom(textStyle: Theme.of(context).textTheme.labelLarge),
+            onPressed: () => Navigator.pop(context),
+          )
+        ],
+        title: const Text("Código Inválido"),
+        content: Text(
+            "El código $codeObs no se encuentra asociado a ninguna obstetra.\n\nPor favor, consulte nuevamente con su especialista."),
+      );
+    },
+  );
+}
+
+void updateCodigoObstetra(String id, String codigoObs, String fcmToken, BuildContext context) {
+  GestanteService _gestanteService = GestanteService();
+
+  return _gestanteService.updateCodeObstetra(id, codigoObs, fcmToken, context);
+}
+
+Future<Obstetra> validateCodeObstetra(String codeObs) async {
+  GestanteService _gestanteService = GestanteService();
+
+  return await _gestanteService.validateCodeObstetra(codeObs);
+}
+=======
+>>>>>>> origin/diseños
 
 void updateCodigoObstetra(String id, String codigoObs, String fcmToken, BuildContext context) {
   GestanteService _gestanteService = GestanteService();

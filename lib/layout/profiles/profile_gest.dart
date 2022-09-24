@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gest_app/data/model/gestante.dart';
 import 'package:gest_app/service/gestante_service.dart';
-import 'package:gest_app/shared/date_input.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gest_app/shared/textfield_date.dart';
 import 'package:gest_app/utilities/designs.dart';
@@ -66,6 +65,30 @@ class _ViewFormGestState extends State<ViewFormGest> {
     super.dispose();
   }
 
+  void _successDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+          actionsPadding: EdgeInsets.only(bottom: 10),
+          title: const Text("Exito", style: TextStyle(fontSize: 13)),
+          content: Text(
+            'Datos actualizados correctamente.',
+            style: kPopUpInfo,
+            textAlign: TextAlign.justify,
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+              onPressed: () => Navigator.pop(context),
+            )
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var correo = FirebaseAuth.instance.currentUser!.email;
@@ -105,155 +128,131 @@ class _ViewFormGestState extends State<ViewFormGest> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              const Padding(
-                                padding: EdgeInsets.only(left: 8, right: 8, bottom: 10),
-                                child: Text('Actualice sus datos personales', style: kInfo),
-                              ),
-                              Padding(
-                                //! Nombre
-                                padding: const EdgeInsets.all(8),
-                                child: TextFormField(
-                                  controller: nombreController,
-                                  inputFormatters: <TextInputFormatter>[
-                                    FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
-                                  ],
-                                  keyboardType: TextInputType.text,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: "Nombre",
-                                  ),
-                                  validator: (value) {
-                                    return ValidateText("Nombre", value!);
-                                  },
-                                ),
-                              ),
-                              Padding(
-                                //! Apellido
-                                padding: const EdgeInsets.all(8),
-                                child: TextFormField(
-                                  controller: apellidoController,
-                                  inputFormatters: <TextInputFormatter>[
-                                    FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
-                                  ],
-                                  keyboardType: TextInputType.text,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: "Apellido",
-                                  ),
-                                  validator: (value) {
-                                    return ValidateText("Apellido", value!);
-                                  },
-                                ),
-                              ),
-                              Padding(
-                                //! Celular
-                                padding: const EdgeInsets.all(8),
-                                child: TextFormField(
-                                  controller: telefonoController,
-                                  keyboardType: TextInputType.number,
-                                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: "Celular",
-                                  ),
-                                  validator: (value) {
-                                    return ValidatePhoneNumber(value!);
-                                  },
-                                ),
-                              ),
-                              Padding(
-                                //! Correo
-                                padding: const EdgeInsets.all(8),
-                                child: TextFormField(
-                                  enabled: false,
-                                  controller: correoController,
-                                  keyboardType: TextInputType.emailAddress,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: "Correo",
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                  //! DNI
-                                  padding: const EdgeInsets.all(8),
-                                  child: TextFormField(
-                                      controller: dniController,
-                                      keyboardType: TextInputType.number,
-                                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                      decoration: const InputDecoration(
-                                        border: OutlineInputBorder(),
-                                        labelText: "DNI",
-                                      ),
-                                      validator: (value) {
-                                        return ValidateDNI(value!);
-                                      })),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: MyTextFormDate(
-                                  label: 'Fecha de nacimiento',
-                                  dateController: fechaNacimientoController,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: MyTextFormDate(
-                                  label: 'Fecha de última regla',
-                                  dateController: fechaReglaController,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: MyTextFormDate(
-                                  label: 'Fecha de primera ecografía',
-                                  dateController: fechaEcoController,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: MyTextFormDate(
-                                  label: 'Fecha de primera cita',
-                                  dateController: fechaCitaController,
-                                ),
-                              ),
+                          const Padding(
+                            padding: EdgeInsets.only(bottom: 10.0),
+                            child: Text('Actualice sus datos personales', style: kInfo),
+                          ),
+                          InputTextWidget(
+                            //! Nombre
+                            Controller: nombreController,
+                            Formatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
                             ],
+                            Label: 'Nombre(s)',
+                            inputType: TextInputType.text,
+                            Validator: (value) {
+                              return ValidateText("Nombre", value!);
+                            },
+                            Enabled: true,
+                          ),
+                          InputTextWidget(
+                            //! Apellido
+                            Controller: apellidoController,
+                            Formatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
+                            ],
+                            Label: 'Apellido(s)',
+                            inputType: TextInputType.text,
+                            Validator: (value) {
+                              return ValidateText("Apellido", value!);
+                            },
+                            Enabled: true,
+                          ),
+                          InputTextWidget(
+                            //! Celular
+                            Controller: telefonoController,
+                            Formatters: [FilteringTextInputFormatter.digitsOnly],
+                            Label: 'Celular',
+                            inputType: TextInputType.number,
+                            Validator: (value) {
+                              return ValidatePhoneNumber(value!);
+                            },
+                            Enabled: true,
+                          ),
+                          InputTextWidget(
+                            //! Correo
+                            Controller: correoController,
+                            Formatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
+                            ],
+                            Label: 'Correo',
+                            inputType: TextInputType.emailAddress,
+                            Enabled: false,
+                          ),
+                          InputTextWidget(
+                            //! DNI
+                            Controller: dniController,
+                            Formatters: [FilteringTextInputFormatter.digitsOnly],
+                            Label: 'DNI',
+                            inputType: TextInputType.number,
+                            Validator: (value) {
+                              return ValidateDNI(value!);
+                            },
+                            Enabled: true,
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all<Color>(colorPrincipal),
-                                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                                fixedSize: MaterialStateProperty.all(const Size(160.0, 46.0)),
-                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
+                            padding: const EdgeInsets.all(8.0),
+                            child: MyTextFormDate(
+                              label: 'Fecha de nacimiento',
+                              dateController: fechaNacimientoController,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: MyTextFormDate(
+                              label: 'Fecha de última regla',
+                              dateController: fechaReglaController,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: MyTextFormDate(
+                              label: 'Fecha de primera ecografía',
+                              dateController: fechaEcoController,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: MyTextFormDate(
+                              label: 'Fecha de primera cita',
+                              dateController: fechaCitaController,
+                            ),
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(20.0),
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all<Color>(colorPrincipal),
+                                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                                  fixedSize: MaterialStateProperty.all(const Size(160.0, 46.0)),
+                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              onPressed: () => {
-                                if (_keyForm.currentState!.validate())
-                                  {
-                                    updateGestante(
-                                        uid,
-                                        nombreController.text,
-                                        apellidoController.text,
-                                        telefonoController.text,
-                                        dniController.text,
-                                        fechaNacimientoController.text,
-                                        fechaReglaController.text,
-                                        fechaEcoController.text,
-                                        fechaCitaController.text,
-                                        context)
-                                  }
-                              },
-                              child: const Text(
-                                'GUARDAR',
-                                style: kTextoBoton,
+                                onPressed: () => {
+                                  if (_keyForm.currentState!.validate())
+                                    {
+                                      updateGestante(
+                                          uid,
+                                          nombreController.text,
+                                          apellidoController.text,
+                                          telefonoController.text,
+                                          dniController.text,
+                                          fechaNacimientoController.text,
+                                          fechaReglaController.text,
+                                          fechaEcoController.text,
+                                          fechaCitaController.text,
+                                          context)
+                                    },
+                                  _successDialog(context)
+                                },
+                                child: const Text('GUARDAR', style: kTextoBoton),
                               ),
                             ),
                           ),
@@ -266,6 +265,45 @@ class _ViewFormGestState extends State<ViewFormGest> {
                 return const Text("Algo salió mal");
             }
           }),
+    );
+  }
+}
+
+class InputTextWidget extends StatelessWidget {
+  InputTextWidget({
+    required this.Controller,
+    required this.Formatters,
+    required this.Label,
+    required this.inputType,
+    this.Validator,
+    required this.Enabled,
+  });
+
+  final TextEditingController Controller;
+  final TextInputType inputType;
+  final List<TextInputFormatter> Formatters;
+  final String Label;
+  final FormFieldValidator<String>? Validator;
+  final bool Enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        style: TextStyle(fontSize: 13.0),
+        enabled: Enabled,
+        controller: Controller,
+        keyboardType: inputType,
+        inputFormatters: Formatters,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+          border: OutlineInputBorder(),
+          labelText: Label,
+          labelStyle: kInfo,
+        ),
+        validator: Validator,
+      ),
     );
   }
 }
@@ -312,7 +350,7 @@ String? ValidateDNI(String value) {
     return 'DNI es obligatorio';
   }
   if (value.length != 8) {
-    return 'Celular debe tener 8 dígitos';
+    return 'DNI debe tener 8 dígitos';
   }
   return null;
 }

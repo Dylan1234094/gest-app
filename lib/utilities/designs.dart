@@ -11,7 +11,7 @@ const kTitulo = TextStyle(
 
 const kInfo = TextStyle(
   fontWeight: FontWeight.w300,
-  fontSize: 14.0,
+  fontSize: 13.0,
 );
 
 const kTituloCabezera = TextStyle(
@@ -48,6 +48,10 @@ const kInfoSignoConfig = TextStyle(
   fontWeight: FontWeight.w300,
   fontSize: 10.0,
   color: colorPrincipal,
+);
+
+const kPopUpInfo = TextStyle(
+  fontSize: 11.0,
 );
 
 ButtonStyle estiloBoton = ButtonStyle(
