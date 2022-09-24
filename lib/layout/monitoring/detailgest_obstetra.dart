@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:gest_app/data/model/gestante.dart';
-import 'package:gest_app/layout/gest/home/home.dart';
+import 'package:gest_app/layout/gest/home/metric_detail.dart';
 import 'package:gest_app/service/gestante_service.dart';
 import 'package:intl/intl.dart' as intl;
 
@@ -18,7 +18,7 @@ class _DetailMonitorGestState extends State<DetailMonitorGest> {
   late TabController tabController;
   final actFisicaController = TextEditingController();
   final freCardiController = TextEditingController();
-  final suenioController = TextEditingController();
+  // final suenioController = TextEditingController();
   final presArtController = TextEditingController();
   final satOxigController = TextEditingController();
   final pesoController = TextEditingController();
@@ -33,7 +33,7 @@ class _DetailMonitorGestState extends State<DetailMonitorGest> {
   void dispose() {
     actFisicaController.dispose();
     freCardiController.dispose();
-    suenioController.dispose();
+    // suenioController.dispose();
     presArtController.dispose();
     satOxigController.dispose();
     pesoController.dispose();
@@ -67,7 +67,6 @@ class _DetailMonitorGestState extends State<DetailMonitorGest> {
                 case ConnectionState.done:
                   actFisicaController.text = snapshotGest.data!.vitals!["actFisica"];
                   freCardiController.text = snapshotGest.data!.vitals!["freCardi"];
-                  suenioController.text = snapshotGest.data!.vitals!["suenio"];
                   presArtController.text = snapshotGest.data!.vitals!["presArt"];
                   satOxigController.text = snapshotGest.data!.vitals!["satOxig"];
                   pesoController.text = snapshotGest.data!.vitals!["peso"];
@@ -119,7 +118,7 @@ class _DetailMonitorGestState extends State<DetailMonitorGest> {
                               ),
                               Text('Edad gestacional', style: TextStyle(fontStyle: FontStyle.normal, fontSize: 16)),
                               Text(
-                                  '${DateTime.now().difference(intl.DateFormat("dd/MM/yyyy hh:mm:ss").parse(snapshotGest.data!.fechaRegla! + " 00:00:00")).inDays} días de embarazo',
+                                  '${(DateTime.now().difference(intl.DateFormat("dd/MM/yyyy hh:mm:ss").parse(snapshotGest.data!.fechaRegla! + " 00:00:00")).inDays).round()} semanas de embarazo',
                                   textAlign: TextAlign.left,
                                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
                             ],
@@ -138,7 +137,7 @@ class _DetailMonitorGestState extends State<DetailMonitorGest> {
                         ),
                         Container(
                             child: (actFisicaController.text == "true")
-                                ? VitalCard(
+                                ? VitalCardObs(
                                     userType: "obs",
                                     title: "Actividad Física",
                                     iconPath: "assets/IconsVitals/act_fisica_icon.png",
@@ -149,7 +148,7 @@ class _DetailMonitorGestState extends State<DetailMonitorGest> {
                                 : null),
                         Container(
                             child: (freCardiController.text == "true")
-                                ? VitalCard(
+                                ? VitalCardObs(
                                     userType: "obs",
                                     title: "Frecuencia Cardíaca",
                                     iconPath: "assets/IconsVitals/fre_car_icon.png",
@@ -160,7 +159,7 @@ class _DetailMonitorGestState extends State<DetailMonitorGest> {
                                 : null),
                         Container(
                             child: (glucoController.text == "true")
-                                ? VitalCard(
+                                ? VitalCardObs(
                                     userType: "obs",
                                     title: "Glucosa",
                                     iconPath: "assets/IconsVitals/gluco_icon.png",
@@ -171,7 +170,7 @@ class _DetailMonitorGestState extends State<DetailMonitorGest> {
                                 : null),
                         Container(
                             child: (pesoController.text == "true")
-                                ? VitalCard(
+                                ? VitalCardObs(
                                     userType: "obs",
                                     title: "Peso",
                                     iconPath: "assets/IconsVitals/peso_icon.png",
@@ -182,7 +181,7 @@ class _DetailMonitorGestState extends State<DetailMonitorGest> {
                                 : null),
                         Container(
                             child: (presArtController.text == "true")
-                                ? VitalCard(
+                                ? VitalCardObs(
                                     userType: "obs",
                                     title: "Presión Arterial",
                                     iconPath: "assets/IconsVitals/pres_art_icon.png",
@@ -193,7 +192,7 @@ class _DetailMonitorGestState extends State<DetailMonitorGest> {
                                 : null),
                         Container(
                             child: (satOxigController.text == "true")
-                                ? VitalCard(
+                                ? VitalCardObs(
                                     userType: "obs",
                                     title: "Saturación de Oxígeno",
                                     iconPath: "assets/IconsVitals/sat_oxig_icon.png",
@@ -202,17 +201,17 @@ class _DetailMonitorGestState extends State<DetailMonitorGest> {
                                     rtoken: snapshotGest.data!.rtoken!,
                                   )
                                 : null),
-                        Container(
-                            child: (suenioController.text == "true")
-                                ? VitalCard(
-                                    userType: "obs",
-                                    title: "Sueño",
-                                    iconPath: "assets/IconsVitals/suenio_icon.png",
-                                    vitalSign: "suenio",
-                                    unit: "h",
-                                    rtoken: snapshotGest.data!.rtoken!,
-                                  )
-                                : null),
+                        // Container(
+                        //     child: (suenioController.text == "true")
+                        //         ? VitalCardObs(
+                        //             userType: "obs",
+                        //             title: "Sueño",
+                        //             iconPath: "assets/IconsVitals/suenio_icon.png",
+                        //             vitalSign: "suenio",
+                        //             unit: "h",
+                        //             rtoken: snapshotGest.data!.rtoken!,
+                        //           )
+                        //         : null),
                       ],
                     );
                   } else {
@@ -236,8 +235,87 @@ Future<Gestante> getGestante(String id) {
   return _gestanteService.getGestante(id);
 }
 
-class _ChartData {
-  _ChartData({this.x, this.y});
-  final DateTime? x;
-  final int? y;
+class VitalCardObs extends StatefulWidget {
+  VitalCardObs(
+      {Key? key,
+      required this.userType,
+      required this.title,
+      required this.iconPath,
+      required this.vitalSign,
+      required this.unit,
+      required this.rtoken})
+      : super(key: key);
+  final String userType;
+  final String title;
+  final String iconPath;
+  final String vitalSign;
+  final String unit;
+  final String rtoken;
+  @override
+  State<VitalCardObs> createState() => _VitalCardObsState();
+}
+
+class _VitalCardObsState extends State<VitalCardObs> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 700,
+      padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(builder: (BuildContext context) {
+              return MetricDetailPage(
+                userType: widget.userType,
+                vitalSignName: widget.title,
+                vitalSign: widget.vitalSign,
+                unit: widget.unit,
+                rtoken: widget.rtoken,
+              ); //! GuideId
+            }),
+          );
+        },
+        child: Card(
+          child: Row(children: <Widget>[
+            Expanded(
+              flex: 2,
+              child: Align(
+                alignment: Alignment.center,
+                child: Padding(
+                    padding: const EdgeInsets.only(right: 4, top: 3, bottom: 6),
+                    child: Container(
+                      height: 35.0,
+                      width: 35.0,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(widget.iconPath),
+                          fit: BoxFit.fill,
+                        ),
+                        shape: BoxShape.rectangle,
+                      ),
+                    )),
+              ),
+            ),
+            Expanded(
+              flex: 8,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      widget.title,
+                      textAlign: TextAlign.end,
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                    ),
+                    Text('Gráfico evolutivo',
+                        textAlign: TextAlign.left, style: TextStyle(fontStyle: FontStyle.italic, fontSize: 18))
+                  ],
+                ),
+              ),
+            ),
+          ]),
+        ),
+      ),
+    );
+  }
 }

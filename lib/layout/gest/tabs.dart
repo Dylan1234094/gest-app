@@ -17,7 +17,7 @@ import '../../utilities/designs.dart';
 class Tabs extends StatefulWidget {
   const Tabs({Key? key}) : super(key: key);
 
-  static String id = 'tabs';
+  static String id = '/tabs';
 
   @override
   _TabsState createState() => _TabsState();

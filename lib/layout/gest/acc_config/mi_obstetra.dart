@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gest_app/layout/monitoring/gest_list.dart';
+import 'package:gest_app/service/obstetra_service.dart';
 
 import '../../../data/model/gestante.dart';
 import '../../../data/model/obstetra.dart';
@@ -11,7 +13,7 @@ import '../../monitoring/detailgest_obstetra.dart';
 class DatosObstetra extends StatefulWidget {
   const DatosObstetra({Key? key}) : super(key: key);
 
-  static String id = 'datosObstetra';
+  static String id = '/datosObstetra';
 
   @override
   State<DatosObstetra> createState() => _DatosObstetraState();
@@ -27,8 +29,7 @@ class _DatosObstetraState extends State<DatosObstetra> {
       context: context,
       builder: (BuildContext ctx) {
         return AlertDialog(
-          contentPadding:
-              EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+          contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
           actionsPadding: EdgeInsets.only(bottom: 10),
           title: Text(
             '¿Estás seguro de desvincular obstetra?',
@@ -36,15 +37,13 @@ class _DatosObstetraState extends State<DatosObstetra> {
           ),
           content: RichText(
             text: TextSpan(
-              text:
-                  'La obstetra actualmente vinculada dejará de controlar sus datos.',
+              text: 'La obstetra actualmente vinculada dejará de controlar sus datos.',
               style: DefaultTextStyle.of(context).style,
             ),
           ),
           actions: [
             TextButton(
-              child: Text("CANCELAR",
-                  style: TextStyle(fontSize: 10, color: colorSecundario)),
+              child: Text("CANCELAR", style: TextStyle(fontSize: 10, color: colorSecundario)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -82,152 +81,144 @@ class _DatosObstetraState extends State<DatosObstetra> {
                 child: CircularProgressIndicator(),
               );
             case (ConnectionState.done):
-              if (!snapshot.hasData) {
-                return const Center(
-                  child: Text("Algo salió mal..."),
-                );
+              if (snapshot.hasData) {
+                return FutureBuilder<Obstetra>(
+                    future: validateCodeObstetra(snapshot.data!.codigoObstetra!),
+                    builder: (context, snapshotObs) {
+                      switch (snapshotObs.connectionState) {
+                        case (ConnectionState.waiting):
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        case (ConnectionState.done):
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+                            child: snapshotObs.data!.codigoObstetra! != ""
+                                ? Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 10.0),
+                                        child: Text(
+                                          'Nombre: ${snapshotObs.data!.nombre!}',
+                                          textAlign: TextAlign.start,
+                                          style: kInfo,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 20.0),
+                                        child: Text('Apellido: ${snapshotObs.data!.nombre!}',
+                                            textAlign: TextAlign.start, style: kInfo),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 20.0),
+                                        child: Text('Correo: ${snapshotObs.data!.correo!}',
+                                            textAlign: TextAlign.start, style: kInfo),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 20.0),
+                                        child: Text('Código: ${snapshotObs.data!.codigoObstetra!}',
+                                            textAlign: TextAlign.start, style: kInfo),
+                                      ),
+                                      Center(
+                                        child: Padding(
+                                          padding: EdgeInsets.all(20.0),
+                                          child: ElevatedButton(
+                                            onPressed: () => {ConfirmDialog(context)},
+                                            child: const Text('DESVINCULAR', style: kTextoBoton),
+                                            style: ButtonStyle(
+                                              backgroundColor: MaterialStateProperty.all<Color>(colorPrincipal),
+                                              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                                              fixedSize: MaterialStateProperty.all(const Size(160.0, 46.0)),
+                                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(10.0),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                : SingleChildScrollView(
+                                    child: Form(
+                                      key: _keyForm,
+                                      child: Column(
+                                        children: <Widget>[
+                                          const Padding(
+                                            padding: EdgeInsets.only(top: 10, left: 8, right: 8, bottom: 3),
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                'Código de obstetra',
+                                                style: TextStyle(fontWeight: FontWeight.bold),
+                                              ),
+                                            ),
+                                          ),
+                                          const Padding(
+                                            padding: EdgeInsets.only(left: 8, right: 8, bottom: 10),
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                'Ingresa el código de una Obstetra para enviar los resultados del monitoreo a su cuenta',
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            //! Código Obstetra
+                                            padding: const EdgeInsets.all(8),
+                                            child: TextFormField(
+                                              controller: obsCodeController,
+                                              keyboardType: TextInputType.number,
+                                              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                              decoration: const InputDecoration(
+                                                border: OutlineInputBorder(),
+                                                labelText: "Código Obstetra",
+                                              ),
+                                              validator: (value) {
+                                                return ValidateCodeFormat(value!);
+                                              },
+                                            ),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.centerRight,
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                                              child: ElevatedButton(
+                                                onPressed: () => {
+                                                  if (_keyForm.currentState!.validate())
+                                                    {
+                                                      _dialogWait(context),
+                                                      validateCodeObstetra(obsCodeController.text).then((value) {
+                                                        if (value.id != "") {
+                                                          Navigator.pop(context);
+                                                          _dialogCodeFound(context, value);
+                                                        } else {
+                                                          Navigator.pop(context);
+                                                          _dialogCodeNotFound(context, obsCodeController.text);
+                                                        }
+                                                      })
+                                                    }
+                                                },
+                                                child: const Text('SIGUIENTE'),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                          );
+                        default:
+                          return const Text("Algo salió mal");
+                      }
+                    });
+              } else {
+                //GET ERROR BODY
+                return const Text("ERROR BODY");
               }
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 20.0, horizontal: 10.0),
-                child: snapshot.data!.codigoObstetra! != ""
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(top: 10.0),
-                            child: Text(
-                              'Nombre: ',
-                              textAlign: TextAlign.start,
-                              style: kInfo,
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 20.0),
-                            child: Text('Apellido: ',
-                                textAlign: TextAlign.start, style: kInfo),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 20.0),
-                            child: Text('Correo: ',
-                                textAlign: TextAlign.start, style: kInfo),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 20.0),
-                            child: Text(
-                                'Código: ${snapshot.data!.codigoObstetra!}',
-                                textAlign: TextAlign.start,
-                                style: kInfo),
-                          ),
-                          Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(20.0),
-                              child: ElevatedButton(
-                                onPressed: () => {ConfirmDialog(context)},
-                                child: const Text('DESVINCULAR',
-                                    style: kTextoBoton),
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          colorPrincipal),
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.white),
-                                  fixedSize: MaterialStateProperty.all(
-                                      const Size(160.0, 46.0)),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      )
-                    : Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(top: 20.0),
-                            child: Text('Vinculación con Obstetra',
-                                textAlign: TextAlign.center, style: kTitulo),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 20.0),
-                            child: Text(
-                              'Ingresa el código de un(a) obstetra para compartirle sus resultados del monitoreo',
-                              textAlign: TextAlign.justify,
-                              style: kInfo,
-                            ),
-                          ),
-                          Padding(
-                            //! Código Obstetra
-                            padding: const EdgeInsets.symmetric(vertical: 20),
-                            child: TextFormField(
-                              controller: obsCodeController,
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: "Código Obstetra",
-                              ),
-                              validator: (value) {
-                                return ValidateCodeFormat(value!);
-                              },
-                            ),
-                          ),
-                          Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(20.0),
-                              child: ElevatedButton(
-                                onPressed: () => {
-                                  if (_keyForm.currentState!.validate())
-                                    {
-                                      _dialogWait(context),
-                                      validateCodeObstetra(
-                                              obsCodeController.text)
-                                          .then((value) {
-                                        if (value.id != "") {
-                                          Navigator.pop(context);
-                                          _dialogCodeFound(context, value);
-                                        } else {
-                                          Navigator.pop(context);
-                                          _dialogCodeNotFound(
-                                              context, obsCodeController.text);
-                                        }
-                                      })
-                                    }
-                                },
-                                child: const Text('VINCULAR'),
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          colorPrincipal),
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.white),
-                                  fixedSize: MaterialStateProperty.all(
-                                      const Size(160.0, 46.0)),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-              );
             default:
               return const Text("Algo salió mal");
           }
@@ -272,12 +263,6 @@ Future<void> _dialogWait(BuildContext context) {
   );
 }
 
-Future<Obstetra> validateCodeObstetra(String codeObs) async {
-  GestanteService _gestanteService = GestanteService();
-
-  return await _gestanteService.validateCodeObstetra(codeObs);
-}
-
 Future<void> _dialogCodeFound(BuildContext context, Obstetra obstetra) {
   var uid = FirebaseAuth.instance.currentUser!.uid;
 
@@ -285,8 +270,7 @@ Future<void> _dialogCodeFound(BuildContext context, Obstetra obstetra) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Vinculación exitosa',
@@ -301,8 +285,7 @@ Future<void> _dialogCodeFound(BuildContext context, Obstetra obstetra) {
                 text: '${obstetra.nombre} ${obstetra.apellido}.',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              TextSpan(
-                  text: 'estará controlando sus datos a partir del momento.')
+              TextSpan(text: 'estará controlando sus datos a partir del momento.')
             ],
           ),
         ),
@@ -310,19 +293,13 @@ Future<void> _dialogCodeFound(BuildContext context, Obstetra obstetra) {
           TextButton(
             child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
             onPressed: () {
-              updateCodigoObstetra(uid, obstetra.codigoObstetra!, context);
+              updateCodigoObstetra(uid, obstetra.codigoObstetra!, obstetra.fcmToken!, context);
             },
           )
         ],
       );
     },
   );
-}
-
-void updateCodigoObstetra(String id, String codigoObs, BuildContext context) {
-  GestanteService _gestanteService = GestanteService();
-
-  return _gestanteService.updateCodeObstetra(id, codigoObs, context);
 }
 
 Future<void> _dialogCodeNotFound(BuildContext context, String codeObs) {
@@ -333,8 +310,7 @@ Future<void> _dialogCodeNotFound(BuildContext context, String codeObs) {
         actions: <Widget>[
           TextButton(
             child: const Text("Aceptar"),
-            style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge),
+            style: TextButton.styleFrom(textStyle: Theme.of(context).textTheme.labelLarge),
             onPressed: () => Navigator.pop(context),
           )
         ],
@@ -344,4 +320,16 @@ Future<void> _dialogCodeNotFound(BuildContext context, String codeObs) {
       );
     },
   );
+}
+
+void updateCodigoObstetra(String id, String codigoObs, String fcmToken, BuildContext context) {
+  GestanteService _gestanteService = GestanteService();
+
+  return _gestanteService.updateCodeObstetra(id, codigoObs, fcmToken, context);
+}
+
+Future<Obstetra> validateCodeObstetra(String codeObs) async {
+  GestanteService _gestanteService = GestanteService();
+
+  return await _gestanteService.validateCodeObstetra(codeObs);
 }

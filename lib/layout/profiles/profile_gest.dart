@@ -10,7 +10,7 @@ import 'package:gest_app/utilities/designs.dart';
 class ProfileGest extends StatelessWidget {
   const ProfileGest({Key? key}) : super(key: key);
 
-  static String id = 'profileGest';
+  static String id = '/profileGest';
 
   @override
   Widget build(BuildContext context) {
@@ -36,16 +36,8 @@ class registerGestArguments {
   final String fechaEco;
   final String fechaCita;
 
-  registerGestArguments(
-      this.nombre,
-      this.apellido,
-      this.correo,
-      this.telefono,
-      this.dni,
-      this.fechaNacimiento,
-      this.fechaRegla,
-      this.fechaEco,
-      this.fechaCita);
+  registerGestArguments(this.nombre, this.apellido, this.correo, this.telefono, this.dni, this.fechaNacimiento,
+      this.fechaRegla, this.fechaEco, this.fechaCita);
 }
 
 class _ViewFormGestState extends State<ViewFormGest> {
@@ -103,8 +95,7 @@ class _ViewFormGestState extends State<ViewFormGest> {
                 apellidoController.text = snapshot.data!.apellido!;
                 telefonoController.text = snapshot.data!.telefono!;
                 dniController.text = snapshot.data!.dni!;
-                fechaNacimientoController.text =
-                    snapshot.data!.fechaNacimiento!;
+                fechaNacimientoController.text = snapshot.data!.fechaNacimiento!;
                 fechaReglaController.text = snapshot.data!.fechaRegla!;
                 fechaEcoController.text = snapshot.data!.fechaEco!;
                 fechaCitaController.text = snapshot.data!.fechaCita!;
@@ -112,18 +103,15 @@ class _ViewFormGestState extends State<ViewFormGest> {
                   child: Form(
                     key: _keyForm,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 20.0, horizontal: 10.0),
+                      padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
                       child: Column(
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               const Padding(
-                                padding: EdgeInsets.only(
-                                    left: 8, right: 8, bottom: 10),
-                                child: Text('Actualice sus datos personales',
-                                    style: kInfo),
+                                padding: EdgeInsets.only(left: 8, right: 8, bottom: 10),
+                                child: Text('Actualice sus datos personales', style: kInfo),
                               ),
                               Padding(
                                 //! Nombre
@@ -131,8 +119,7 @@ class _ViewFormGestState extends State<ViewFormGest> {
                                 child: TextFormField(
                                   controller: nombreController,
                                   inputFormatters: <TextInputFormatter>[
-                                    FilteringTextInputFormatter.allow(
-                                        RegExp("[a-zA-Z ]")),
+                                    FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
                                   ],
                                   keyboardType: TextInputType.text,
                                   decoration: const InputDecoration(
@@ -150,8 +137,7 @@ class _ViewFormGestState extends State<ViewFormGest> {
                                 child: TextFormField(
                                   controller: apellidoController,
                                   inputFormatters: <TextInputFormatter>[
-                                    FilteringTextInputFormatter.allow(
-                                        RegExp("[a-zA-Z ]")),
+                                    FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
                                   ],
                                   keyboardType: TextInputType.text,
                                   decoration: const InputDecoration(
@@ -169,9 +155,7 @@ class _ViewFormGestState extends State<ViewFormGest> {
                                 child: TextFormField(
                                   controller: telefonoController,
                                   keyboardType: TextInputType.number,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly
-                                  ],
+                                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     labelText: "Celular",
@@ -200,9 +184,7 @@ class _ViewFormGestState extends State<ViewFormGest> {
                                   child: TextFormField(
                                       controller: dniController,
                                       keyboardType: TextInputType.number,
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.digitsOnly
-                                      ],
+                                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                                       decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         labelText: "DNI",
@@ -244,16 +226,10 @@ class _ViewFormGestState extends State<ViewFormGest> {
                             padding: const EdgeInsets.all(10.0),
                             child: ElevatedButton(
                               style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        colorPrincipal),
-                                foregroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Colors.white),
-                                fixedSize: MaterialStateProperty.all(
-                                    const Size(160.0, 46.0)),
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
+                                backgroundColor: MaterialStateProperty.all<Color>(colorPrincipal),
+                                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                                fixedSize: MaterialStateProperty.all(const Size(160.0, 46.0)),
+                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
@@ -300,21 +276,12 @@ Future<Gestante> getGestante(String id) {
   return _gestanteService.getGestante(id);
 }
 
-void updateGestante(
-    String id,
-    String nombre,
-    String apellido,
-    String telefono,
-    String dni,
-    String fechaNacimiento,
-    String fechaRegla,
-    String fechaEco,
-    String fechaCita,
-    BuildContext context) {
+void updateGestante(String id, String nombre, String apellido, String telefono, String dni, String fechaNacimiento,
+    String fechaRegla, String fechaEco, String fechaCita, BuildContext context) {
   GestanteService _gestanteService = GestanteService();
 
-  _gestanteService.updateGestante(id, nombre, apellido, telefono, dni,
-      fechaNacimiento, fechaRegla, fechaEco, fechaCita, context);
+  _gestanteService.updateGestante(
+      id, nombre, apellido, telefono, dni, fechaNacimiento, fechaRegla, fechaEco, fechaCita, context);
 }
 
 String? ValidateText(String label, String value) {

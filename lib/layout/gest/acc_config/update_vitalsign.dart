@@ -8,7 +8,7 @@ import '../../../utilities/designs.dart';
 class UpdateVitalSigns extends StatefulWidget {
   const UpdateVitalSigns({Key? key}) : super(key: key);
 
-  static String id = 'updatevitalSigns';
+  static String id = '/UpdatevitalSigns';
 
   @override
   State<UpdateVitalSigns> createState() => _UpdateVitalSignsState();
@@ -62,14 +62,12 @@ class _UpdateVitalSignsState extends State<UpdateVitalSigns> {
                 }
                 actFisicaController.text = snapshot.data!.vitals!["actFisica"];
                 freCardiController.text = snapshot.data!.vitals!["freCardi"];
-                suenioController.text = snapshot.data!.vitals!["suenio"];
                 presArtController.text = snapshot.data!.vitals!["presArt"];
                 satOxigController.text = snapshot.data!.vitals!["satOxig"];
                 pesoController.text = snapshot.data!.vitals!["peso"];
                 glucoController.text = snapshot.data!.vitals!["gluco"];
                 return Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 20.0, horizontal: 10.0),
+                  padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
                   child: SingleChildScrollView(
                     child: Column(
                       children: <Widget>[
@@ -81,10 +79,8 @@ class _UpdateVitalSignsState extends State<UpdateVitalSigns> {
                         VitalSignWidget(
                           vitalSignController: actFisicaController,
                           title: 'Actividad Física',
-                          infoMonitoreo:
-                              'Se monitorea el número de pasos de la aplicación Google Fit.',
-                          switchState:
-                              actFisicaController.text == "true" ? true : false,
+                          infoMonitoreo: 'Se monitorea el número de pasos de la aplicación Google Fit.',
+                          switchState: actFisicaController.text == "true" ? true : false,
                           instrumento: '\u2022 Contador de Pasos',
                           infoMedicion:
                               'La actividad física ayuda a mejorar la condición física de las mujeres, se obtiene un peso más adecuado de la embarazada y se proporciona un mayor bienestar feta.',
@@ -95,8 +91,7 @@ class _UpdateVitalSignsState extends State<UpdateVitalSigns> {
                           title: 'Frecuencia Cardíaca',
                           infoMonitoreo:
                               'Se monitorea la frecuencia cardíaca (bpm) registrada en la aplicación Google Fit.',
-                          switchState:
-                              freCardiController.text == "true" ? true : false,
+                          switchState: freCardiController.text == "true" ? true : false,
                           instrumento: '\u2022 Pulsómetro',
                           infoMedicion:
                               'El control de la frecuencia cardíaca fetal es un procedimiento que se utiliza para evaluar el bienestar del feto mediante la determinación de la frecuencia y el ritmo de los latidos del corazón del feto.',
@@ -118,8 +113,7 @@ class _UpdateVitalSignsState extends State<UpdateVitalSigns> {
                           title: 'Presión Arterial',
                           infoMonitoreo:
                               'Se monitorea la presión arterial (mmHg) registrada en la aplicación Google Fit.',
-                          switchState:
-                              presArtController.text == "true" ? true : false,
+                          switchState: presArtController.text == "true" ? true : false,
                           instrumento: '\u2022 Tensiómetro',
                           infoMedicion:
                               'La presión arterial ayuda a controlar a que el feto reciba suficiente oxígeno y nutrientes. La presión alta indica la falta de cantidad suficiente de sangre.',
@@ -130,8 +124,7 @@ class _UpdateVitalSignsState extends State<UpdateVitalSigns> {
                           title: 'Saturación de Oxígeno',
                           infoMonitoreo:
                               'Se monitorea la saturación de oxígeno (%) registrada en la aplicación Google Fit.',
-                          switchState:
-                              satOxigController.text == "true" ? true : false,
+                          switchState: satOxigController.text == "true" ? true : false,
                           instrumento: '\u2022 Pulsioxímetro',
                           infoMedicion:
                               'Se debe controlar el nivel de oxígeno en el cuerpo (%) para evitar problemas de desarrollo en el feto que puede afectar a sus órganos como su cerebro',
@@ -142,8 +135,7 @@ class _UpdateVitalSignsState extends State<UpdateVitalSigns> {
                           title: 'Peso',
                           infoMonitoreo:
                               'Se monitorea el peso gestacional (kg) registrada en la aplicación Google Fit.',
-                          switchState:
-                              pesoController.text == "true" ? true : false,
+                          switchState: pesoController.text == "true" ? true : false,
                           instrumento: '\u2022 Báscula',
                           infoMedicion:
                               'El monitoreo del peso (kg) durante la gestación sirve para identificar una ganancia excesiva de peso y retención de peso postparto.',
@@ -154,8 +146,7 @@ class _UpdateVitalSignsState extends State<UpdateVitalSigns> {
                           title: 'Glucosa',
                           infoMonitoreo:
                               'Se monitorea el nivel de glucosa (g/dL) registrada en la aplicación Google Fit.',
-                          switchState:
-                              glucoController.text == "true" ? true : false,
+                          switchState: glucoController.text == "true" ? true : false,
                           instrumento: '\u2022 Glucómetro',
                           infoMedicion:
                               'Los niveles altos de glucosa en la sangre pueden dar indicio a la diabetes gestacional y problemas en el desarollo feto como en el nacimiento del mismo.',
@@ -181,16 +172,10 @@ class _UpdateVitalSignsState extends State<UpdateVitalSigns> {
                                 },
                                 child: const Text('GUARDAR'),
                                 style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          colorPrincipal),
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.white),
-                                  fixedSize: MaterialStateProperty.all(
-                                      const Size(160.0, 46.0)),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
+                                  backgroundColor: MaterialStateProperty.all<Color>(colorPrincipal),
+                                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                                  fixedSize: MaterialStateProperty.all(const Size(160.0, 46.0)),
+                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
@@ -284,8 +269,7 @@ class _VitalSignState extends State<VitalSignWidget> {
               alignment: Alignment.centerRight,
               child: Switch(
                 activeColor: colorPrincipal,
-                value:
-                    widget.switchState != null ? widget.switchState! : _switch,
+                value: widget.switchState != null ? widget.switchState! : _switch,
                 onChanged: (value) {
                   setState(() {
                     widget.switchState = value;
@@ -330,8 +314,7 @@ class _VitalSignState extends State<VitalSignWidget> {
                 textAlign: TextAlign.start,
               ),
             ),
-            SimpleDialogOption(
-                child: Text(widget.instrumento, style: kInfoSignoConfig))
+            SimpleDialogOption(child: Text(widget.instrumento, style: kInfoSignoConfig))
           ],
         );
       },

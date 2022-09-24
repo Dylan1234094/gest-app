@@ -9,7 +9,7 @@ import 'package:intl/intl.dart' as intl;
 class ProfileObs extends StatelessWidget {
   const ProfileObs({Key? key}) : super(key: key);
 
-  static String id = 'profileObs';
+  static String id = '/profileObs';
 
   @override
   Widget build(BuildContext context) {
@@ -91,8 +91,7 @@ class _ViewFormObsState extends State<ViewFormObs> {
                             child: TextFormField(
                                 controller: nombreController,
                                 inputFormatters: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp("[a-zA-Z ]")),
+                                  FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
                                 ],
                                 keyboardType: TextInputType.name,
                                 decoration: const InputDecoration(
@@ -108,8 +107,7 @@ class _ViewFormObsState extends State<ViewFormObs> {
                             child: TextFormField(
                                 controller: apellidoController,
                                 inputFormatters: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp("[a-zA-Z ]")),
+                                  FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
                                 ],
                                 keyboardType: TextInputType.text,
                                 decoration: const InputDecoration(
@@ -139,9 +137,7 @@ class _ViewFormObsState extends State<ViewFormObs> {
                             child: TextFormField(
                                 controller: telefonoController,
                                 keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly
-                                ],
+                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
                                   labelText: "Celular",
@@ -155,12 +151,8 @@ class _ViewFormObsState extends State<ViewFormObs> {
                             onPressed: () => {
                               if (_keyForm.currentState!.validate())
                                 {
-                                  updateObstetra(
-                                      uid,
-                                      nombreController.text,
-                                      apellidoController.text,
-                                      telefonoController.text,
-                                      context)
+                                  updateObstetra(uid, nombreController.text, apellidoController.text,
+                                      telefonoController.text, context)
                                 }
                             },
                             child: const Text('Guardar'),
@@ -184,10 +176,8 @@ Future<Obstetra> getObstetra(String id) {
   return _obstetraService.getObstetra(id);
 }
 
-void updateObstetra(String id, String nombre, String apellido, String telefono,
-    BuildContext context) {
-  return _obstetraService.updateObstetra(
-      id, nombre, apellido, telefono, context);
+void updateObstetra(String id, String nombre, String apellido, String telefono, BuildContext context) {
+  return _obstetraService.updateObstetra(id, nombre, apellido, telefono, context);
 }
 
 String? ValidateText(String label, String value) {

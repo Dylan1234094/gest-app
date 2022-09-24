@@ -121,7 +121,7 @@ class _MonitorObsState extends State<ScreenObs> {
                                                   Align(
                                                     alignment: Alignment.centerLeft,
                                                     child: Text(
-                                                        "${DateTime.now().difference(intl.DateFormat("dd/MM/yyyy hh:mm:ss").parse(gestante.fechaRegla! + " 00:00:00")).inDays} días de embarazo"),
+                                                        "${(DateTime.now().difference(intl.DateFormat("dd/MM/yyyy hh:mm:ss").parse(gestante.fechaRegla! + " 00:00:00")).inDays / 4).round()} semanas de embarazo"),
                                                   ),
                                                   Row(
                                                     children: [
@@ -148,11 +148,7 @@ class _MonitorObsState extends State<ScreenObs> {
                                                       vitals.satOxig == "true"
                                                           ? const VitalIconWidget(
                                                               iconPath: 'assets/IconsVitals/sat_oxig_icon.png')
-                                                          : const Text(""),
-                                                      vitals.suenio == "true"
-                                                          ? const VitalIconWidget(
-                                                              iconPath: 'assets/IconsVitals/suenio_icon.png')
-                                                          : const Text(""),
+                                                          : const Text("")
                                                     ],
                                                   ),
                                                 ],

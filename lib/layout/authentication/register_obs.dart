@@ -7,7 +7,7 @@ import 'package:intl/intl.dart' as intl;
 class RegisterObs extends StatelessWidget {
   const RegisterObs({Key? key}) : super(key: key);
 
-  static String id = 'registerObstetra';
+  static String id = '/registerObstetra';
 
   @override
   Widget build(BuildContext context) {
@@ -155,13 +155,10 @@ class _FormObsState extends State<FormObs> {
                                   _passwordVisible = !_passwordVisible;
                                 });
                               },
-                              icon: Icon(_passwordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off))),
+                              icon: Icon(_passwordVisible ? Icons.visibility : Icons.visibility_off))),
                       validator: (value) {
                         if (ValidatePassword(value!) == null) {
-                          if (contraseniaController.text !=
-                              contraseniaRepeController.text) {
+                          if (contraseniaController.text != contraseniaRepeController.text) {
                             return 'Las Contraseñas no son iguales';
                           }
                         }
@@ -185,13 +182,10 @@ class _FormObsState extends State<FormObs> {
                                   _passwordVisible = !_passwordVisible;
                                 });
                               },
-                              icon: Icon(_passwordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off))),
+                              icon: Icon(_passwordVisible ? Icons.visibility : Icons.visibility_off))),
                       validator: (value) {
                         if (ValidatePassword(value!) == null) {
-                          if (contraseniaController.text !=
-                              contraseniaRepeController.text) {
+                          if (contraseniaController.text != contraseniaRepeController.text) {
                             return 'Las Contraseñas no son iguales';
                           }
                         }
@@ -226,22 +220,15 @@ class _FormObsState extends State<FormObs> {
 
 ObstetraService _obstetraService = ObstetraService();
 
-void insertDataObstetra(
-    String nombre,
-    String apellido,
-    String correo,
-    String telefono,
-    String contrasenia,
-    String contraseniaRepe,
-    BuildContext context) {
+void insertDataObstetra(String nombre, String apellido, String correo, String telefono, String contrasenia,
+    String contraseniaRepe, BuildContext context) {
   if (contrasenia == contraseniaRepe) {
     String codigoObstetra = "";
 
     _obstetraService.obtenerMaxCodigo().then((value) {
       intl.NumberFormat formatNumber = new intl.NumberFormat("000000");
       codigoObstetra = (formatNumber.format(value + 1).toString());
-      _obstetraService.registerObstetra(nombre, apellido, correo, telefono,
-          contrasenia, codigoObstetra, context);
+      _obstetraService.registerObstetra(nombre, apellido, correo, telefono, contrasenia, codigoObstetra, context);
     });
   } else {
     print("las contrasenias no son iguales");

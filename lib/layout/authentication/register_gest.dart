@@ -9,7 +9,7 @@ import 'package:gest_app/shared/textfield_date.dart';
 class RegisterGest extends StatelessWidget {
   const RegisterGest({Key? key}) : super(key: key);
 
-  static String id = 'registerGestante';
+  static String id = '/registerGestante';
 
   @override
   Widget build(BuildContext context) {

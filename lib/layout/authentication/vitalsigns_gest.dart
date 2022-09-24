@@ -9,7 +9,7 @@ import '../../utilities/designs.dart';
 class VitalSignsGest extends StatelessWidget {
   const VitalSignsGest({Key? key}) : super(key: key);
 
-  static String id = 'vitalSignsGestante';
+  static String id = '/vitalSignsGestante';
 
   @override
   Widget build(BuildContext context) {

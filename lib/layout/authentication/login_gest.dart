@@ -16,15 +16,14 @@ class LoginGestWidget extends StatelessWidget {
 class LoginGest extends StatefulWidget {
   const LoginGest({Key? key}) : super(key: key);
 
-  static String id = 'loginGestante';
+  static String id = '/loginGestante';
 
   @override
   State<LoginGest> createState() => _LoginGestState();
 }
 
 class _LoginGestState extends State<LoginGest> {
-  final RoundedLoadingButtonController googleController =
-      RoundedLoadingButtonController();
+  final RoundedLoadingButtonController googleController = RoundedLoadingButtonController();
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +37,7 @@ class _LoginGestState extends State<LoginGest> {
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(top: 20.0),
-              child: Text('Inicio de Sesión',
-                  textAlign: TextAlign.center, style: kTitulo),
+              child: Text('Inicio de Sesión', textAlign: TextAlign.center, style: kTitulo),
             ),
             Padding(
               padding: EdgeInsets.only(top: 20.0),
@@ -61,15 +59,11 @@ class _LoginGestState extends State<LoginGest> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset('assets/google_icon.png',
-                        width: 30, height: 30),
+                    Image.asset('assets/google_icon.png', width: 30, height: 30),
                     SizedBox(width: 5.0),
                     Text(
                       'Iniciar sesión con Google',
-                      style: TextStyle(
-                          fontSize: 12.0,
-                          fontWeight: FontWeight.w500,
-                          color: colorSecundario),
+                      style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w500, color: colorSecundario),
                     )
                   ],
                 ),

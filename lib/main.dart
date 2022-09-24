@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
-  static String id = 'homePage';
+  static String id = '/';
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -75,8 +75,7 @@ class MyHomePage extends StatelessWidget {
             if (snapshot.hasData && snapshot.data!.emailVerified == false) {
               //emailVerified permite reconocer que el inicio de sesión no es por una cuenta de Google (Gestante)
               return const ScreenObs();
-            } else if (snapshot.hasData &&
-                snapshot.data!.emailVerified == true) {
+            } else if (snapshot.hasData && snapshot.data!.emailVerified == true) {
               return const Tabs();
             } else {
               return const Start();

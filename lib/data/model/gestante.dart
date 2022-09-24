@@ -3,18 +3,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class VitalSign {
   final String? actFisica;
   final String? freCardi;
-  final String? suenio;
   final String? presArt;
   final String? satOxig;
   final String? peso;
   final String? gluco;
 
-  const VitalSign({this.actFisica, this.freCardi, this.suenio, this.presArt, this.satOxig, this.peso, this.gluco});
+  const VitalSign({this.actFisica, this.freCardi, this.presArt, this.satOxig, this.peso, this.gluco});
 
   VitalSign.fromJson(Map<String, dynamic> json)
       : actFisica = json['actFisica'],
         freCardi = json['freCardi'],
-        suenio = json['suenio'],
         presArt = json['presArt'],
         satOxig = json['satOxig'],
         peso = json['peso'],
@@ -23,7 +21,6 @@ class VitalSign {
   Map<String, dynamic> toJson() => {
         'actFisica': actFisica,
         'freCardi': freCardi,
-        'suenio': suenio,
         'presArt': presArt,
         'satOxig': satOxig,
         'peso': peso,

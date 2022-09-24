@@ -59,9 +59,7 @@ class GestanteService {
                       toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
                     )
                     .doc(value.user!.uid);
-                await docRef
-                    .set(gestante, SetOptions(merge: true))
-                    .then((value) => Navigator.pushNamed(context, '/tabs'));
+                await docRef.set(gestante, SetOptions(merge: true)).then((value) => Navigator.pop(context, '/'));
               } else {
                 //request rtoken, create gest with rtoken then update
                 var rtoken = "";
@@ -253,8 +251,7 @@ class GestanteService {
     var fechaCita = "";
     var photoUrl = "";
     var rtoken = "";
-    VitalSign vitals =
-        const VitalSign(actFisica: "", freCardi: "", gluco: "", peso: "", presArt: "", satOxig: "", suenio: "");
+    VitalSign vitals = const VitalSign(actFisica: "", freCardi: "", gluco: "", peso: "", presArt: "", satOxig: "");
 
     try {
       print(uid);
@@ -280,8 +277,7 @@ class GestanteService {
               gluco: data["vitals"]["gluco"],
               peso: data["vitals"]["peso"],
               presArt: data["vitals"]["presArt"],
-              satOxig: data["vitals"]["satOxig"],
-              suenio: data["vitals"]["suenio"]);
+              satOxig: data["vitals"]["satOxig"]);
         },
         onError: (e) => print("Error al intentar obtener doc $uid en gestante"),
       );
@@ -310,6 +306,7 @@ class GestanteService {
     var uid = "";
     var nombre = "";
     var apellido = "";
+    var correo = "";
     var fcmToken = "";
     var codigoObstetra = "";
 
@@ -320,6 +317,7 @@ class GestanteService {
           uid = event.docs.first.data()["id"];
           nombre = event.docs.first.data()["nombre"];
           apellido = event.docs.first.data()["apellido"];
+          correo = event.docs.first.data()["correo"];
           fcmToken = event.docs.first.data()["fcmToken"];
           codigoObstetra = event.docs.first.data()["codigoObstetra"];
         }
@@ -327,8 +325,13 @@ class GestanteService {
     } catch (e) {
       print(e);
     }
-    return obstetra =
-        Obstetra(id: uid, nombre: nombre, apellido: apellido, fcmToken: fcmToken, codigoObstetra: codigoObstetra);
+    return obstetra = Obstetra(
+        id: uid,
+        nombre: nombre,
+        apellido: apellido,
+        correo: correo,
+        fcmToken: fcmToken,
+        codigoObstetra: codigoObstetra);
   }
 
   void updateCodeObstetra(String id, String codigoObs, String fcmToken, BuildContext context) async {
