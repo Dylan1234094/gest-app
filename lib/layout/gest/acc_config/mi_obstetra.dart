@@ -175,8 +175,11 @@ class _DatosObstetraState extends State<DatosObstetra> {
                                 FilteringTextInputFormatter.digitsOnly
                               ],
                               decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 15.0, horizontal: 10.0),
                                 border: OutlineInputBorder(),
                                 labelText: "Código Obstetra",
+                                labelStyle: kInfo,
                               ),
                               validator: (value) {
                                 return ValidateCodeFormat(value!);
@@ -278,47 +281,6 @@ Future<Obstetra> validateCodeObstetra(String codeObs) async {
   return await _gestanteService.validateCodeObstetra(codeObs);
 }
 
-Future<void> _dialogCodeFound(BuildContext context, Obstetra obstetra) {
-  var uid = FirebaseAuth.instance.currentUser!.uid;
-
-  return showDialog<void>(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
-        actionsPadding: EdgeInsets.only(bottom: 10),
-        title: Text(
-          'Vinculación exitosa',
-          style: TextStyle(fontSize: 13),
-        ),
-        content: RichText(
-          text: TextSpan(
-            text: 'La obstetra ',
-            style: DefaultTextStyle.of(context).style,
-            children: <TextSpan>[
-              TextSpan(
-                text: '${obstetra.nombre} ${obstetra.apellido}.',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              TextSpan(
-                  text: 'estará controlando sus datos a partir del momento.')
-            ],
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
-            onPressed: () {
-              updateCodigoObstetra(uid, obstetra.codigoObstetra!, context);
-            },
-          )
-        ],
-      );
-    },
-  );
-}
-
 void updateCodigoObstetra(String id, String codigoObs, BuildContext context) {
   GestanteService _gestanteService = GestanteService();
 
@@ -330,17 +292,50 @@ Future<void> _dialogCodeNotFound(BuildContext context, String codeObs) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
+        contentPadding:
+            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: EdgeInsets.only(bottom: 10),
+        title: const Text("Código Inválido", style: TextStyle(fontSize: 13)),
+        content: Text(
+          'El código "$codeObs" no se encuentra asociado a ninguna obstetra.\n\nPor favor, consulte nuevamente con su especialista para ingresar el código correcto.',
+          style: kPopUpInfo,
+          textAlign: TextAlign.justify,
+        ),
         actions: <Widget>[
           TextButton(
-            child: const Text("Aceptar"),
-            style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge),
+            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
             onPressed: () => Navigator.pop(context),
           )
         ],
-        title: const Text("Código Inválido"),
+      );
+    },
+  );
+}
+
+Future<void> _dialogCodeFound(BuildContext context, Obstetra obstetra) {
+  var uid = FirebaseAuth.instance.currentUser!.uid;
+
+  return showDialog<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding:
+            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: EdgeInsets.only(bottom: 10),
+        title: Text('Vinculación exitosa', style: TextStyle(fontSize: 13)),
         content: Text(
-            "El código $codeObs no se encuentra asociado a ninguna obstetra.\n\nPor favor, consulte nuevamente con su especialista."),
+          'El/La obstetra ${obstetra.nombre} ${obstetra.apellido} estará controlando sus datos a partir del momento.',
+          style: kPopUpInfo,
+          textAlign: TextAlign.justify,
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            onPressed: () {
+              updateCodigoObstetra(uid, obstetra.codigoObstetra!, context);
+            },
+          )
+        ],
       );
     },
   );

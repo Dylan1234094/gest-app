@@ -55,7 +55,9 @@ class _HomePageState extends State<HomePage> {
                 );
               case (ConnectionState.done):
                 if (!snapshot.hasData) {
-                  return Center(
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 20.0, horizontal: 10.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
