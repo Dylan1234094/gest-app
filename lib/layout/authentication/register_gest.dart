@@ -219,6 +219,7 @@ class _FormGestState extends State<FormGest> {
                                     fechaReglaController.text,
                                     fechaEcoController.text,
                                     fechaCitaController.text,
+                                    fcmTokenObsController.text,
                                     linkObsController.text))
                           }
                       },

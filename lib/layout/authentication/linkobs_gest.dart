@@ -191,18 +191,6 @@ Future<void> _dialogCodeFound(BuildContext context, Obstetra obstetra) {
             ),
           )
         ],
-        title: const Text("Código Válido"),
-        content: RichText(
-          text: TextSpan(
-            style: const TextStyle(color: Colors.black, fontSize: 16.0),
-            children: <TextSpan>[
-              const TextSpan(text: "Sus datos serán compartidos con el/la especialista"),
-              TextSpan(
-                  text: " ${obstetra.nombre} ${obstetra.apellido}.",
-                  style: const TextStyle(fontWeight: FontWeight.bold))
-            ],
-          ),
-        ),
       );
     },
   );
