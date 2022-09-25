@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_bubble/bubble_type.dart';
-import 'package:flutter_chat_bubble/chat_bubble.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_6.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -68,6 +65,10 @@ class _ChatState extends State<Chat> {
   final currentUserId = FirebaseAuth.instance.currentUser!.uid;
   var chatDocId;
   var _textController = new TextEditingController();
+  final ScrollController listScrollController = ScrollController();
+
+  bool isLoading = false;
+
   final FocusNode focusNode = FocusNode();
 
   @override
@@ -103,7 +104,7 @@ class _ChatState extends State<Chat> {
   void sendMessage(String msg) {
     if (msg == '') return;
     chats.doc(chatDocId).collection('messages').add({
-      'timestamp': FieldValue.serverTimestamp(),
+      'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
       'idFrom': currentUserId,
       'idTo': widget.anotherUserUid,
       'content': msg
@@ -126,118 +127,68 @@ class _ChatState extends State<Chat> {
         print(e);
       }
     });
-    setState(() {});
-  }
-
-  bool isSender(String anotherUser) {
-    return anotherUser == currentUserId;
-  }
-
-  Alignment getAlignment(anotherUser) {
-    if (anotherUser == currentUserId) {
-      return Alignment.topRight;
-    }
-    return Alignment.topLeft;
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: chats
-          .doc(chatDocId)
-          .collection('messages')
-          .orderBy('timestamp', descending: true)
-          .snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasError) {
-          return const Center(
-            child: Text("Algo salió mal"),
-          );
-        }
-
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
-        if (!snapshot.hasData) {
-          return const Center(
-            child: Text("Todavia no se han enviado mensajes"),
-          );
-        }
-
-        var data;
-        return Scaffold(
-          appBar: AppBar(
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              centerTitle: true,
-              title: Text(
-                  "${widget.anotherUserName} ${widget.anotherUserSurname}")),
-          body: Column(
-            children: [
-              Expanded(
-                child: ListView(
-                  reverse: true,
-                  children: snapshot.data!.docs.map(
-                    (DocumentSnapshot document) {
-                      data = document.data()!;
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: ChatBubble(
-                          clipper: ChatBubbleClipper6(
-                            nipSize: 10,
-                            radius: 10,
-                            type: isSender(data['idFrom'].toString())
-                                ? BubbleType.sendBubble
-                                : BubbleType.receiverBubble,
-                          ),
-                          margin: const EdgeInsets.only(top: 10),
-                          alignment: getAlignment(data['idFrom'].toString()),
-                          backGroundColor: isSender(data['idFrom'].toString())
-                              ? Colors.blue
-                              : Color(0xffE7E7ED),
-                          child: Container(
-                            constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width * 0.7,
-                            ),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(data['content'],
-                                        style: TextStyle(
-                                            color: isSender(
-                                                    data['idFrom'].toString())
-                                                ? Colors.white
-                                                : Colors.black,
-                                            fontSize: 16),
-                                        maxLines: 100,
-                                        overflow: TextOverflow.ellipsis)
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ).toList(),
-                ),
-              ),
-              buildInput(),
-            ],
+    return Scaffold(
+      appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
           ),
-        );
-      },
+          centerTitle: true,
+          title:
+              Text("${widget.anotherUserName} ${widget.anotherUserSurname}")),
+      body: Column(
+        children: <Widget>[
+          // List of messages
+          buildListMessages(context),
+          // Input content
+          buildInput(),
+        ],
+      ),
     );
   }
 
-  Widget buildItem(int index, DocumentSnapshot? document) {
+  Widget buildListMessages(BuildContext context) {
+    var data;
+    return StreamBuilder<QuerySnapshot>(
+        stream: chats
+            .doc(chatDocId)
+            .collection('messages')
+            .orderBy('timestamp', descending: true)
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text("Algo salió mal"),
+            );
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (!snapshot.hasData) {
+            return const Center(
+              child: Text("Todavia no se han enviado mensajes"),
+            );
+          }
+          return Expanded(
+              child: ListView(
+            reverse: true,
+            children:
+                snapshot.data!.docs.map<Widget>((DocumentSnapshot document) {
+              return buildItem(document);
+            }).toList(),
+          ));
+        });
+  }
+
+  Widget buildItem(DocumentSnapshot? document) {
     if (document == null) {
       return const SizedBox.shrink();
     }
@@ -257,6 +208,7 @@ class _ChatState extends State<Chat> {
                 width: 200,
                 decoration: BoxDecoration(
                     color: Colors.blue, borderRadius: BorderRadius.circular(8)),
+                margin: EdgeInsets.only(right: 10),
               ),
               Container(
                 child: Text(
@@ -268,7 +220,7 @@ class _ChatState extends State<Chat> {
                       fontSize: 8,
                       fontStyle: FontStyle.italic),
                 ),
-                margin: EdgeInsets.only(left: 150, top: 5, bottom: 5),
+                margin: EdgeInsets.only(left: 140, top: 5, bottom: 5),
               ),
             ],
           )
@@ -303,7 +255,7 @@ class _ChatState extends State<Chat> {
                     fontSize: 8,
                     fontStyle: FontStyle.italic),
               ),
-              margin: const EdgeInsets.only(left: 160, top: 5, bottom: 5),
+              margin: const EdgeInsets.only(left: 165, top: 5, bottom: 5),
             ),
           ],
           crossAxisAlignment: CrossAxisAlignment.start,
