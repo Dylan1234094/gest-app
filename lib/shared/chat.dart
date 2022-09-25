@@ -8,6 +8,8 @@ import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_6.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
+
 class Chat extends StatefulWidget {
   final String nombreSender;
   final String apellidoSender;
@@ -28,6 +30,37 @@ class Chat extends StatefulWidget {
 
   @override
   _ChatState createState() => _ChatState();
+}
+
+class MessageChat {
+  String idFrom;
+  String idTo;
+  String timestamp;
+  String content;
+
+  MessageChat(
+      {required this.idFrom,
+      required this.idTo,
+      required this.timestamp,
+      required this.content});
+
+  Map<String, dynamic> toJson() {
+    return {
+      "idFrom": this.idFrom,
+      "idTo": this.idTo,
+      "timestamp": this.timestamp,
+      "content": this.content,
+    };
+  }
+
+  factory MessageChat.fromDocument(DocumentSnapshot doc) {
+    String idFrom = doc.get("idFrom");
+    String idTo = doc.get("idTo");
+    String timestamp = doc.get("timestamp");
+    String content = doc.get("content");
+    return MessageChat(
+        idFrom: idFrom, idTo: idTo, timestamp: timestamp, content: content);
+  }
 }
 
 class _ChatState extends State<Chat> {
@@ -70,9 +103,10 @@ class _ChatState extends State<Chat> {
   void sendMessage(String msg) {
     if (msg == '') return;
     chats.doc(chatDocId).collection('messages').add({
-      'createdOn': FieldValue.serverTimestamp(),
-      'uid': currentUserId,
-      'msg': msg
+      'timestamp': FieldValue.serverTimestamp(),
+      'idFrom': currentUserId,
+      'idTo': widget.anotherUserUid,
+      'content': msg
     }).then((value) async {
       _textController.text = '';
       var url =
@@ -112,7 +146,7 @@ class _ChatState extends State<Chat> {
       stream: chats
           .doc(chatDocId)
           .collection('messages')
-          .orderBy('createdOn', descending: true)
+          .orderBy('timestamp', descending: true)
           .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
@@ -157,13 +191,13 @@ class _ChatState extends State<Chat> {
                           clipper: ChatBubbleClipper6(
                             nipSize: 10,
                             radius: 10,
-                            type: isSender(data['uid'].toString())
+                            type: isSender(data['idFrom'].toString())
                                 ? BubbleType.sendBubble
                                 : BubbleType.receiverBubble,
                           ),
                           margin: const EdgeInsets.only(top: 10),
-                          alignment: getAlignment(data['uid'].toString()),
-                          backGroundColor: isSender(data['uid'].toString())
+                          alignment: getAlignment(data['idFrom'].toString()),
+                          backGroundColor: isSender(data['idFrom'].toString())
                               ? Colors.blue
                               : Color(0xffE7E7ED),
                           child: Container(
@@ -175,12 +209,12 @@ class _ChatState extends State<Chat> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Text(data['msg'],
+                                    Text(data['content'],
                                         style: TextStyle(
-                                            color:
-                                                isSender(data['uid'].toString())
-                                                    ? Colors.white
-                                                    : Colors.black,
+                                            color: isSender(
+                                                    data['idFrom'].toString())
+                                                ? Colors.white
+                                                : Colors.black,
                                             fontSize: 16),
                                         maxLines: 100,
                                         overflow: TextOverflow.ellipsis)
@@ -201,6 +235,82 @@ class _ChatState extends State<Chat> {
         );
       },
     );
+  }
+
+  Widget buildItem(int index, DocumentSnapshot? document) {
+    if (document == null) {
+      return const SizedBox.shrink();
+    }
+    MessageChat messageChat = MessageChat.fromDocument(document);
+    if (messageChat.idFrom == currentUserId) {
+      // Right (my message)
+      return Row(
+        children: <Widget>[
+          Column(
+            children: [
+              Container(
+                child: Text(
+                  messageChat.content,
+                  style: TextStyle(color: Colors.white),
+                ),
+                padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
+                width: 200,
+                decoration: BoxDecoration(
+                    color: Colors.blue, borderRadius: BorderRadius.circular(8)),
+              ),
+              Container(
+                child: Text(
+                  DateFormat('dd MMM kk:mm').format(
+                      DateTime.fromMillisecondsSinceEpoch(
+                          int.parse(messageChat.timestamp))),
+                  style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 8,
+                      fontStyle: FontStyle.italic),
+                ),
+                margin: EdgeInsets.only(left: 150, top: 5, bottom: 5),
+              ),
+            ],
+          )
+        ],
+        mainAxisAlignment: MainAxisAlignment.end,
+      );
+    } else {
+      // Left (peer message)
+      return Container(
+        child: Column(
+          children: <Widget>[
+            Container(
+              child: Text(
+                messageChat.content,
+                style: TextStyle(color: Colors.blue),
+              ),
+              padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
+              width: 200,
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.blue),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8)),
+              margin: EdgeInsets.only(left: 10),
+            ),
+            Container(
+              child: Text(
+                DateFormat('dd MMM kk:mm').format(
+                    DateTime.fromMillisecondsSinceEpoch(
+                        int.parse(messageChat.timestamp))),
+                style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 8,
+                    fontStyle: FontStyle.italic),
+              ),
+              margin: const EdgeInsets.only(left: 160, top: 5, bottom: 5),
+            ),
+          ],
+          crossAxisAlignment: CrossAxisAlignment.start,
+        ),
+        margin: const EdgeInsets.only(bottom: 10),
+      );
+    }
   }
 
   Widget buildInput() {

@@ -24,6 +24,7 @@ class _GestanteListState extends State<GestanteList> {
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.of(context).pop(),
           ),
+          centerTitle: true,
           title: const Text("Conversaciones")),
       body: Column(
         children: [
