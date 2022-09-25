@@ -1,11 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:gest_app/data/model/gestante.dart';
 import 'package:gest_app/data/model/obstetra.dart';
 import 'package:gest_app/service/obstetra_service.dart';
 import 'package:gest_app/shared/chat.dart';
-import 'package:gest_app/shared/chat/utils/debouncer.dart';
 
 class GestanteList extends StatefulWidget {
   const GestanteList({Key? key}) : super(key: key);
@@ -17,7 +15,6 @@ class GestanteList extends StatefulWidget {
 class _GestanteListState extends State<GestanteList> {
   final user = FirebaseAuth.instance.currentUser!;
   String _textSearch = "";
-  Debouncer searchDebouncer = Debouncer(milliseconds: 300);
 
   @override
   Widget build(BuildContext context) {
@@ -179,13 +176,9 @@ class _GestanteListState extends State<GestanteList> {
               padding: const EdgeInsets.all(1),
               child: TextField(
                 onChanged: (value) {
-                  searchDebouncer.run(
+                  setState(
                     () {
-                      setState(
-                        () {
-                          _textSearch = value;
-                        },
-                      );
+                      _textSearch = value;
                     },
                   );
                 },
