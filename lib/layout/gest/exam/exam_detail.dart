@@ -1,17 +1,19 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:gest_app/data/model/exam_result.dart';
 import 'package:gest_app/layout/gest/exam/register_exam.dart';
 import 'package:gest_app/layout/gest/exam/update_exam.dart';
 import 'package:gest_app/service/exam_result_service.dart';
 
-import 'package:intl/intl.dart' as intl;
+import 'package:intl/intl.dart';
+
+import '../../../utilities/designs.dart';
 
 class ExamDetailPage extends StatefulWidget {
   final String examId;
   final String examName;
-  const ExamDetailPage({Key? key, required this.examId, required this.examName}) : super(key: key);
+  const ExamDetailPage({Key? key, required this.examId, required this.examName})
+      : super(key: key);
 
   @override
   State<ExamDetailPage> createState() => _ExamDetailPageState();
@@ -19,7 +21,6 @@ class ExamDetailPage extends StatefulWidget {
 
 class _ExamDetailPageState extends State<ExamDetailPage> {
   var uid = FirebaseAuth.instance.currentUser!.uid;
-  List<_ChartData> chartData = <_ChartData>[];
 
   @override
   void initState() {
@@ -32,117 +33,97 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(
-            MaterialPageRoute<void>(builder: (BuildContext context) {
-              return RegisterExamPage(examId: widget.examId, examName: widget.examName); //! id
-            }),
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return RegisterExamPage(
+                    examId: widget.examId, examName: widget.examName); //! id
+              },
+            ),
           );
         },
-        backgroundColor: Color(0xFF245470),
+        backgroundColor: colorPrincipal,
         child: Icon(Icons.add),
       ),
       appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          title: const Text("Detalle de examen")),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: FutureBuilder<Object>(
         future: null,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SingleChildScrollView(
-              child: Column(children: <Widget>[
-                Container(
-                  alignment: Alignment.centerLeft,
-                  child: const Text(
-                    "DETALLE DE EXÁMENES",
-                    textAlign: TextAlign.left,
+          return SingleChildScrollView(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 10.0),
+                    child: Text(
+                      'Resultados de exámenes de ${widget.examName}',
+                      style: kTitulo,
+                    ),
                   ),
-                ),
-                FutureBuilder<List<Exam>>(
-                  future: getListaResultadosExames(uid, widget.examName),
-                  builder: (context, snapshotExams) {
-                    switch (snapshotExams.connectionState) {
-                      case ConnectionState.waiting:
-                        return const Align(
-                          alignment: Alignment.center,
-                          child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                              child: CircularProgressIndicator()),
-                        );
-                      case ConnectionState.done:
-                        if (snapshotExams.hasData) {
-                          if (snapshotExams.data!.isNotEmpty) {
-                            return ListView.builder(
-                              primary: false,
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemCount: snapshotExams.data!.length,
-                              itemBuilder: ((context, index) {
-                                Exam exam = snapshotExams.data![index];
-                                return Padding(
-                                  padding: const EdgeInsets.only(left: 8, right: 8, top: 5),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute<void>(builder: (BuildContext context) {
-                                          return UpdateExamPage(examId: exam.id!); //! id
-                                        }),
-                                      );
-                                    },
-                                    child: Card(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(4),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            Row(
-                                              children: [
-                                                Text(intl.DateFormat('dd/MM/yyyy').format(exam.dateResult!.toDate()),
-                                                    style: TextStyle(fontStyle: FontStyle.italic, fontSize: 16))
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [Text("${exam.value!} g/dL", style: TextStyle(fontSize: 24))],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }),
-                            );
-                          } else {
-                            return const Align(
-                              alignment: Alignment.center,
-                              child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                                  child: Text("No se encontraron exámenes registrados")),
-                            );
-                          }
-                        } else {
-                          return const Align(
-                            alignment: Alignment.center,
-                            child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                                child: Text("Algo salió mal")),
+                  FutureBuilder<List<Exam>>(
+                    future: getListaResultadosExames(uid, widget.examName),
+                    builder: (context, snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return const Center(
+                            child: CircularProgressIndicator(),
                           );
-                        }
-                      default:
-                        return const Align(
-                          alignment: Alignment.center,
-                          child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8), child: Text("Esperando")),
-                        );
-                    }
-                  },
-                ),
-              ]),
+                        case ConnectionState.done:
+                          if (snapshot.hasData) {
+                            if (snapshot.data!.isNotEmpty) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                child: ListView.builder(
+                                  primary: false,
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  itemCount: snapshot.data!.length,
+                                  itemBuilder: ((context, index) {
+                                    Exam exam = snapshot.data![index];
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute<void>(
+                                              builder: (BuildContext context) {
+                                            return UpdateExamPage(
+                                                examId: exam.id!); //! id
+                                          }),
+                                        );
+                                      },
+                                      child: ExamDetail(exam: exam),
+                                    );
+                                  }),
+                                ),
+                              );
+                            } else {
+                              return const Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                    "No se encontraron exámenes registrados"),
+                              );
+                            }
+                          } else {
+                            return const Center(
+                                child: Text("Algo salió mal..."));
+                          }
+                        default:
+                          return const Center(child: Text("Algo salió mal..."));
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           );
         },
@@ -151,13 +132,35 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
   }
 }
 
+class ExamDetail extends StatelessWidget {
+  const ExamDetail({
+    Key? key,
+    required this.exam,
+  }) : super(key: key);
+
+  final Exam exam;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(DateFormat('EEEE, d MMMM').format(exam.dateResult!.toDate()),
+              style: kFechaDato),
+          Text(
+            NumberFormat('#,###.##').format(exam.value!).toString() + " g/dL",
+            textAlign: TextAlign.left,
+            style: kDato,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 Future<List<Exam>> getListaResultadosExames(String uid, String examType) async {
   ExamService _examService = ExamService();
   return await _examService.getListaResultadosExames(uid, examType);
-}
-
-class _ChartData {
-  _ChartData({this.x, this.y});
-  final DateTime? x;
-  final int? y;
 }

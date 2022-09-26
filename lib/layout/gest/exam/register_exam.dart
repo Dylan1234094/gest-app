@@ -6,10 +6,14 @@ import 'package:flutter/services.dart';
 import 'package:gest_app/service/exam_result_service.dart';
 import 'package:gest_app/shared/textfield_date.dart';
 
+import '../../../utilities/designs.dart';
+
 class RegisterExamPage extends StatefulWidget {
   final String examId;
   final String examName;
-  const RegisterExamPage({Key? key, required this.examId, required this.examName}) : super(key: key);
+  const RegisterExamPage(
+      {Key? key, required this.examId, required this.examName})
+      : super(key: key);
 
   @override
   State<RegisterExamPage> createState() => _RegisterExamPageState();
@@ -27,22 +31,27 @@ class _RegisterExamPageState extends State<RegisterExamPage> {
         context: context,
         builder: (BuildContext ctx) {
           return AlertDialog(
-            title: const Text('Confirmación'),
-            content: const Text('¿Desea enviar los datos?'),
+            contentPadding:
+                EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+            actionsPadding: EdgeInsets.only(bottom: 10),
+            title: const Text('Confirmación', style: TextStyle(fontSize: 13)),
+            content: const Text('¿Desea enviar los datos?',
+                style: kPopUpInfo, textAlign: TextAlign.justify),
             actions: [
               TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Text('No')),
+                  child: const Text('CANCELAR',
+                      style: TextStyle(fontSize: 10, color: colorSecundario))),
               TextButton(
                   onPressed: () {
                     //! Register exam
-                    registerExam(uid, widget.examName, valueController.text, dateController.text, context);
-
+                    registerExam(uid, widget.examName, valueController.text,
+                        dateController.text, context);
                     Navigator.of(context).popUntil(ModalRoute.withName("/"));
                   },
-                  child: const Text('Si'))
+                  child: const Text('ACEPTAR', style: TextStyle(fontSize: 10)))
             ],
           );
         });
@@ -61,62 +70,96 @@ class _RegisterExamPageState extends State<RegisterExamPage> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            title: Text("Registrar ${widget.examName}")),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
         body: StreamBuilder<Object>(
             stream: null,
             builder: (context, snapshot) {
               return SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 20.0, horizontal: 10.0),
                   child: Form(
                     key: _keyForm,
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(top: 30, bottom: 20),
-                          child:
-                              Text("Registro de Examen", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                          padding: EdgeInsets.only(top: 20.0),
+                          child: Text("Registrar Examen",
+                              textAlign: TextAlign.center, style: kTitulo),
                         ),
-                        Text(
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20.0),
+                          child: Text(
                             "Luego de realizar este examen en un centro especializado, registre el resultado a continuación",
-                            textAlign: TextAlign.justify),
-                        Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextFormField(
-                                controller: valueController,
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                decoration: InputDecoration(
-                                  border: const OutlineInputBorder(),
-                                  labelText: "Resultado (g/dL)",
-                                ),
-                                validator: (result) {
-                                  return ValidateResult(result!);
-                                })),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: MyTextFormDate(
-                            label: "Fecha de entrega de resultados",
-                            dateController: dateController,
+                            textAlign: TextAlign.justify,
+                            style: kInfo,
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 32),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (_keyForm.currentState!.validate()) {
-                                print("Válido");
-                                ConfirmDialog(context);
-                              } else {
-                                print("Invalido");
-                              }
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            style: TextStyle(fontSize: 13.0),
+                            controller: valueController,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'^\d+\.?\d{0,2}')),
+                            ],
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 15.0, horizontal: 10.0),
+                              border: OutlineInputBorder(),
+                              labelText: "Resultado (g/dL)",
+                              labelStyle: kInfo,
+                            ),
+                            validator: (result) {
+                              return ValidateResult(result!);
                             },
-                            child: Text("GUARDAR"),
-                            style: ButtonStyle(fixedSize: MaterialStateProperty.all(Size(100, 40))),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: MyTextFormDate(
+                            label: "Fecha de resultado",
+                            dateController: dateController,
+                          ),
+                        ),
+                        Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(20.0),
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        colorPrincipal),
+                                foregroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.white),
+                                fixedSize: MaterialStateProperty.all(
+                                    const Size(160.0, 46.0)),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                if (_keyForm.currentState!.validate()) {
+                                  print("Válido");
+                                  ConfirmDialog(context);
+                                } else {
+                                  print("Invalido");
+                                }
+                              },
+                              child: Text("GUARDAR"),
+                            ),
                           ),
                         )
                       ],
@@ -140,7 +183,8 @@ String? ValidateResult(String result) {
   return null;
 }
 
-void registerExam(String gestID, String examType, String value, String date, BuildContext context) {
+void registerExam(String gestID, String examType, String value, String date,
+    BuildContext context) {
   ExamService _examService = ExamService();
   _examService.registerExamResult(gestID, examType, value, date, context);
 }

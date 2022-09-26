@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gest_app/layout/gest/tabs.dart';
 import '../../utilities/designs.dart';
 import 'package:gest_app/service/gestante_service.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
@@ -23,7 +22,8 @@ class LoginGest extends StatefulWidget {
 }
 
 class _LoginGestState extends State<LoginGest> {
-  final RoundedLoadingButtonController googleController = RoundedLoadingButtonController();
+  final RoundedLoadingButtonController googleController =
+      RoundedLoadingButtonController();
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,8 @@ class _LoginGestState extends State<LoginGest> {
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(top: 20.0),
-              child: Text('Inicio de Sesión', textAlign: TextAlign.center, style: kTitulo),
+              child: Text('Inicio de Sesión',
+                  textAlign: TextAlign.center, style: kTitulo),
             ),
             Padding(
               padding: EdgeInsets.only(top: 20.0),
@@ -59,11 +60,15 @@ class _LoginGestState extends State<LoginGest> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset('assets/google_icon.png', width: 30, height: 30),
+                    Image.asset('assets/google_icon.png',
+                        width: 30, height: 30),
                     SizedBox(width: 5.0),
                     Text(
                       'Iniciar sesión con Google',
-                      style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w500, color: colorSecundario),
+                      style: TextStyle(
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w500,
+                          color: colorSecundario),
                     )
                   ],
                 ),
@@ -88,21 +93,4 @@ void loginGestante(BuildContext context) {
 
 void logoutGestante(BuildContext context) {
   _gestanteService.signOutGestante(context);
-}
-
-Future<void> _dialogWait(BuildContext context) {
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        content: Container(
-          alignment: Alignment.center,
-          width: MediaQuery.of(context).size.width / 10,
-          height: MediaQuery.of(context).size.height / 10,
-          child: const CircularProgressIndicator(),
-        ),
-      );
-    },
-  );
 }

@@ -20,9 +20,12 @@ class DrawerObs extends StatelessWidget {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
                     return UserAccountsDrawerHeader(
-                      accountName: CircularProgressIndicator(color: Colors.white),
-                      accountEmail: CircularProgressIndicator(color: Colors.white),
-                      currentAccountPicture: CircularProgressIndicator(color: Colors.white),
+                      accountName:
+                          CircularProgressIndicator(color: Colors.white),
+                      accountEmail:
+                          CircularProgressIndicator(color: Colors.white),
+                      currentAccountPicture:
+                          CircularProgressIndicator(color: Colors.white),
                     );
                   case ConnectionState.done:
                     if (snapshot.hasData) {
@@ -37,8 +40,8 @@ class DrawerObs extends StatelessWidget {
                         currentAccountPicture: CircleAvatar(
                           // backgroundImage: NetworkImage(user.photoURL!),
                           backgroundColor: Color(0xFF245470),
-                          child:
-                              Text(snapshot.data!.nombre!.substring(0, 1) + snapshot.data!.apellido!.substring(0, 1)),
+                          child: Text(snapshot.data!.nombre!.substring(0, 1) +
+                              snapshot.data!.apellido!.substring(0, 1)),
                         ),
                       );
                     } else {
@@ -48,7 +51,6 @@ class DrawerObs extends StatelessWidget {
                         currentAccountPicture: CircleAvatar(
                           //!backgroundImage: NetworkImage("Image"),
                           backgroundColor: Color(0xFF245470),
-                          child: const Text('AH'),
                         ),
                       );
                     }
@@ -71,11 +73,6 @@ class DrawerObs extends StatelessWidget {
               Navigator.pushNamed(context, '/profileObs');
             },
           ),
-          // ListTile(
-          //   title: Text('Configuración'),
-          //   leading: Icon(Icons.settings),
-          //   onTap: () {},
-          // ),
           ListTile(
             title: Text('Cerrar sesión'),
             leading: Icon(Icons.logout),

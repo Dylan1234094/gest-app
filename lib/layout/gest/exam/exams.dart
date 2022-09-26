@@ -3,7 +3,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gest_app/layout/gest/exam/exam_detail.dart';
-import 'package:gest_app/layout/gest/exam/register_exam.dart';
+
+import '../../../utilities/designs.dart';
 
 class ExamPage extends StatefulWidget {
   @override
@@ -13,71 +14,80 @@ class ExamPage extends StatefulWidget {
 class _ExamPageState extends State<ExamPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+      child: Scaffold(
         body: StreamBuilder(
-            stream: FirebaseFirestore.instance.collection('examenes').snapshots(),
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (!snapshot.hasData) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-
-              return ListView(
-                children: snapshot.data!.docs.map((document) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute<void>(builder: (BuildContext context) {
-                            return ExamDetailPage(examId: document.id, examName: document["name"]); //! id
-                          }),
-                        );
-                      },
-                      child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              ListTile(
-                                title: Text(
-                                  document['name'],
-                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 24),
-                                ),
-                                leading: Image.asset('assets/IconsExams/${document['icon']}', width: 50, height: 50),
-                                trailing: IconButton(
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute<void>(builder: (BuildContext context) {
-                                        return ExamDetailPage(
-                                          examId: document.id,
-                                          examName: document["name"],
-                                        ); //! id
-                                      }),
-                                    );
-                                  },
-                                  icon: Icon(
-                                    Icons.arrow_right,
-                                    size: 30,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                //!Divider
-                                height: 10,
-                                child: Center(
-                                    child: Container(
-                                  height: 1,
-                                  color: Colors.black,
-                                )),
-                              ),
-                            ],
-                          )),
-                    ),
-                  );
-                }).toList(),
+          stream: FirebaseFirestore.instance.collection('examenes').snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (!snapshot.hasData) {
+              return Center(
+                child: CircularProgressIndicator(),
               );
-            }));
+            }
+            return ListView(
+              children: snapshot.data!.docs.map((document) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (BuildContext context) {
+                          return ExamDetailPage(
+                            examId: document.id,
+                            examName: document["name"],
+                          ); //! id
+                        },
+                      ),
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(
+                          document['name'],
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 12.0),
+                        ),
+                        leading: Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black),
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: AssetImage(
+                                'assets/IconsExams/${document['icon']}',
+                              ),
+                            ),
+                          ),
+                        ),
+                        trailing: IconButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                  builder: (BuildContext context) {
+                                return ExamDetailPage(
+                                  examId: document.id,
+                                  examName: document["name"],
+                                ); //! id
+                              }),
+                            );
+                          },
+                          icon: Icon(Icons.arrow_forward_ios,
+                              size: 20, color: Colors.black),
+                        ),
+                      ),
+                      Divider(color: colorSecundario),
+                    ],
+                  ),
+                );
+              }).toList(),
+            );
+          },
+        ),
+      ),
+    );
   }
 }

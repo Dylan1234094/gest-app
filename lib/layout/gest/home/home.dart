@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gest_app/data/model/gestante.dart';
 import 'package:gest_app/layout/authentication/linkobs_gest.dart';
 import 'package:gest_app/layout/gest/home/metric_detail.dart';
@@ -37,6 +39,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var uid = FirebaseAuth.instance.currentUser!.uid;
+    final user = FirebaseAuth.instance.currentUser!;
+
+    final hora = DateTime.now().hour;
 
     return Scaffold(
       body: RefreshIndicator(
@@ -60,23 +65,44 @@ class _HomePageState extends State<HomePage> {
                         vertical: 20.0, horizontal: 10.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Text("Si no completó el registro de su perfil\nseleccione la siguiente opción\n",
-                            textAlign: TextAlign.center),
-                        ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute<void>(builder: (BuildContext context) {
-                                  return LinkObsGest();
-                                }),
-                              );
-                            },
-                            child: Text("Continuar Registro")),
-                        TextButton(
-                          child: const Text("Reintentar"),
-                          style: TextButton.styleFrom(textStyle: Theme.of(context).textTheme.labelLarge),
-                          onPressed: () => setState(() {}),
+                        RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'Por favor, continue con el ',
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 18.0),
+                              ),
+                              TextSpan(
+                                text: 'registro de su perfil.',
+                                style: TextStyle(
+                                  color: colorPrincipal,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute<void>(
+                                          builder: (BuildContext context) {
+                                        return LinkObsGest();
+                                      }),
+                                    );
+                                  },
+                              ),
+                            ],
+                          ),
                         ),
+                        // TextButton(
+                        //   child: const Text("Reintentar"),
+                        //   style: TextButton.styleFrom(
+                        //     textStyle: Theme.of(context).textTheme.labelLarge,
+                        //   ),
+                        //   onPressed: () => setState(() {}),
+                        // ),
                       ],
                     ),
                   );
@@ -88,87 +114,121 @@ class _HomePageState extends State<HomePage> {
                 pesoController.text = snapshot.data!.vitals!["peso"];
                 glucoController.text = snapshot.data!.vitals!["gluco"];
                 return Scaffold(
-                  backgroundColor: Colors.white,
-                  body: ListView(
-                    children: [
-                      (actFisicaController.text == "true")
-                          ? Container(
-                              child: VitalCard(
-                              userType: "gest",
-                              title: "Actividad Física",
-                              iconPath: "assets/IconsVitals/act_fisica_icon.png",
-                              vitalSign: "actFisica",
-                              unit: "Pasos",
-                              rtoken: snapshot.data!.rtoken!,
-                            ))
-                          : Container(),
-                      (freCardiController.text == "true")
-                          ? Container(
-                              child: VitalCard(
-                              userType: "gest",
-                              title: "Frecuencia Cardíaca",
-                              iconPath: "assets/IconsVitals/fre_car_icon.png",
-                              vitalSign: "freCardi",
-                              unit: "bpm",
-                              rtoken: snapshot.data!.rtoken!,
-                            ))
-                          : Container(),
-                      (glucoController.text == "true")
-                          ? Container(
-                              child: VitalCard(
-                              userType: "gest",
-                              title: "Glucosa",
-                              iconPath: "assets/IconsVitals/gluco_icon.png",
-                              vitalSign: "gluco",
-                              unit: "mmol/L",
-                              rtoken: snapshot.data!.rtoken!,
-                            ))
-                          : Container(),
-                      (pesoController.text == "true")
-                          ? Container(
-                              child: VitalCard(
-                              userType: "gest",
-                              title: "Peso",
-                              iconPath: "assets/IconsVitals/peso_icon.png",
-                              vitalSign: "peso",
-                              unit: "kg",
-                              rtoken: snapshot.data!.rtoken!,
-                            ))
-                          : Container(),
-                      (presArtController.text == "true")
-                          ? Container(
-                              child: VitalCard(
-                              userType: "gest",
-                              title: "Presión Arterial",
-                              iconPath: "assets/IconsVitals/pres_art_icon.png",
-                              vitalSign: "presArt",
-                              unit: "mmHg",
-                              rtoken: snapshot.data!.rtoken!,
-                            ))
-                          : Container(),
-                      (satOxigController.text == "true")
-                          ? Container(
-                              child: VitalCard(
-                              userType: "gest",
-                              title: "Saturación de Oxígeno",
-                              iconPath: "assets/IconsVitals/sat_oxig_icon.png",
-                              vitalSign: "satOxig",
-                              unit: "%",
-                              rtoken: snapshot.data!.rtoken!,
-                            ))
-                          : Container(),
-                      (suenioController.text == "true")
-                          ? Container(
-                              child: VitalCard(
-                              userType: "gest",
-                              title: "Sueño",
-                              iconPath: "assets/IconsVitals/suenio_icon.png",
-                              vitalSign: "suenio",
-                              unit: "h",
-                              rtoken: snapshot.data!.rtoken!,
-                            ))
-                          : Container(),
-                    ],
+                  body: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 20.0, horizontal: 10.0),
+                    child: ListView(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  (hora < 12)
+                                      ? 'Buenos días,'
+                                      : ((hora > 12 && hora < 18)
+                                          ? 'Buenas tardes,'
+                                          : 'Buenas noches,'),
+                                  style: TextStyle(
+                                      color: colorSecundario, fontSize: 13.0),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 10.0),
+                                  child: Text(
+                                    user.displayName!,
+                                    style: TextStyle(
+                                        fontSize: 17.0,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        (actFisicaController.text == "true")
+                            ? Container(
+                                child: VitalCard(
+                                userType: "gest",
+                                title: "Actividad Física",
+                                iconPath:
+                                    "assets/IconsVitals/act_fisica_icon.png",
+                                vitalSign: "actFisica",
+                                unit: "Pasos",
+                                rtoken: snapshot.data!.rtoken!,
+                              ))
+                            : Container(),
+                        (freCardiController.text == "true")
+                            ? Container(
+                                child: VitalCard(
+                                userType: "gest",
+                                title: "Frecuencia Cardíaca",
+                                iconPath: "assets/IconsVitals/fre_car_icon.png",
+                                vitalSign: "freCardi",
+                                unit: "bpm",
+                                rtoken: snapshot.data!.rtoken!,
+                              ))
+                            : Container(),
+                        (glucoController.text == "true")
+                            ? Container(
+                                child: VitalCard(
+                                userType: "gest",
+                                title: "Glucosa",
+                                iconPath: "assets/IconsVitals/gluco_icon.png",
+                                vitalSign: "gluco",
+                                unit: "mmol/L",
+                                rtoken: snapshot.data!.rtoken!,
+                              ))
+                            : Container(),
+                        (pesoController.text == "true")
+                            ? Container(
+                                child: VitalCard(
+                                userType: "gest",
+                                title: "Peso",
+                                iconPath: "assets/IconsVitals/peso_icon.png",
+                                vitalSign: "peso",
+                                unit: "kg",
+                                rtoken: snapshot.data!.rtoken!,
+                              ))
+                            : Container(),
+                        (presArtController.text == "true")
+                            ? Container(
+                                child: VitalCard(
+                                userType: "gest",
+                                title: "Presión Arterial",
+                                iconPath:
+                                    "assets/IconsVitals/pres_art_icon.png",
+                                vitalSign: "presArt",
+                                unit: "mmHg",
+                                rtoken: snapshot.data!.rtoken!,
+                              ))
+                            : Container(),
+                        (satOxigController.text == "true")
+                            ? Container(
+                                child: VitalCard(
+                                userType: "gest",
+                                title: "Saturación de Oxígeno",
+                                iconPath:
+                                    "assets/IconsVitals/sat_oxig_icon.png",
+                                vitalSign: "satOxig",
+                                unit: "%",
+                                rtoken: snapshot.data!.rtoken!,
+                              ))
+                            : Container(),
+                        (suenioController.text == "true")
+                            ? Container(
+                                child: VitalCard(
+                                userType: "gest",
+                                title: "Sueño",
+                                iconPath: "assets/IconsVitals/suenio_icon.png",
+                                vitalSign: "suenio",
+                                unit: "h",
+                                rtoken: snapshot.data!.rtoken!,
+                              ))
+                            : Container(),
+                      ],
+                    ),
                   ),
                 );
               default:
@@ -290,8 +350,6 @@ class _VitalCardState extends State<VitalCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 700,
-      padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
       child: GestureDetector(
         onTap: () {
           Navigator.of(context).push(
@@ -307,44 +365,40 @@ class _VitalCardState extends State<VitalCard> {
           );
         },
         child: Card(
-          child: Row(children: <Widget>[
-            Expanded(
-              flex: 2,
-              child: Align(
-                alignment: Alignment.center,
-                child: Padding(
-                    padding: const EdgeInsets.only(right: 4, top: 3, bottom: 6),
-                    child: Container(
-                      height: 35.0,
-                      width: 35.0,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(widget.iconPath),
-                          fit: BoxFit.fill,
-                        ),
-                        shape: BoxShape.rectangle,
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                flex: 2,
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    height: 35.0,
+                    width: 35.0,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(widget.iconPath),
+                        fit: BoxFit.fill,
                       ),
-                    )),
-              ),
-            ),
-            Expanded(
-              flex: 8,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      widget.title,
-                      textAlign: TextAlign.end,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                      shape: BoxShape.rectangle,
                     ),
-                    Text('Gráfico evolutivo',
-                        textAlign: TextAlign.left, style: TextStyle(fontStyle: FontStyle.italic, fontSize: 18))
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ]),
+              Expanded(
+                flex: 8,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(widget.title, style: kGestHomeTitGrafic),
+                      Text('Ver evolución', style: kGestHomeDescGrafic)
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

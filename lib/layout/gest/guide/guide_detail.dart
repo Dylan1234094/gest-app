@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:gest_app/data/model/guide.dart';
 import 'package:gest_app/service/guides_service.dart';
 
+import '../../../utilities/designs.dart';
+
 class GuideDetailPage extends StatefulWidget {
   final String guideId;
   const GuideDetailPage({Key? key, required this.guideId}) : super(key: key);
@@ -17,22 +19,24 @@ class _GuideDetailPageState extends State<GuideDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            title: Text("Guía Psicoprofilaxis")),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
         body: FutureBuilder<Guide>(
             future: getGuideById(widget.guideId),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Center(
-                    child: const Text(
-                        "No se encontró información para esta guía"));
+                  child:
+                      const Text("No se encontró información para esta guía"),
+                );
               }
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 20.0, horizontal: 10.0),
+                child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -41,22 +45,26 @@ class _GuideDetailPageState extends State<GuideDetailPage> {
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
                           snapshot.data!.title!,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 24),
+                          style: kTitulo,
                         ),
                       ),
                       Padding(
                         //! Short Description
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(snapshot.data!.shortDescription!,
-                            style: TextStyle(
-                                fontStyle: FontStyle.italic, fontSize: 16)),
+                        child: Text(
+                          snapshot.data!.shortDescription!,
+                          style: kDescGuia,
+                          textAlign: TextAlign.justify,
+                        ),
                       ),
                       Padding(
                         //! Thumbnail
                         padding: const EdgeInsets.all(8.0),
-                        child: Image(
-                          image: NetworkImage(snapshot.data!.thumbnail!),
+                        child: Hero(
+                          tag: 'imgGuia',
+                          child: Image(
+                            image: NetworkImage(snapshot.data!.thumbnail!),
+                          ),
                         ),
                       ),
                       Padding(
@@ -64,7 +72,8 @@ class _GuideDetailPageState extends State<GuideDetailPage> {
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
                           snapshot.data!.largeDescription!,
-                          style: TextStyle(fontSize: 12),
+                          style: kDescGuia,
+                          textAlign: TextAlign.justify,
                         ),
                       )
                     ],

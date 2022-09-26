@@ -20,9 +20,15 @@ const kTituloCabezera = TextStyle(
   fontSize: 20.0,
 );
 
-const kTituloGrafico = TextStyle(
+const kGestHomeTitGrafic = TextStyle(
   fontWeight: FontWeight.bold,
-  fontSize: 10.0,
+  fontSize: 14.0,
+);
+
+const kGestHomeDescGrafic = TextStyle(
+  color: colorSecundario,
+  fontWeight: FontWeight.w300,
+  fontSize: 12.0,
 );
 
 const kTextoBoton = TextStyle(
@@ -35,7 +41,7 @@ const kFechaDato = TextStyle(
 );
 
 const kDato = TextStyle(
-  fontSize: 20.0,
+  fontSize: 17.0,
 );
 
 const kTituloSignoConfig = TextStyle(
@@ -52,6 +58,21 @@ const kInfoSignoConfig = TextStyle(
 
 const kPopUpInfo = TextStyle(
   fontSize: 11.0,
+);
+
+const kTituloGuia = TextStyle(
+  fontWeight: FontWeight.bold,
+  fontSize: 12.0,
+);
+
+const kInfoGuia = TextStyle(
+  fontSize: 10.0,
+  color: colorSecundario,
+);
+
+const kDescGuia = TextStyle(
+  fontSize: 12,
+  height: 1.5,
 );
 
 ButtonStyle estiloBoton = ButtonStyle(
