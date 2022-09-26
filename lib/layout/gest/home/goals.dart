@@ -23,8 +23,7 @@ class GoalsPage extends StatelessWidget {
                 .collection('gestantes')
                 .doc(uid)
                 .collection("metas_act_fisica")
-                .orderBy('startTime', descending: false)
-                .snapshots(),
+                .where("registerStatus", whereIn: [1, 2]).snapshots(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData) {
                 return Center(

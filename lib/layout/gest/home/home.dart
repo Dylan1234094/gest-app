@@ -56,30 +56,30 @@ class _HomePageState extends State<HomePage> {
               case (ConnectionState.done):
                 if (!snapshot.hasData) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20.0, horizontal: 10.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text("Si no completó el registro de su perfil\nseleccione la siguiente opción\n",
-                            textAlign: TextAlign.center),
-                        ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute<void>(builder: (BuildContext context) {
-                                  return LinkObsGest();
-                                }),
-                              );
-                            },
-                            child: Text("Continuar Registro")),
-                        TextButton(
-                          child: const Text("Reintentar"),
-                          style: TextButton.styleFrom(textStyle: Theme.of(context).textTheme.labelLarge),
-                          onPressed: () => setState(() {}),
+                      padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text("Si no completó el registro de su perfil\nseleccione la siguiente opción\n",
+                                textAlign: TextAlign.center),
+                            ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute<void>(builder: (BuildContext context) {
+                                      return LinkObsGest();
+                                    }),
+                                  );
+                                },
+                                child: Text("Continuar Registro")),
+                            TextButton(
+                              child: const Text("Reintentar"),
+                              style: TextButton.styleFrom(textStyle: Theme.of(context).textTheme.labelLarge),
+                              onPressed: () => setState(() {}),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  );
+                      ));
                 }
                 actFisicaController.text = snapshot.data!.vitals!["actFisica"];
                 freCardiController.text = snapshot.data!.vitals!["freCardi"];

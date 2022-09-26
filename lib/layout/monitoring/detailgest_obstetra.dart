@@ -118,7 +118,7 @@ class _DetailMonitorGestState extends State<DetailMonitorGest> {
                               ),
                               Text('Edad gestacional', style: TextStyle(fontStyle: FontStyle.normal, fontSize: 16)),
                               Text(
-                                  '${(DateTime.now().difference(intl.DateFormat("dd/MM/yyyy hh:mm:ss").parse(snapshotGest.data!.fechaRegla! + " 00:00:00")).inDays).round()} semanas de embarazo',
+                                  '${(DateTime.now().difference(intl.DateFormat("dd/MM/yyyy hh:mm:ss").parse(snapshotGest.data!.fechaRegla! + " 00:00:00")).inDays / 4).round()} semanas de embarazo',
                                   textAlign: TextAlign.left,
                                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
                             ],

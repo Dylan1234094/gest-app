@@ -38,9 +38,14 @@ class _RegisterExamPageState extends State<RegisterExamPage> {
               TextButton(
                   onPressed: () {
                     //! Register exam
-                    registerExam(uid, widget.examName, valueController.text, dateController.text, context);
-
-                    Navigator.of(context).popUntil(ModalRoute.withName("/"));
+                    registerExam(uid, widget.examName, valueController.text, dateController.text, context)
+                        .then((value) {
+                      Navigator.of(context).pop();
+                      _registerExamSuccess(context);
+                    }).onError((error, stackTrace) {
+                      Navigator.of(context).pop();
+                      _registerExamFailed(context);
+                    });
                   },
                   child: const Text('Si'))
             ],
@@ -89,7 +94,9 @@ class _RegisterExamPageState extends State<RegisterExamPage> {
                             child: TextFormField(
                                 controller: valueController,
                                 keyboardType: TextInputType.number,
-                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                                ],
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(),
                                   labelText: "Resultado (g/dL)",
@@ -140,7 +147,69 @@ String? ValidateResult(String result) {
   return null;
 }
 
-void registerExam(String gestID, String examType, String value, String date, BuildContext context) {
+Future<void> registerExam(String gestID, String examType, String value, String date, BuildContext context) {
   ExamService _examService = ExamService();
-  _examService.registerExamResult(gestID, examType, value, date, context);
+  return _examService.registerExamResult(gestID, examType, value, date, context);
+}
+
+Future<void> _registerExamSuccess(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: EdgeInsets.only(bottom: 10),
+        title: Text(
+          'Examen Registrado',
+          style: TextStyle(fontSize: 13),
+        ),
+        content: RichText(
+          text: TextSpan(
+            text: 'Su examen fue registrado correctamente',
+            style: DefaultTextStyle.of(context).style,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            onPressed: () {
+              Navigator.of(context).popUntil(ModalRoute.withName("/"));
+            },
+          )
+        ],
+      );
+    },
+  );
+}
+
+Future<void> _registerExamFailed(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: EdgeInsets.only(bottom: 10),
+        title: Text(
+          'Algo salió mal...',
+          style: TextStyle(fontSize: 13),
+        ),
+        content: RichText(
+          text: TextSpan(
+            text: 'Su examen no fue registrado. Por favor, inténtelo más tarde',
+            style: DefaultTextStyle.of(context).style,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      );
+    },
+  );
 }

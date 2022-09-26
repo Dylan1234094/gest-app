@@ -38,8 +38,14 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
             TextButton(
                 onPressed: () {
                   //! Update examen
-                  updateExamResult(uid, widget.examId, valueController.text, dateController.text, context);
-                  Navigator.of(context).popUntil(ModalRoute.withName("/"));
+                  updateExamResult(uid, widget.examId, valueController.text, dateController.text, context)
+                      .then((value) {
+                    Navigator.of(context).pop();
+                    _updateExamSuccess(context);
+                  }).onError((error, stackTrace) {
+                    Navigator.of(context).pop();
+                    _updateExamFailed(context);
+                  });
                 },
                 child: const Text('Si'))
           ],
@@ -64,8 +70,13 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
             TextButton(
                 onPressed: () {
                   //! Delete examen
-                  deleteExamResult(uid, widget.examId, context);
-                  Navigator.of(context).popUntil(ModalRoute.withName("/"));
+                  deleteExamResult(uid, widget.examId, context).then((value) {
+                    Navigator.of(context).pop();
+                    _deleteExamSuccess(context);
+                  }).onError((error, stackTrace) {
+                    Navigator.of(context).pop();
+                    _deleteExamFailed(context);
+                  });
                 },
                 child: const Text('Si'))
           ],
@@ -146,7 +157,9 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
                               child: TextField(
                                 controller: valueController,
                                 keyboardType: TextInputType.number,
-                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                                ],
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(),
                                   labelText: 'Resultado (g/dL)',
@@ -190,17 +203,136 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
   }
 }
 
-void updateExamResult(String gestID, String examID, String value, String date, BuildContext context) {
+Future<void> updateExamResult(String gestID, String examID, String value, String date, BuildContext context) {
   ExamService _examService = ExamService();
-  _examService.updateExamResult(gestID, examID, value, date, context);
+  return _examService.updateExamResult(gestID, examID, value, date, context);
 }
 
-void deleteExamResult(String gestID, String examID, BuildContext context) {
+Future<void> deleteExamResult(String gestID, String examID, BuildContext context) {
   ExamService _examService = ExamService();
-  _examService.deleteExamResult(gestID, examID, context);
+  return _examService.deleteExamResult(gestID, examID, context);
 }
 
 Future<Exam> getExamResult(String examID, String gestID) {
   ExamService _examService = ExamService();
   return _examService.getExamResult(examID, gestID);
+}
+
+Future<void> _updateExamSuccess(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: EdgeInsets.only(bottom: 10),
+        title: Text(
+          'Examen Actualizado',
+          style: TextStyle(fontSize: 13),
+        ),
+        content: RichText(
+          text: TextSpan(
+            text: 'Su examen fue actualizado correctamente',
+            style: DefaultTextStyle.of(context).style,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            onPressed: () {
+              Navigator.of(context).popUntil(ModalRoute.withName("/"));
+            },
+          )
+        ],
+      );
+    },
+  );
+}
+
+Future<void> _updateExamFailed(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: EdgeInsets.only(bottom: 10),
+        title: Text(
+          'Algo salió mal...',
+          style: TextStyle(fontSize: 13),
+        ),
+        content: RichText(
+          text: TextSpan(
+            text: 'Su examen no fue actualizado. Por favor, inténtelo más tarde',
+            style: DefaultTextStyle.of(context).style,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      );
+    },
+  );
+}
+
+Future<void> _deleteExamSuccess(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: EdgeInsets.only(bottom: 10),
+        title: Text(
+          'Examen Eliminado',
+          style: TextStyle(fontSize: 13),
+        ),
+        content: Text("Su examen fue eliminado correctamente"),
+        actions: <Widget>[
+          TextButton(
+            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            onPressed: () {
+              Navigator.of(context).popUntil(ModalRoute.withName("/"));
+            },
+          )
+        ],
+      );
+    },
+  );
+}
+
+Future<void> _deleteExamFailed(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: EdgeInsets.only(bottom: 10),
+        title: Text(
+          'Algo salió mal...',
+          style: TextStyle(fontSize: 13),
+        ),
+        content: RichText(
+          text: TextSpan(
+            text: 'Su examen no fue eliminado. Por favor, inténtelo más tarde',
+            style: DefaultTextStyle.of(context).style,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      );
+    },
+  );
 }

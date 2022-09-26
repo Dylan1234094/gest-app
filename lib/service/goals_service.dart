@@ -33,7 +33,7 @@ class GoalService {
     return meta = Goal(id: uid, startTime: startTime, endTime: endTime, value: value);
   }
 
-  void registerGoal(String gestID, String value, String startDate, String endDate, BuildContext context) async {
+  Future<void> registerGoal(String gestID, String value, String startDate, String endDate, BuildContext context) async {
     var startDay = startDate.substring(0, 2);
     var startMonth = startDate.substring(3, 5);
     var startYear = startDate.substring(6, 10);
@@ -56,10 +56,11 @@ class GoalService {
       await docRef.add(meta);
     } catch (e) {
       print(e);
+      throw e;
     }
   }
 
-  void updateGoal(
+  Future<void> updateGoal(
       String gestID, String goalId, String value, String startDate, String endDate, BuildContext context) async {
     var startDay = startDate.substring(0, 2);
     var startMonth = startDate.substring(3, 5);
@@ -83,10 +84,11 @@ class GoalService {
       await docRef.set(meta, SetOptions(merge: true));
     } catch (e) {
       print("error: $e");
+      throw e;
     }
   }
 
-  void deleteGoal(String gestID, String goalID, BuildContext context) async {
+  Future<void> deleteGoal(String gestID, String goalID, BuildContext context) async {
     Goal meta = const Goal(registerStatus: 3);
 
     try {
@@ -97,6 +99,7 @@ class GoalService {
       await docRef.set(meta, SetOptions(merge: true));
     } catch (e) {
       print(e);
+      throw e;
     }
   }
 

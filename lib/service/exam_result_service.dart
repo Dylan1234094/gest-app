@@ -13,7 +13,7 @@ final db = FirebaseFirestore.instance;
 class ExamService {
   Future<Exam> getExamResult(String uid, String gestID) async {
     Exam exam;
-    var value = 0;
+    var value = 0.0;
     var dateResult = Timestamp.now();
 
     try {
@@ -33,14 +33,20 @@ class ExamService {
     return exam = Exam(id: uid, dateResult: dateResult, value: value);
   }
 
-  void registerExamResult(String gestID, String examType, String value, String date, BuildContext context) async {
+  Future<void> registerExamResult(
+      String gestID, String examType, String value, String date, BuildContext context) async {
     var day = date.substring(0, 2);
     var month = date.substring(3, 5);
     var year = date.substring(6, 10);
     DateTime da = DateTime.parse("$year-$month-$day 00:00:00.000");
     Timestamp ts = Timestamp.fromDate(da);
 
-    Exam exam = Exam(examType: examType, value: int.parse(value), dateResult: ts, registerStatus: 1);
+    Exam exam = Exam(examType: examType, value: double.tryParse(value), dateResult: ts, registerStatus: 1);
+
+    var nombreGest = "";
+    var apellidoGest = "";
+    var codigoObsGest = "";
+    var obsFcmToken = "";
 
     try {
       final docRef = db.collection("gestantes").doc(gestID).collection("resultados_examenes").withConverter(
@@ -49,10 +55,6 @@ class ExamService {
           );
       await docRef.add(exam);
 
-      var nombreGest = "";
-      var apellidoGest = "";
-      var codigoObsGest = "";
-      var obsFcmToken = "";
       final gestRef = db.collection("gestantes").doc(gestID);
       await gestRef.get().then(
         (DocumentSnapshot doc) {
@@ -70,35 +72,36 @@ class ExamService {
           obsFcmToken = event.docs.first.data()["fcmToken"];
         }
       });
-
-      var url = 'https://upc-cloud-test.azurewebsites.net/api/sendExamNotification';
-      Map data = {
-        'examType': examType,
-        'nameGest': nombreGest,
-        'surnameGest': apellidoGest,
-        'idGest': gestID,
-        'fcmReceiverToken': obsFcmToken
-      };
-      var body = json.encode(data);
-      try {
-        var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
-        print(response.body);
-      } catch (e) {
-        print(e);
-      }
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+    var url = 'https://upc-cloud-test.azurewebsites.net/api/sendExamNotification';
+    Map data = {
+      'examType': examType,
+      'nameGest': nombreGest,
+      'surnameGest': apellidoGest,
+      'idGest': gestID,
+      'fcmReceiverToken': obsFcmToken
+    };
+    var body = json.encode(data);
+    try {
+      var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
+      print(response.body);
     } catch (e) {
       print(e);
     }
   }
 
-  void updateExamResult(String gestID, String resultExamID, String value, String date, BuildContext context) async {
+  Future<void> updateExamResult(
+      String gestID, String resultExamID, String value, String date, BuildContext context) async {
     var day = date.substring(0, 2);
     var month = date.substring(3, 5);
     var year = date.substring(6, 10);
     DateTime da = DateTime.parse("$year-$month-$day 00:00:00.000");
     Timestamp ts = Timestamp.fromDate(da);
 
-    Exam exam = Exam(value: int.parse(value), dateResult: ts, registerStatus: 2);
+    Exam exam = Exam(value: double.tryParse(value), dateResult: ts, registerStatus: 2);
 
     try {
       final docRef =
@@ -109,10 +112,11 @@ class ExamService {
       await docRef.set(exam, SetOptions(merge: true));
     } catch (e) {
       print("error: $e");
+      throw e;
     }
   }
 
-  void deleteExamResult(String gestID, String resultExamID, BuildContext context) async {
+  Future<void> deleteExamResult(String gestID, String resultExamID, BuildContext context) async {
     Exam exam = const Exam(registerStatus: 3);
 
     try {
@@ -124,6 +128,7 @@ class ExamService {
       await docRef.set(exam, SetOptions(merge: true));
     } catch (e) {
       print(e);
+      throw e;
     }
   }
 
@@ -142,7 +147,10 @@ class ExamService {
           .get()
           .then((event) {
             for (var doc in event.docs) {
-              exam = Exam(value: doc.data()["value"], dateResult: doc.data()["dateResult"], id: doc.id);
+              exam = Exam(
+                  value: double.tryParse(doc.data()["value"].toString()),
+                  dateResult: doc.data()["dateResult"],
+                  id: doc.id);
               listaResultadoExamenes.add(exam);
             }
           });

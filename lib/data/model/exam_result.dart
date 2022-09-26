@@ -1,8 +1,10 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Exam {
   final String? id;
-  final int? value;
+  final double? value;
   final Timestamp? dateResult;
   final String? examType;
   final int? registerStatus;

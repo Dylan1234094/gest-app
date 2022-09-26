@@ -152,7 +152,9 @@ class _ViewFormObsState extends State<ViewFormObs> {
                               if (_keyForm.currentState!.validate())
                                 {
                                   updateObstetra(uid, nombreController.text, apellidoController.text,
-                                      telefonoController.text, context)
+                                          telefonoController.text, context)
+                                      .then((value) => _updateObsSuccess(context))
+                                      .onError((error, stackTrace) => _updateObsFailed(context))
                                 }
                             },
                             child: const Text('Guardar'),
@@ -176,7 +178,7 @@ Future<Obstetra> getObstetra(String id) {
   return _obstetraService.getObstetra(id);
 }
 
-void updateObstetra(String id, String nombre, String apellido, String telefono, BuildContext context) {
+Future<void> updateObstetra(String id, String nombre, String apellido, String telefono, BuildContext context) {
   return _obstetraService.updateObstetra(id, nombre, apellido, telefono, context);
 }
 
@@ -223,4 +225,66 @@ String? ValidatePassword(String value) {
     return 'Contraseña debe tener mínimo 6 carácteres';
   }
   return null;
+}
+
+Future<void> _updateObsSuccess(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: EdgeInsets.only(bottom: 10),
+        title: Text(
+          'Perfil Actualizado',
+          style: TextStyle(fontSize: 13),
+        ),
+        content: RichText(
+          text: TextSpan(
+            text: 'Su perfil fue actualizado correctamente',
+            style: DefaultTextStyle.of(context).style,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            onPressed: () {
+              Navigator.of(context).popUntil(ModalRoute.withName("/"));
+            },
+          )
+        ],
+      );
+    },
+  );
+}
+
+Future<void> _updateObsFailed(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: EdgeInsets.only(bottom: 10),
+        title: Text(
+          'Algo salió mal...',
+          style: TextStyle(fontSize: 13),
+        ),
+        content: RichText(
+          text: TextSpan(
+            text: 'Su perfil no fue actualizado. Por favor, inténtelo más tarde',
+            style: DefaultTextStyle.of(context).style,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      );
+    },
+  );
 }

@@ -26,9 +26,7 @@ class _GuideDetailPageState extends State<GuideDetailPage> {
             future: getGuideById(widget.guideId),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return Center(
-                    child: const Text(
-                        "No se encontró información para esta guía"));
+                return Center(child: const Text("No se encontró información para esta guía"));
               }
               return SingleChildScrollView(
                 child: Padding(
@@ -41,16 +39,14 @@ class _GuideDetailPageState extends State<GuideDetailPage> {
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
                           snapshot.data!.title!,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 24),
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                         ),
                       ),
                       Padding(
                         //! Short Description
                         padding: const EdgeInsets.all(8.0),
                         child: Text(snapshot.data!.shortDescription!,
-                            style: TextStyle(
-                                fontStyle: FontStyle.italic, fontSize: 16)),
+                            style: TextStyle(fontStyle: FontStyle.italic, fontSize: 16)),
                       ),
                       Padding(
                         //! Thumbnail

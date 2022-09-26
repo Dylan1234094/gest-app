@@ -26,16 +26,14 @@ class _StartPageState extends State<StartPage> {
     return Scaffold(
       body: Container(
         child: Card(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           margin: const EdgeInsets.symmetric(vertical: 41, horizontal: 15),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Expanded(
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 50),
+                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 50),
                   child: Container(
                     decoration: const BoxDecoration(
                       image: DecorationImage(
@@ -54,21 +52,17 @@ class _StartPageState extends State<StartPage> {
                       child: ElevatedButton(
                         child: const Text('SOY GESTANTE', style: kTextoBoton),
                         style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(colorPrincipal),
-                          foregroundColor:
-                              MaterialStateProperty.all<Color>(Colors.white),
-                          fixedSize: MaterialStateProperty.all(
-                              const Size(250.0, 46.0)),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                          backgroundColor: MaterialStateProperty.all<Color>(colorPrincipal),
+                          foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                          fixedSize: MaterialStateProperty.all(const Size(250.0, 46.0)),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                           ),
                         ),
                         onPressed: () {
-                          Navigator.pushNamed(context, LoginGest.id);
+                          _navigateAndReturn(context);
                         },
                       ),
                     ),
@@ -76,14 +70,10 @@ class _StartPageState extends State<StartPage> {
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
                         style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(colorPrincipal),
-                          foregroundColor:
-                              MaterialStateProperty.all<Color>(Colors.white),
-                          fixedSize: MaterialStateProperty.all(
-                              const Size(250.0, 46.0)),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                          backgroundColor: MaterialStateProperty.all<Color>(colorPrincipal),
+                          foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                          fixedSize: MaterialStateProperty.all(const Size(250.0, 46.0)),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
@@ -113,5 +103,11 @@ class _StartPageState extends State<StartPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _navigateAndReturn(BuildContext context) async {
+    await Navigator.pushNamed(context, LoginGest.id);
+
+    setState(() {});
   }
 }

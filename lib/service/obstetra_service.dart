@@ -38,7 +38,6 @@ class ObstetraService {
             apellido: apellido,
             correo: correo,
             telefono: telefono,
-            contrasenia: contrasenia,
             codigoObstetra: codigoObstetra,
             fcmToken: fcmtoken);
         final docRef = db
@@ -64,22 +63,23 @@ class ObstetraService {
     }
   }
 
-  void updateObstetra(String id, String nombre, String apellido, String telefono, BuildContext context) async {
+  Future<void> updateObstetra(String id, String nombre, String apellido, String telefono, BuildContext context) async {
     final obstetra = Obstetra(id: id, nombre: nombre, apellido: apellido, telefono: telefono);
-
-    final docRef = db
-        .collection("obstetras")
-        .withConverter(
-          fromFirestore: Obstetra.fromFirestore,
-          toFirestore: (Obstetra obstetra, options) => obstetra.toFirestore(),
-        )
-        .doc(id);
-    await docRef
-        .set(obstetra, SetOptions(merge: true))
-        .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
+    try {
+      final docRef = db
+          .collection("obstetras")
+          .withConverter(
+            fromFirestore: Obstetra.fromFirestore,
+            toFirestore: (Obstetra obstetra, options) => obstetra.toFirestore(),
+          )
+          .doc(id);
+      await docRef.set(obstetra, SetOptions(merge: true));
+    } catch (e) {
+      throw e;
+    }
   }
 
-  Future loginObstetra(String email, String contrasenia, BuildContext context) async {
+  Future<String> loginObstetra(String email, String contrasenia, BuildContext context) async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: contrasenia).then((data) async {
         final fcmtoken = await FirebaseMessaging.instance.getToken();
@@ -92,18 +92,18 @@ class ObstetraService {
               toFirestore: (Obstetra obstetra, options) => obstetra.toFirestore(),
             )
             .doc(data.user!.uid);
-        await docRef
-            .set(obstetra, SetOptions(merge: true))
-            .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
+        await docRef.set(obstetra, SetOptions(merge: true));
       });
+      return "inicio sesion";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print("no se encontró usuario");
+        return "no se encontro usuario";
       } else if (e.code == "wrong-password") {
-        print("contrasenia incorrecta");
+        return "contrasenia incorrecta";
       }
+      return "algo salio mal";
     } catch (e) {
-      print(e);
+      return "algo salio mal";
     }
   }
 

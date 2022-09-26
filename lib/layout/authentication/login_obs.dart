@@ -174,7 +174,20 @@ ObstetraService _obstetraService = ObstetraService();
 
 void loginObstetra(String correo, String contrasenia, BuildContext context) {
   _dialogWait(context);
-  _obstetraService.loginObstetra(correo, contrasenia, context);
+  _obstetraService.loginObstetra(correo, contrasenia, context).then((value) {
+    if (value == "inicio sesion") {
+      Navigator.of(context).popUntil(ModalRoute.withName("/"));
+    } else if (value == "no se encontro usuario") {
+      Navigator.pop(context);
+      _dialogWrongCredentials(context);
+    } else if (value == "contrasenia incorrecta") {
+      Navigator.pop(context);
+      _dialogWrongCredentials(context);
+    } else {
+      Navigator.pop(context);
+      _dialogSomethingWentWrong(context);
+    }
+  });
 }
 
 String? ValidateEmail(String value) {
@@ -211,6 +224,44 @@ Future<void> _dialogWait(BuildContext context) {
           height: MediaQuery.of(context).size.height / 10,
           child: const CircularProgressIndicator(),
         ),
+      );
+    },
+  );
+}
+
+Future<void> _dialogWrongCredentials(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        actions: <Widget>[
+          TextButton(
+            child: const Text("Aceptar"),
+            style: TextButton.styleFrom(textStyle: Theme.of(context).textTheme.labelLarge),
+            onPressed: () => Navigator.pop(context),
+          )
+        ],
+        title: const Text("Credenciales Incorrectas"),
+        content: Text("El usuario o la contraseña ingresadas no son correctas"),
+      );
+    },
+  );
+}
+
+Future<void> _dialogSomethingWentWrong(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        actions: <Widget>[
+          TextButton(
+            child: const Text("Aceptar"),
+            style: TextButton.styleFrom(textStyle: Theme.of(context).textTheme.labelLarge),
+            onPressed: () => Navigator.pop(context),
+          )
+        ],
+        title: const Text("Algo salió mal"),
+        content: Text("Por favor inténtelo más tarde"),
       );
     },
   );

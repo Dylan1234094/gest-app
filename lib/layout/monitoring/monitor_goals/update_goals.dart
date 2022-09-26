@@ -38,8 +38,14 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
             TextButton(
                 onPressed: () {
                   updateGoal(widget.gestId, widget.goalId, valueController.text, startDateController.text,
-                      endDateController.text, context);
-                  Navigator.of(context).popUntil(ModalRoute.withName("/"));
+                          endDateController.text, context)
+                      .then((value) {
+                    Navigator.of(context).pop();
+                    _updateGoalSuccess(context);
+                  }).onError((error, stackTrace) {
+                    Navigator.of(context).pop();
+                    _updateGoalFailed(context);
+                  });
                 },
                 child: const Text('Si'))
           ],
@@ -54,7 +60,7 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
       builder: (BuildContext ctx) {
         return AlertDialog(
           title: const Text('Confirmación'),
-          content: const Text('¿Desea elimar el registro?'),
+          content: const Text('¿Desea eliminar el registro?'),
           actions: [
             TextButton(
                 onPressed: () {
@@ -63,8 +69,13 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
                 child: const Text('No')),
             TextButton(
                 onPressed: () {
-                  deleteGoal(widget.gestId, widget.goalId, context);
-                  Navigator.of(context).popUntil(ModalRoute.withName("/"));
+                  deleteGoal(widget.gestId, widget.goalId, context).then((value) {
+                    Navigator.of(context).pop();
+                    _deleteGoalSuccess(context);
+                  }).onError((error, stackTrace) {
+                    Navigator.of(context).pop();
+                    _deleteGoalFailed(context);
+                  });
                 },
                 child: const Text('Si'))
           ],
@@ -210,17 +221,137 @@ String? ValidateResult(String result) {
   return null;
 }
 
-void updateGoal(String gestID, String goalID, String value, String startDate, String endDate, BuildContext context) {
+Future<void> updateGoal(
+    String gestID, String goalID, String value, String startDate, String endDate, BuildContext context) {
   GoalService _goalService = GoalService();
-  _goalService.updateGoal(gestID, goalID, value, startDate, endDate, context);
+  return _goalService.updateGoal(gestID, goalID, value, startDate, endDate, context);
 }
 
-void deleteGoal(String gestID, String goalID, BuildContext context) {
+Future<void> deleteGoal(String gestID, String goalID, BuildContext context) {
   GoalService _goalService = GoalService();
-  _goalService.deleteGoal(gestID, goalID, context);
+  return _goalService.deleteGoal(gestID, goalID, context);
 }
 
 Future<Goal> getGoal(String goalID, String gestID) {
   GoalService _goalService = GoalService();
   return _goalService.getGoal(goalID, gestID);
+}
+
+Future<void> _updateGoalSuccess(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: EdgeInsets.only(bottom: 10),
+        title: Text(
+          'Meta Actualizada',
+          style: TextStyle(fontSize: 13),
+        ),
+        content: RichText(
+          text: TextSpan(
+            text: 'La meta fue actualizada correctamente',
+            style: DefaultTextStyle.of(context).style,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            onPressed: () {
+              Navigator.of(context).popUntil(ModalRoute.withName("/"));
+            },
+          )
+        ],
+      );
+    },
+  );
+}
+
+Future<void> _updateGoalFailed(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: EdgeInsets.only(bottom: 10),
+        title: Text(
+          'Algo salió mal...',
+          style: TextStyle(fontSize: 13),
+        ),
+        content: RichText(
+          text: TextSpan(
+            text: 'La meta no fue actualizada. Por favor, inténtelo más tarde',
+            style: DefaultTextStyle.of(context).style,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      );
+    },
+  );
+}
+
+Future<void> _deleteGoalSuccess(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: EdgeInsets.only(bottom: 10),
+        title: Text(
+          'Meta Eliminada',
+          style: TextStyle(fontSize: 13),
+        ),
+        content: Text("La meta fue eliminada correctamente"),
+        actions: <Widget>[
+          TextButton(
+            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            onPressed: () {
+              Navigator.of(context).popUntil(ModalRoute.withName("/"));
+            },
+          )
+        ],
+      );
+    },
+  );
+}
+
+Future<void> _deleteGoalFailed(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: EdgeInsets.only(bottom: 10),
+        title: Text(
+          'Algo salió mal...',
+          style: TextStyle(fontSize: 13),
+        ),
+        content: RichText(
+          text: TextSpan(
+            text: 'La meta no fue eliminada. Por favor, inténtelo más tarde',
+            style: DefaultTextStyle.of(context).style,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      );
+    },
+  );
 }

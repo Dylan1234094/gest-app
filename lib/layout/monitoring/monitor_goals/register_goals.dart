@@ -36,10 +36,15 @@ class _RegisterGoalPageState extends State<RegisterGoalPage> {
                   child: const Text('No')),
               TextButton(
                   onPressed: () {
-                    registerGoal(
-                        widget.gestId, valueController.text, startDateController.text, endDateController.text, context);
-
-                    Navigator.of(context).popUntil(ModalRoute.withName("/"));
+                    registerGoal(widget.gestId, valueController.text, startDateController.text, endDateController.text,
+                            context)
+                        .then((value) {
+                      Navigator.of(context).pop();
+                      _registerGoalSuccess(context);
+                    }).onError((error, stackTrace) {
+                      Navigator.of(context).pop();
+                      _registerGoalFailed(context);
+                    });
                   },
                   child: const Text('Si'))
             ],
@@ -147,7 +152,69 @@ String? ValidateResult(String result) {
   return null;
 }
 
-void registerGoal(String gestID, String value, String startDate, String endDate, BuildContext context) {
+Future<void> registerGoal(String gestID, String value, String startDate, String endDate, BuildContext context) {
   GoalService _goalService = GoalService();
-  _goalService.registerGoal(gestID, value, startDate, endDate, context);
+  return _goalService.registerGoal(gestID, value, startDate, endDate, context);
+}
+
+Future<void> _registerGoalSuccess(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: EdgeInsets.only(bottom: 10),
+        title: Text(
+          'Meta Registrada',
+          style: TextStyle(fontSize: 13),
+        ),
+        content: RichText(
+          text: TextSpan(
+            text: 'La meta fue registrada correctamente',
+            style: DefaultTextStyle.of(context).style,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            onPressed: () {
+              Navigator.of(context).popUntil(ModalRoute.withName("/"));
+            },
+          )
+        ],
+      );
+    },
+  );
+}
+
+Future<void> _registerGoalFailed(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: EdgeInsets.only(bottom: 10),
+        title: Text(
+          'Algo salió mal...',
+          style: TextStyle(fontSize: 13),
+        ),
+        content: RichText(
+          text: TextSpan(
+            text: 'La meta no fue registrada. Por favor, inténtelo más tarde',
+            style: DefaultTextStyle.of(context).style,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      );
+    },
+  );
 }

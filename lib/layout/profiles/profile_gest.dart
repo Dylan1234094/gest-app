@@ -65,29 +65,29 @@ class _ViewFormGestState extends State<ViewFormGest> {
     super.dispose();
   }
 
-  void _successDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext ctx) {
-        return AlertDialog(
-          contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
-          actionsPadding: EdgeInsets.only(bottom: 10),
-          title: const Text("Exito", style: TextStyle(fontSize: 13)),
-          content: Text(
-            'Datos actualizados correctamente.',
-            style: kPopUpInfo,
-            textAlign: TextAlign.justify,
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
-              onPressed: () => Navigator.pop(context),
-            )
-          ],
-        );
-      },
-    );
-  }
+  // void _successDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext ctx) {
+  //       return AlertDialog(
+  //         contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+  //         actionsPadding: EdgeInsets.only(bottom: 10),
+  //         title: const Text("Exito", style: TextStyle(fontSize: 13)),
+  //         content: Text(
+  //           'Datos actualizados correctamente.',
+  //           style: kPopUpInfo,
+  //           textAlign: TextAlign.justify,
+  //         ),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+  //             onPressed: () => Navigator.pop(context),
+  //           )
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +146,7 @@ class _ViewFormGestState extends State<ViewFormGest> {
                             Validator: (value) {
                               return ValidateText("Nombre", value!);
                             },
-                            Enabled: true,
+                            Enabled: false,
                           ),
                           InputTextWidget(
                             //! Apellido
@@ -159,7 +159,7 @@ class _ViewFormGestState extends State<ViewFormGest> {
                             Validator: (value) {
                               return ValidateText("Apellido", value!);
                             },
-                            Enabled: true,
+                            Enabled: false,
                           ),
                           InputTextWidget(
                             //! Celular
@@ -239,18 +239,20 @@ class _ViewFormGestState extends State<ViewFormGest> {
                                   if (_keyForm.currentState!.validate())
                                     {
                                       updateGestante(
-                                          uid,
-                                          nombreController.text,
-                                          apellidoController.text,
-                                          telefonoController.text,
-                                          dniController.text,
-                                          fechaNacimientoController.text,
-                                          fechaReglaController.text,
-                                          fechaEcoController.text,
-                                          fechaCitaController.text,
-                                          context)
+                                              uid,
+                                              nombreController.text,
+                                              apellidoController.text,
+                                              telefonoController.text,
+                                              dniController.text,
+                                              fechaNacimientoController.text,
+                                              fechaReglaController.text,
+                                              fechaEcoController.text,
+                                              fechaCitaController.text,
+                                              context)
+                                          .then((value) => _updateGestSuccess(context))
+                                          .onError((error, stackTrace) => _updateGestFailed(context))
                                     },
-                                  _successDialog(context)
+                                  // _successDialog(context)
                                 },
                                 child: const Text('GUARDAR', style: kTextoBoton),
                               ),
@@ -314,11 +316,11 @@ Future<Gestante> getGestante(String id) {
   return _gestanteService.getGestante(id);
 }
 
-void updateGestante(String id, String nombre, String apellido, String telefono, String dni, String fechaNacimiento,
-    String fechaRegla, String fechaEco, String fechaCita, BuildContext context) {
+Future<void> updateGestante(String id, String nombre, String apellido, String telefono, String dni,
+    String fechaNacimiento, String fechaRegla, String fechaEco, String fechaCita, BuildContext context) {
   GestanteService _gestanteService = GestanteService();
 
-  _gestanteService.updateGestante(
+  return _gestanteService.updateGestante(
       id, nombre, apellido, telefono, dni, fechaNacimiento, fechaRegla, fechaEco, fechaCita, context);
 }
 
@@ -353,4 +355,66 @@ String? ValidateDNI(String value) {
     return 'DNI debe tener 8 dígitos';
   }
   return null;
+}
+
+Future<void> _updateGestSuccess(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: EdgeInsets.only(bottom: 10),
+        title: Text(
+          'Perfil Actualizado',
+          style: TextStyle(fontSize: 13),
+        ),
+        content: RichText(
+          text: TextSpan(
+            text: 'Su perfil fue actualizado correctamente',
+            style: DefaultTextStyle.of(context).style,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            onPressed: () {
+              Navigator.of(context).popUntil(ModalRoute.withName("/"));
+            },
+          )
+        ],
+      );
+    },
+  );
+}
+
+Future<void> _updateGestFailed(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: EdgeInsets.only(bottom: 10),
+        title: Text(
+          'Algo salió mal...',
+          style: TextStyle(fontSize: 13),
+        ),
+        content: RichText(
+          text: TextSpan(
+            text: 'Su perfil no fue actualizado. Por favor, inténtelo más tarde',
+            style: DefaultTextStyle.of(context).style,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      );
+    },
+  );
 }

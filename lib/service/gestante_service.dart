@@ -183,8 +183,8 @@ class GestanteService {
     });
   }
 
-  void updateGestante(String id, String nombre, String apellido, String telefono, String dni, String fechaNacimiento,
-      String fechaRegla, String fechaEco, String fechaCita, BuildContext context) async {
+  Future<void> updateGestante(String id, String nombre, String apellido, String telefono, String dni,
+      String fechaNacimiento, String fechaRegla, String fechaEco, String fechaCita, BuildContext context) async {
     final gestante = Gestante(
         nombre: nombre,
         apellido: apellido,
@@ -195,16 +195,18 @@ class GestanteService {
         fechaEco: fechaEco,
         fechaCita: fechaCita);
 
-    final docRef = db
-        .collection("gestantes")
-        .withConverter(
-          fromFirestore: Gestante.fromFirestore,
-          toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
-        )
-        .doc(id);
-    await docRef
-        .set(gestante, SetOptions(merge: true))
-        .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
+    try {
+      final docRef = db
+          .collection("gestantes")
+          .withConverter(
+            fromFirestore: Gestante.fromFirestore,
+            toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
+          )
+          .doc(id);
+      await docRef.set(gestante, SetOptions(merge: true));
+    } catch (e) {
+      throw e;
+    }
   }
 
   void updateGestanteSigns(String id, VitalSign vitals, BuildContext context) async {
