@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:gest_app/firebase_options.dart';
 import 'package:gest_app/layout/authentication/login_gest.dart';
 import 'package:gest_app/layout/authentication/login_obs.dart';
 import 'package:gest_app/layout/authentication/register_gest.dart';
@@ -19,10 +20,10 @@ import 'layout/gest/acc_config/mi_obstetra.dart';
 
 Future<void> main() async {
   //! Pa web
-  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  //await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
