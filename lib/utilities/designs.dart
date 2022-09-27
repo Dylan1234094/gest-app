@@ -17,7 +17,7 @@ const kInfo = TextStyle(
 const kTituloCabezera = TextStyle(
   color: Colors.white,
   fontWeight: FontWeight.bold,
-  fontSize: 20.0,
+  fontSize: 15.0,
 );
 
 const kGestHomeTitGrafic = TextStyle(
@@ -37,7 +37,7 @@ const kTextoBoton = TextStyle(
 
 const kFechaDato = TextStyle(
   color: colorSecundario,
-  fontSize: 14.0,
+  fontSize: 13.0,
 );
 
 const kDato = TextStyle(

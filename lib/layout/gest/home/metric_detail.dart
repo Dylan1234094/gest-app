@@ -3,12 +3,10 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gest_app/layout/gest/home/goals.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart' as intl;
 import 'package:intl/intl.dart';
 
 import '../../../utilities/designs.dart';
@@ -68,9 +66,7 @@ class _MetricDetailPageState extends State<MetricDetailPage>
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.of(context).pop(),
           ),
-          title: Text(widget.vitalSignName,
-              style: kTituloCabezera.copyWith(fontSize: 15)),
-          centerTitle: true,
+          title: Text(widget.vitalSignName, style: kTituloCabezera),
           bottom: TabBar(
             labelPadding: EdgeInsets.symmetric(horizontal: 5),
             indicatorSize: TabBarIndicatorSize.label,
@@ -89,9 +85,9 @@ class _MetricDetailPageState extends State<MetricDetailPage>
               vitalSignName: widget.vitalSignName,
               rtoken: widget.rtoken,
               unit: widget.unit,
-              startDate: intl.DateFormat('yyyy-MM-dd')
+              startDate: DateFormat('yyyy-MM-dd')
                   .format(DateTime.now().add(const Duration(days: -7))),
-              endDate: intl.DateFormat('yyyy-MM-dd').format(DateTime.now()),
+              endDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
             ),
             MetricDataPage(
               userType: widget.userType,
@@ -99,9 +95,9 @@ class _MetricDetailPageState extends State<MetricDetailPage>
               vitalSignName: widget.vitalSignName,
               rtoken: widget.rtoken,
               unit: widget.unit,
-              startDate: intl.DateFormat('yyyy-MM-dd')
+              startDate: DateFormat('yyyy-MM-dd')
                   .format(DateTime.now().add(const Duration(days: -30))),
-              endDate: intl.DateFormat('yyyy-MM-dd').format(DateTime.now()),
+              endDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
             ),
             MetricDataPage(
               userType: widget.userType,
@@ -109,9 +105,9 @@ class _MetricDetailPageState extends State<MetricDetailPage>
               vitalSignName: widget.vitalSignName,
               rtoken: widget.rtoken,
               unit: widget.unit,
-              startDate: intl.DateFormat('yyyy-MM-dd')
+              startDate: DateFormat('yyyy-MM-dd')
                   .format(DateTime.now().add(const Duration(days: -60))),
-              endDate: intl.DateFormat('yyyy-MM-dd').format(DateTime.now()),
+              endDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
             ),
           ],
         ),
@@ -161,7 +157,7 @@ class _MetricDataPageState extends State<MetricDataPage> {
           headers: {"Content-Type": "application/json"}, body: body);
       var vitalArray = await json.decode(response.body) as List;
       for (var element in vitalArray) {
-        print(intl.DateFormat('dd/MM/yyyy HH:mm:ss').format(
+        print(DateFormat('dd/MM/yyyy HH:mm:ss').format(
             Timestamp.fromMillisecondsSinceEpoch(
                     ((int.parse(element['endNanos']) / 1000000) - 1).round())
                 .toDate()));
@@ -237,7 +233,7 @@ class _MetricDataPageState extends State<MetricDataPage> {
           headers: {"Content-Type": "application/json"}, body: body);
       var vitalArray = await json.decode(response.body) as List;
       for (var element in vitalArray) {
-        print(intl.DateFormat('dd/MM/yyyy HH:mm:ss').format(
+        print(DateFormat('dd/MM/yyyy HH:mm:ss').format(
             Timestamp.fromMillisecondsSinceEpoch(
                     ((int.parse(element['endNanos']) / 1000000) - 1).round())
                 .toDate()));
@@ -466,7 +462,8 @@ class MetricDetail extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Text(DateFormat('EEEE, d MMMM').format(datetime), style: kFechaDato),
+          Text(DateFormat.yMMMMEEEEd('es_MX').format(datetime),
+              style: kFechaDato),
           Text(
             NumberFormat('#,###.##').format(document.y).toString() + " " + unit,
             textAlign: TextAlign.left,

@@ -4,7 +4,6 @@ import 'package:gest_app/data/model/exam_result.dart';
 import 'package:gest_app/layout/gest/exam/register_exam.dart';
 import 'package:gest_app/layout/gest/exam/update_exam.dart';
 import 'package:gest_app/service/exam_result_service.dart';
-
 import 'package:intl/intl.dart';
 
 import '../../../utilities/designs.dart';
@@ -21,11 +20,6 @@ class ExamDetailPage extends StatefulWidget {
 
 class _ExamDetailPageState extends State<ExamDetailPage> {
   var uid = FirebaseAuth.instance.currentUser!.uid;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +95,29 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
                                           }),
                                         );
                                       },
-                                      child: ExamDetail(exam: exam),
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 20.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                          children: <Widget>[
+                                            Text(
+                                                DateFormat.yMMMMEEEEd('es_MX')
+                                                    .format(exam.dateResult!
+                                                        .toDate()),
+                                                style: kFechaDato),
+                                            Text(
+                                              NumberFormat('#,###.##')
+                                                      .format(exam.value!)
+                                                      .toString() +
+                                                  " g/dL",
+                                              textAlign: TextAlign.left,
+                                              style: kDato,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     );
                                   }),
                                 ),

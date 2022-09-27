@@ -113,9 +113,10 @@ class _RegisterExamPageState extends State<RegisterExamPage> {
                             ],
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.symmetric(
-                                  vertical: 15.0, horizontal: 10.0),
+                                  vertical: 10.0, horizontal: 10.0),
                               border: OutlineInputBorder(),
                               labelText: "Resultado (g/dL)",
+                              hintStyle: kInfo,
                               labelStyle: kInfo,
                             ),
                             validator: (result) {

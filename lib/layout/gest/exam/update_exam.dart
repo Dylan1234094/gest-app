@@ -178,9 +178,10 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
                                 ],
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.symmetric(
-                                      vertical: 15.0, horizontal: 10.0),
+                                      vertical: 10.0, horizontal: 10.0),
                                   border: OutlineInputBorder(),
                                   labelText: 'Resultado (g/dL)',
+                                  hintStyle: kInfo,
                                   labelStyle: kInfo,
                                 ),
                               ),
@@ -188,7 +189,7 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: MyTextFormDate(
-                                label: "Fecha de entrega de resultados",
+                                label: "Fecha de resultado",
                                 dateController: dateController,
                               ),
                             ),

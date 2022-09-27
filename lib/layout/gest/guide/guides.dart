@@ -28,14 +28,16 @@ class _GuidePageState extends State<GuidePage> {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
+                    padding: const EdgeInsets.only(
+                        right: 15.0, left: 15.0, bottom: 10.0),
                     child: TextField(
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(
-                            vertical: 15.0, horizontal: 10.0),
+                            vertical: 10.0, horizontal: 10.0),
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.search),
                         hintText: 'Buscar...',
+                        hintStyle: kInfo,
                         labelStyle: kInfo,
                       ),
                       onChanged: (val) {
@@ -113,37 +115,36 @@ class _GuideItem extends StatelessWidget {
       child: ListView(
         shrinkWrap: true,
         children: <Widget>[
-          Column(
-            children: [
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    flex: 2,
-                    child: Hero(
-                      tag: 'imgGuia',
-                      child: Image.network(document['thumbnail']),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Text(document['title'], style: kTituloGuia),
-                          //SizedBox(height: 5),
-                          Text(document['shortDescription'],
-                              textAlign: TextAlign.justify,
-                              maxLines: 3,
-                              style: kInfoGuia),
-                        ],
-                      ),
-                    ),
-                  )
-                ],
+          Row(
+            children: <Widget>[
+              Expanded(
+                flex: 2,
+                child: Hero(
+                  tag: 'imgGuia',
+                  child: Image.network(document['thumbnail']),
+                ),
               ),
+              Expanded(
+                flex: 4,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 5.0),
+                        child: Text(document['title'], style: kTituloGuia),
+                      ),
+                      //SizedBox(height: 5),
+                      Text(document['shortDescription'],
+                          textAlign: TextAlign.justify,
+                          maxLines: 3,
+                          style: kInfoGuia),
+                    ],
+                  ),
+                ),
+              )
             ],
           ),
           Divider(color: colorSecundario),
