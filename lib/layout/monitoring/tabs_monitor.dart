@@ -11,8 +11,15 @@ class TabsMonitor extends StatefulWidget {
   State<TabsMonitor> createState() => _TabsMonitorState();
 }
 
-class _TabsMonitorState extends State<TabsMonitor> with TickerProviderStateMixin {
+class _TabsMonitorState extends State<TabsMonitor>
+    with TickerProviderStateMixin {
   late TabController tabController;
+
+  static const List<Tab> tabs = <Tab>[
+    Tab(text: 'PERFIL'),
+    Tab(text: 'EXAMENES'),
+    Tab(text: 'METAS DE ACT.'),
+  ];
 
   @override
   void initState() {
@@ -30,8 +37,8 @@ class _TabsMonitorState extends State<TabsMonitor> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
+      length: tabs.length,
       initialIndex: 0,
-      length: 3,
       child: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
@@ -39,15 +46,23 @@ class _TabsMonitorState extends State<TabsMonitor> with TickerProviderStateMixin
             floating: true,
             title: const Text(""),
             bottom: TabBar(
-                controller: tabController,
-                tabs: const <Widget>[Tab(text: "Perfil"), Tab(text: "Exámenes"), Tab(text: "Metas de Act. Física")]),
+              labelPadding: EdgeInsets.symmetric(horizontal: 5),
+              indicatorSize: TabBarIndicatorSize.label,
+              labelStyle: TextStyle(fontSize: 10),
+              indicatorColor: Colors.white,
+              controller: tabController,
+              tabs: tabs,
+            ),
           ),
         ],
-        body: TabBarView(controller: tabController, children: [
-          DetailMonitorGest(gestId: widget.gestId),
-          MonitorExamPage(gestId: widget.gestId),
-          MonitorGoalPage(gestId: widget.gestId)
-        ]),
+        body: TabBarView(
+          controller: tabController,
+          children: [
+            PerfilGest(gestId: widget.gestId),
+            ListaExamenes(gestId: widget.gestId),
+            ListaMetas(gestId: widget.gestId)
+          ],
+        ),
       ),
     );
   }

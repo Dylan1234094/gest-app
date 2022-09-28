@@ -57,7 +57,7 @@ class _LinkObsState extends State<LinkObs> {
                 Padding(
                   padding: EdgeInsets.only(top: 20.0),
                   child: Text('Vinculación con Obstetra',
-                      textAlign: TextAlign.center, style: kTitulo),
+                      textAlign: TextAlign.center, style: kTitulo1),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 20.0),

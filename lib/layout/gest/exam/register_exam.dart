@@ -91,7 +91,7 @@ class _RegisterExamPageState extends State<RegisterExamPage> {
                         Padding(
                           padding: EdgeInsets.only(top: 20.0),
                           child: Text("Registrar Examen",
-                              textAlign: TextAlign.center, style: kTitulo),
+                              textAlign: TextAlign.center, style: kTitulo1),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(vertical: 20.0),

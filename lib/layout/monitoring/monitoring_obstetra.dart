@@ -2,13 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gest_app/data/model/gestante.dart';
 import 'package:gest_app/data/model/obstetra.dart';
-import 'package:gest_app/layout/monitoring/detailgest_obstetra.dart';
 import 'package:gest_app/layout/monitoring/gest_list.dart';
 import 'package:gest_app/layout/monitoring/tabs_monitor.dart';
 import 'package:gest_app/service/obstetra_service.dart';
 import 'package:gest_app/shared/drawer_obs.dart';
 
 import 'package:intl/intl.dart' as intl;
+
+import '../../utilities/designs.dart';
 
 class ScreenObs extends StatefulWidget {
   const ScreenObs({Key? key}) : super(key: key);
@@ -25,11 +26,12 @@ class _MonitorObsState extends State<ScreenObs> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute<void>(builder: (BuildContext context) {
+          Navigator.of(context)
+              .push(MaterialPageRoute<void>(builder: (BuildContext context) {
             return GestanteList();
           }));
         },
-        backgroundColor: Color(0xFF245470),
+        backgroundColor: colorPrincipal,
         child: Icon(Icons.sms_outlined),
       ),
       drawer: const DrawerObs(),
@@ -47,133 +49,73 @@ class _MonitorObsState extends State<ScreenObs> {
           builder: (context, snapshotObs) {
             switch (snapshotObs.connectionState) {
               case ConnectionState.waiting:
-                return const Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8), child: CircularProgressIndicator()),
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height / 1.3,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 );
               case ConnectionState.done:
                 if (snapshotObs.hasData) {
                   return FutureBuilder<List<Gestante>>(
-                    future: getListaGestantes(snapshotObs.data!.codigoObstetra!),
+                    future:
+                        getListaGestantes(snapshotObs.data!.codigoObstetra!),
                     builder: (context, snapshotGests) {
                       switch (snapshotGests.connectionState) {
                         case ConnectionState.waiting:
-                          return const Align(
-                            alignment: Alignment.center,
-                            child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                                child: CircularProgressIndicator()),
+                          return SizedBox(
+                            height: MediaQuery.of(context).size.height / 1.3,
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
                           );
                         case ConnectionState.done:
                           if (snapshotGests.hasData) {
                             if (snapshotGests.data!.isNotEmpty) {
-                              return ListView.builder(
-                                physics: AlwaysScrollableScrollPhysics(),
-                                itemCount: snapshotGests.data!.length,
-                                itemBuilder: ((context, index) {
-                                  VitalSign vitals = VitalSign.fromJson(snapshotGests.data![index].vitals!);
-                                  Gestante gestante = snapshotGests.data![index];
-                                  return Padding(
-                                    padding: const EdgeInsets.only(left: 8, right: 8, top: 5),
-                                    child: GestureDetector(
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 20.0, horizontal: 10.0),
+                                child: ListView.builder(
+                                  physics: AlwaysScrollableScrollPhysics(),
+                                  itemCount: snapshotGests.data!.length,
+                                  itemBuilder: ((context, index) {
+                                    VitalSign vitals = VitalSign.fromJson(
+                                      snapshotGests.data![index].vitals!,
+                                    );
+                                    Gestante gestante =
+                                        snapshotGests.data![index];
+                                    return GestureDetector(
                                       onTap: () {
                                         Navigator.of(context).push(
-                                          MaterialPageRoute<void>(builder: (BuildContext context) {
-                                            return TabsMonitor(gestId: gestante.id!); //! id
+                                          MaterialPageRoute<void>(
+                                              builder: (BuildContext context) {
+                                            return TabsMonitor(
+                                                gestId: gestante.id!); //! id
                                           }),
                                         );
                                       },
-                                      child: Card(
-                                        child: Row(
-                                          children: <Widget>[
-                                            Expanded(
-                                              flex: 2,
-                                              child: Column(
-                                                children: <Widget>[
-                                                  Align(
-                                                    alignment: Alignment.center,
-                                                    child: CircleAvatar(
-                                                      radius: 22,
-                                                      backgroundImage: gestante.photoUrl! != ""
-                                                          ? NetworkImage(gestante.photoUrl!)
-                                                          : Image.asset("assets/mini_default_profile_icon.png").image,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Expanded(
-                                              flex: 8,
-                                              child: Column(
-                                                children: <Widget>[
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(bottom: 5, top: 5),
-                                                    child: Align(
-                                                      alignment: Alignment.centerLeft,
-                                                      child: Text(
-                                                        "${gestante.nombre!} ${gestante.apellido}",
-                                                        style:
-                                                            const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Align(
-                                                    alignment: Alignment.centerLeft,
-                                                    child: Text(
-                                                        "${(DateTime.now().difference(intl.DateFormat("dd/MM/yyyy hh:mm:ss").parse(gestante.fechaRegla! + " 00:00:00")).inDays / 4).round()} semanas de embarazo"),
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      vitals.actFisica == "true"
-                                                          ? const VitalIconWidget(
-                                                              iconPath: 'assets/IconsVitals/act_fisica_icon.png')
-                                                          : const Text(""),
-                                                      vitals.freCardi == "true"
-                                                          ? const VitalIconWidget(
-                                                              iconPath: 'assets/IconsVitals/fre_car_icon.png')
-                                                          : const Text(""),
-                                                      vitals.gluco == "true"
-                                                          ? const VitalIconWidget(
-                                                              iconPath: 'assets/IconsVitals/gluco_icon.png')
-                                                          : const Text(""),
-                                                      vitals.peso == "true"
-                                                          ? const VitalIconWidget(
-                                                              iconPath: 'assets/IconsVitals/peso_icon.png')
-                                                          : const Text(""),
-                                                      vitals.presArt == "true"
-                                                          ? const VitalIconWidget(
-                                                              iconPath: 'assets/IconsVitals/pres_art_icon.png')
-                                                          : const Text(""),
-                                                      vitals.satOxig == "true"
-                                                          ? const VitalIconWidget(
-                                                              iconPath: 'assets/IconsVitals/sat_oxig_icon.png')
-                                                          : const Text("")
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }),
+                                      child: InfoGestante(
+                                          gestante: gestante, vitals: vitals),
+                                    );
+                                  }),
+                                ),
                               );
                             } else {
                               return const Align(
                                 alignment: Alignment.center,
                                 child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                                    child: Text("No se encontraron gestantes registradas")),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 8),
+                                    child: Text(
+                                        "No se encontraron gestantes registradas")),
                               );
                             }
                           } else {
                             return const Align(
                               alignment: Alignment.center,
                               child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 8),
                                   child: Text("Algo salió mal")),
                             );
                           }
@@ -181,7 +123,9 @@ class _MonitorObsState extends State<ScreenObs> {
                           return const Align(
                             alignment: Alignment.center,
                             child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8), child: Text("Esperando")),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 8),
+                                child: Text("Esperando")),
                           );
                       }
                     },
@@ -200,6 +144,109 @@ class _MonitorObsState extends State<ScreenObs> {
   }
 }
 
+class InfoGestante extends StatelessWidget {
+  const InfoGestante({
+    Key? key,
+    required this.gestante,
+    required this.vitals,
+  }) : super(key: key);
+
+  final Gestante gestante;
+  final VitalSign vitals;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                flex: 2,
+                child: Column(
+                  children: <Widget>[
+                    Align(
+                      alignment: Alignment.center,
+                      child: CircleAvatar(
+                        radius: 22,
+                        backgroundImage: gestante.photoUrl! != ""
+                            ? NetworkImage(gestante.photoUrl!)
+                            : Image.asset(
+                                    "assets/mini_default_profile_icon.png")
+                                .image,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 8,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 2.0),
+                      child: Text(
+                        "${gestante.nombre!} ${gestante.apellido}",
+                        style: kNombreGestanteLista,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 5.0),
+                      child: Text(
+                        "${(DateTime.now().difference(intl.DateFormat("dd/MM/yyyy hh:mm:ss").parse(gestante.fechaRegla! + " 00:00:00")).inDays / 4).round()} semanas de embarazo",
+                        style: kEdadGestacionaLista,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 2.0),
+                      child: Row(
+                        children: [
+                          vitals.actFisica == "true"
+                              ? const VitalIconWidget(
+                                  iconPath:
+                                      'assets/IconsVitals/act_fisica_icon.png')
+                              : const Text(""),
+                          vitals.freCardi == "true"
+                              ? const VitalIconWidget(
+                                  iconPath:
+                                      'assets/IconsVitals/fre_car_icon.png')
+                              : const Text(""),
+                          vitals.gluco == "true"
+                              ? const VitalIconWidget(
+                                  iconPath: 'assets/IconsVitals/gluco_icon.png')
+                              : const Text(""),
+                          vitals.peso == "true"
+                              ? const VitalIconWidget(
+                                  iconPath: 'assets/IconsVitals/peso_icon.png')
+                              : const Text(""),
+                          vitals.presArt == "true"
+                              ? const VitalIconWidget(
+                                  iconPath:
+                                      'assets/IconsVitals/pres_art_icon.png')
+                              : const Text(""),
+                          vitals.satOxig == "true"
+                              ? const VitalIconWidget(
+                                  iconPath:
+                                      'assets/IconsVitals/sat_oxig_icon.png')
+                              : const Text("")
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        Divider(color: colorSecundario),
+      ],
+    );
+  }
+}
+
 class VitalIconWidget extends StatelessWidget {
   const VitalIconWidget({Key? key, required this.iconPath}) : super(key: key);
   final String iconPath;
@@ -209,7 +256,7 @@ class VitalIconWidget extends StatelessWidget {
     return Align(
       alignment: Alignment.center,
       child: Padding(
-          padding: const EdgeInsets.only(right: 4, top: 3, bottom: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 2.0),
           child: Container(
             height: 15.0,
             width: 15.0,

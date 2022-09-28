@@ -4,6 +4,8 @@ import 'package:gest_app/service/obstetra_service.dart';
 
 import 'package:intl/intl.dart' as intl;
 
+import '../../utilities/designs.dart';
+
 class RegisterObs extends StatelessWidget {
   const RegisterObs({Key? key}) : super(key: key);
 
@@ -52,165 +54,178 @@ class _FormObsState extends State<FormObs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Registro de Obstetra"),
-      ),
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: Form(
           key: _keyForm,
-          child: Column(
-            children: <Widget>[
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 25),
-                child: Center(
-                  child: Text(
-                    'Registro de datos',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                  ),
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                const Padding(
+                  padding: EdgeInsets.only(top: 20.0),
+                  child: Text('Registro de Datos',
+                      textAlign: TextAlign.center, style: kTitulo1),
                 ),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(left: 8, right: 8),
-                child: Center(
+                const Padding(
+                  padding: EdgeInsets.only(top: 20.0, bottom: 12.0),
                   child: Text(
                     'Registre sus datos personales',
-                    style: TextStyle(fontSize: 16),
+                    style: kInfo,
                   ),
                 ),
-              ),
-              Padding(
+                InputTextWidget(
                   //! Nombre
-                  padding: const EdgeInsets.all(8),
-                  child: TextFormField(
-                      controller: nombreController,
-                      inputFormatters: <TextInputFormatter>[
-                        FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
-                      ],
-                      keyboardType: TextInputType.name,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: "Nombre",
-                      ),
-                      validator: (value) {
-                        return ValidateText("Nombre", value!);
-                      })),
-              Padding(
+                  controlador: nombreController,
+                  inputType: TextInputType.text,
+                  formatter: <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(RegExp("[a-z A-Z á-ú]")),
+                  ],
+                  label: 'Nombre',
+                  validacion: (value) {
+                    return ValidateText("Nombre", value!);
+                  },
+                ),
+                InputTextWidget(
                   //! Apellido
-                  padding: const EdgeInsets.all(8),
-                  child: TextFormField(
-                      controller: apellidoController,
-                      inputFormatters: <TextInputFormatter>[
-                        FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
-                      ],
-                      keyboardType: TextInputType.text,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: "Apellido",
-                      ),
-                      validator: (value) {
-                        return ValidateText("Apellido", value!);
-                      })),
-              Padding(
+                  controlador: apellidoController,
+                  inputType: TextInputType.text,
+                  formatter: <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(RegExp("[a-z A-Z á-ú]")),
+                  ],
+                  label: 'Apellido',
+                  validacion: (value) {
+                    return ValidateText("Apellido", value!);
+                  },
+                ),
+                InputTextWidget(
                   //! Correo
-                  padding: const EdgeInsets.all(8),
-                  child: TextFormField(
-                      controller: correoController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: "Correo",
-                      ),
-                      validator: (value) {
-                        return ValidateEmail(value!);
-                      })),
-              Padding(
+                  controlador: correoController,
+                  inputType: TextInputType.emailAddress,
+                  formatter: <TextInputFormatter>[
+                    FilteringTextInputFormatter.deny(RegExp("[ ]")),
+                  ],
+                  label: 'Correo',
+                  validacion: (value) {
+                    return ValidateEmail(value!);
+                  },
+                ),
+                InputTextWidget(
                   //! Telefono
-                  padding: const EdgeInsets.all(8),
-                  child: TextFormField(
-                      controller: telefonoController,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: "Celular",
-                      ),
-                      validator: (value) {
-                        return ValidatePhoneNumber(value!);
-                      })),
-              Padding(
-                  //! Contraseña
-                  padding: const EdgeInsets.all(8),
-                  child: TextFormField(
-                      obscureText: !_passwordVisible,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      controller: contraseniaController,
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
+                  controlador: telefonoController,
+                  inputType: TextInputType.number,
+                  formatter: [FilteringTextInputFormatter.digitsOnly],
+                  label: 'Celular',
+                  validacion: (value) {
+                    return ValidatePhoneNumber(value!);
+                  },
+                ),
+                Padding(
+                    //! Contraseña
+                    padding: const EdgeInsets.all(8),
+                    child: TextFormField(
+                        obscureText: !_passwordVisible,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        controller: contraseniaController,
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
                           border: const OutlineInputBorder(),
                           labelText: "Contraseña",
+                          labelStyle: kInfo,
                           suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _passwordVisible = !_passwordVisible;
-                                });
-                              },
-                              icon: Icon(_passwordVisible ? Icons.visibility : Icons.visibility_off))),
-                      validator: (value) {
-                        if (ValidatePassword(value!) == null) {
-                          if (contraseniaController.text != contraseniaRepeController.text) {
-                            return 'Las Contraseñas no son iguales';
+                            onPressed: () {
+                              setState(() {
+                                _passwordVisible = !_passwordVisible;
+                              });
+                            },
+                            icon: Icon(_passwordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (ValidatePassword(value!) == null) {
+                            if (contraseniaController.text !=
+                                contraseniaRepeController.text) {
+                              return 'Las Contraseñas no son iguales';
+                            }
                           }
-                        }
-                        return ValidatePassword(value);
-                      })),
-              Padding(
-                  //! Contraseña
-                  padding: const EdgeInsets.all(8),
-                  child: TextFormField(
-                      obscureText: !_passwordVisible,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      controller: contraseniaRepeController,
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
+                          return ValidatePassword(value);
+                        })),
+                Padding(
+                    //! Contraseña
+                    padding: const EdgeInsets.all(8),
+                    child: TextFormField(
+                        obscureText: !_passwordVisible,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        controller: contraseniaRepeController,
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
                           border: const OutlineInputBorder(),
                           labelText: "Repetir contraseña",
+                          labelStyle: kInfo,
                           suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _passwordVisible = !_passwordVisible;
-                                });
-                              },
-                              icon: Icon(_passwordVisible ? Icons.visibility : Icons.visibility_off))),
-                      validator: (value) {
-                        if (ValidatePassword(value!) == null) {
-                          if (contraseniaController.text != contraseniaRepeController.text) {
-                            return 'Las Contraseñas no son iguales';
+                            onPressed: () {
+                              setState(() {
+                                _passwordVisible = !_passwordVisible;
+                              });
+                            },
+                            icon: Icon(_passwordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (ValidatePassword(value!) == null) {
+                            if (contraseniaController.text !=
+                                contraseniaRepeController.text) {
+                              return 'Las Contraseñas no son iguales';
+                            }
                           }
-                        }
-                        return ValidatePassword(value);
-                      })),
-              Padding(
-                padding: const EdgeInsets.only(top: 40),
-                child: ElevatedButton(
-                  onPressed: () => {
-                    if (_keyForm.currentState!.validate())
-                      {
-                        insertDataObstetra(
-                            nombreController.text,
-                            apellidoController.text,
-                            correoController.text,
-                            telefonoController.text,
-                            contraseniaController.text,
-                            contraseniaRepeController.text,
-                            context)
-                      }
-                  },
-                  child: const Text('Registrarse'),
+                          return ValidatePassword(value);
+                        })),
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(colorPrincipal),
+                        foregroundColor:
+                            MaterialStateProperty.all<Color>(Colors.white),
+                        fixedSize:
+                            MaterialStateProperty.all(const Size(190.0, 46.0)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                      ),
+                      onPressed: () => {
+                        if (_keyForm.currentState!.validate())
+                          {
+                            insertDataObstetra(
+                                nombreController.text,
+                                apellidoController.text,
+                                correoController.text,
+                                telefonoController.text,
+                                contraseniaController.text,
+                                contraseniaRepeController.text,
+                                context)
+                          }
+                      },
+                      child: const Text('REGISTRARSE'),
+                    ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -218,17 +233,59 @@ class _FormObsState extends State<FormObs> {
   }
 }
 
+class InputTextWidget extends StatelessWidget {
+  const InputTextWidget(
+      {required this.controlador,
+      required this.inputType,
+      required this.formatter,
+      required this.label,
+      required this.validacion});
+
+  final TextEditingController controlador;
+  final TextInputType inputType;
+  final List<TextInputFormatter> formatter;
+  final String label;
+  final FormFieldValidator<String>? validacion;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: TextFormField(
+          style: TextStyle(fontSize: 13.0),
+          controller: controlador,
+          inputFormatters: formatter,
+          keyboardType: inputType,
+          decoration: InputDecoration(
+            contentPadding:
+                EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+            border: OutlineInputBorder(),
+            labelText: label,
+            labelStyle: kInfo,
+          ),
+          validator: validacion),
+    );
+  }
+}
+
 ObstetraService _obstetraService = ObstetraService();
 
-void insertDataObstetra(String nombre, String apellido, String correo, String telefono, String contrasenia,
-    String contraseniaRepe, BuildContext context) {
+void insertDataObstetra(
+    String nombre,
+    String apellido,
+    String correo,
+    String telefono,
+    String contrasenia,
+    String contraseniaRepe,
+    BuildContext context) {
   if (contrasenia == contraseniaRepe) {
     String codigoObstetra = "";
 
     _obstetraService.obtenerMaxCodigo().then((value) {
       intl.NumberFormat formatNumber = new intl.NumberFormat("000000");
       codigoObstetra = (formatNumber.format(value + 1).toString());
-      _obstetraService.registerObstetra(nombre, apellido, correo, telefono, contrasenia, codigoObstetra, context);
+      _obstetraService.registerObstetra(nombre, apellido, correo, telefono,
+          contrasenia, codigoObstetra, context);
     });
   } else {
     print("las contrasenias no son iguales");

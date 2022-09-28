@@ -55,8 +55,11 @@ class _HomePageState extends State<HomePage> {
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case (ConnectionState.waiting):
-                return const Center(
-                  child: CircularProgressIndicator(),
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height / 1.3,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 );
               case (ConnectionState.done):
                 if (!snapshot.hasData) {
@@ -139,8 +142,9 @@ class _HomePageState extends State<HomePage> {
                                   child: Text(
                                     user.displayName!,
                                     style: TextStyle(
-                                        fontSize: 17.0,
-                                        fontWeight: FontWeight.bold),
+                                      fontSize: 17.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -369,8 +373,7 @@ class _VitalCardState extends State<VitalCard> {
             children: <Widget>[
               Expanded(
                 flex: 2,
-                child: Align(
-                  alignment: Alignment.center,
+                child: Center(
                   child: Container(
                     height: 35.0,
                     width: 35.0,

@@ -4,8 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:gest_app/data/model/obstetra.dart';
 import 'package:gest_app/service/obstetra_service.dart';
 
-import 'package:intl/intl.dart' as intl;
-
 class ProfileObs extends StatelessWidget {
   const ProfileObs({Key? key}) : super(key: key);
 
@@ -60,8 +58,11 @@ class _ViewFormObsState extends State<ViewFormObs> {
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case (ConnectionState.waiting):
-                return const Center(
-                  child: CircularProgressIndicator(),
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height / 1.3,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 );
               case (ConnectionState.done):
                 if (!snapshot.hasData) {
@@ -91,7 +92,8 @@ class _ViewFormObsState extends State<ViewFormObs> {
                             child: TextFormField(
                                 controller: nombreController,
                                 inputFormatters: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp("[a-zA-Z ]")),
                                 ],
                                 keyboardType: TextInputType.name,
                                 decoration: const InputDecoration(
@@ -107,7 +109,8 @@ class _ViewFormObsState extends State<ViewFormObs> {
                             child: TextFormField(
                                 controller: apellidoController,
                                 inputFormatters: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp("[a-zA-Z ]")),
                                 ],
                                 keyboardType: TextInputType.text,
                                 decoration: const InputDecoration(
@@ -137,7 +140,9 @@ class _ViewFormObsState extends State<ViewFormObs> {
                             child: TextFormField(
                                 controller: telefonoController,
                                 keyboardType: TextInputType.number,
-                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
                                   labelText: "Celular",
@@ -151,8 +156,12 @@ class _ViewFormObsState extends State<ViewFormObs> {
                             onPressed: () => {
                               if (_keyForm.currentState!.validate())
                                 {
-                                  updateObstetra(uid, nombreController.text, apellidoController.text,
-                                      telefonoController.text, context)
+                                  updateObstetra(
+                                      uid,
+                                      nombreController.text,
+                                      apellidoController.text,
+                                      telefonoController.text,
+                                      context)
                                 }
                             },
                             child: const Text('Guardar'),
@@ -176,8 +185,10 @@ Future<Obstetra> getObstetra(String id) {
   return _obstetraService.getObstetra(id);
 }
 
-void updateObstetra(String id, String nombre, String apellido, String telefono, BuildContext context) {
-  return _obstetraService.updateObstetra(id, nombre, apellido, telefono, context);
+void updateObstetra(String id, String nombre, String apellido, String telefono,
+    BuildContext context) {
+  return _obstetraService.updateObstetra(
+      id, nombre, apellido, telefono, context);
 }
 
 String? ValidateText(String label, String value) {

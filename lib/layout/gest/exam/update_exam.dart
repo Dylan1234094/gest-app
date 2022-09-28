@@ -137,8 +137,11 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case (ConnectionState.waiting):
-                  return const Center(
-                    child: CircularProgressIndicator(),
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height / 1.3,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   );
                 case (ConnectionState.done):
                   if (snapshot.hasData) {
@@ -156,7 +159,7 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
                             Padding(
                               padding: EdgeInsets.only(top: 20.0),
                               child: Text('Actualizar examen',
-                                  textAlign: TextAlign.center, style: kTitulo),
+                                  textAlign: TextAlign.center, style: kTitulo1),
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(vertical: 20.0),

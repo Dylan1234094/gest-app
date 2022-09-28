@@ -38,7 +38,7 @@ class _LoginGestState extends State<LoginGest> {
             Padding(
               padding: EdgeInsets.only(top: 20.0),
               child: Text('Inicio de Sesión',
-                  textAlign: TextAlign.center, style: kTitulo),
+                  textAlign: TextAlign.center, style: kTitulo1),
             ),
             Padding(
               padding: EdgeInsets.only(top: 20.0),

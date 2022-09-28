@@ -14,16 +14,19 @@ class ExamPage extends StatefulWidget {
 class _ExamPageState extends State<ExamPage> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
-      child: Scaffold(
-        body: StreamBuilder(
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+        child: StreamBuilder(
           stream: FirebaseFirestore.instance.collection('examenes').snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
-              return Center(
-                child: CircularProgressIndicator(),
+              return SizedBox(
+                height: MediaQuery.of(context).size.height / 1.3,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
               );
             }
             return ListView(
@@ -45,11 +48,7 @@ class _ExamPageState extends State<ExamPage> {
                     children: [
                       ListTile(
                         contentPadding: EdgeInsets.zero,
-                        title: Text(
-                          document['name'],
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 12.0),
-                        ),
+                        title: Text(document['name'], style: kTitulo3),
                         leading: Container(
                           width: 50,
                           height: 50,
@@ -63,23 +62,13 @@ class _ExamPageState extends State<ExamPage> {
                             ),
                           ),
                         ),
-                        trailing: IconButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute<void>(
-                                  builder: (BuildContext context) {
-                                return ExamDetailPage(
-                                  examId: document.id,
-                                  examName: document["name"],
-                                ); //! id
-                              }),
-                            );
-                          },
-                          icon: Icon(Icons.arrow_forward_ios,
-                              size: 20, color: Colors.black),
+                        trailing: Icon(
+                          Icons.arrow_forward_ios,
+                          size: 20,
+                          color: Colors.black,
                         ),
                       ),
-                      Divider(color: colorSecundario),
+                      kLineaDivisora,
                     ],
                   ),
                 );

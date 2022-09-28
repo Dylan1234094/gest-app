@@ -78,8 +78,11 @@ class _DatosObstetraState extends State<DatosObstetra> {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case (ConnectionState.waiting):
-              return const Center(
-                child: CircularProgressIndicator(),
+              return SizedBox(
+                height: MediaQuery.of(context).size.height / 1.3,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
               );
             case (ConnectionState.done):
               if (!snapshot.hasData) {
@@ -92,8 +95,11 @@ class _DatosObstetraState extends State<DatosObstetra> {
                   builder: (context, snapshotObs) {
                     switch (snapshotObs.connectionState) {
                       case (ConnectionState.waiting):
-                        return const Center(
-                          child: CircularProgressIndicator(),
+                        return SizedBox(
+                          height: MediaQuery.of(context).size.height / 1.3,
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
                         );
                       case (ConnectionState.done):
                         return Padding(
@@ -179,7 +185,7 @@ class _DatosObstetraState extends State<DatosObstetra> {
                                           child: Text(
                                               'Vinculación con Obstetra',
                                               textAlign: TextAlign.center,
-                                              style: kTitulo),
+                                              style: kTitulo1),
                                         ),
                                         Padding(
                                           padding: EdgeInsets.only(top: 20.0),

@@ -11,7 +11,8 @@ import 'package:intl/intl.dart' as intl;
 class UpdateGoalPage extends StatefulWidget {
   final String gestId;
   final String goalId;
-  const UpdateGoalPage({Key? key, required this.gestId, required this.goalId}) : super(key: key);
+  const UpdateGoalPage({Key? key, required this.gestId, required this.goalId})
+      : super(key: key);
 
   @override
   State<UpdateGoalPage> createState() => _UpdateGoalPageState();
@@ -37,8 +38,13 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
                 child: const Text('No')),
             TextButton(
                 onPressed: () {
-                  updateGoal(widget.gestId, widget.goalId, valueController.text, startDateController.text,
-                      endDateController.text, context);
+                  updateGoal(
+                      widget.gestId,
+                      widget.goalId,
+                      valueController.text,
+                      startDateController.text,
+                      endDateController.text,
+                      context);
                   Navigator.of(context).popUntil(ModalRoute.withName("/"));
                 },
                 child: const Text('Si'))
@@ -122,31 +128,42 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case (ConnectionState.waiting):
-                  return const Center(
-                    child: CircularProgressIndicator(),
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height / 1.3,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   );
                 case (ConnectionState.done):
                   if (snapshot.hasData) {
                     valueController.text = snapshot.data!.value!.toString();
-                    startDateController.text = intl.DateFormat('dd/MM/yyyy').format(snapshot.data!.startTime!.toDate());
-                    endDateController.text = intl.DateFormat('dd/MM/yyyy').format(snapshot.data!.endTime!.toDate());
+                    startDateController.text = intl.DateFormat('dd/MM/yyyy')
+                        .format(snapshot.data!.startTime!.toDate());
+                    endDateController.text = intl.DateFormat('dd/MM/yyyy')
+                        .format(snapshot.data!.endTime!.toDate());
                     return SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Column(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(top: 30, bottom: 20),
-                              child:
-                                  Text("Actualizar Meta", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                              padding:
+                                  const EdgeInsets.only(top: 30, bottom: 20),
+                              child: Text("Actualizar Meta",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold)),
                             ),
-                            Text("Edite la meta a continuación", textAlign: TextAlign.justify),
+                            Text("Edite la meta a continuación",
+                                textAlign: TextAlign.justify),
                             Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: TextFormField(
                                     controller: valueController,
                                     keyboardType: TextInputType.number,
-                                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly
+                                    ],
                                     decoration: InputDecoration(
                                       border: const OutlineInputBorder(),
                                       labelText: "Tiempo (min.)",
@@ -177,7 +194,9 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
                                   ConfirmDialog(context);
                                 },
                                 child: Text("GUARDAR"),
-                                style: ButtonStyle(fixedSize: MaterialStateProperty.all(Size(100, 40))),
+                                style: ButtonStyle(
+                                    fixedSize: MaterialStateProperty.all(
+                                        Size(100, 40))),
                               ),
                             )
                           ],
@@ -210,7 +229,8 @@ String? ValidateResult(String result) {
   return null;
 }
 
-void updateGoal(String gestID, String goalID, String value, String startDate, String endDate, BuildContext context) {
+void updateGoal(String gestID, String goalID, String value, String startDate,
+    String endDate, BuildContext context) {
   GoalService _goalService = GoalService();
   _goalService.updateGoal(gestID, goalID, value, startDate, endDate, context);
 }

@@ -134,7 +134,7 @@ class _GuideItem extends StatelessWidget {
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(bottom: 5.0),
-                        child: Text(document['title'], style: kTituloGuia),
+                        child: Text(document['title'], style: kTitulo2),
                       ),
                       //SizedBox(height: 5),
                       Text(document['shortDescription'],

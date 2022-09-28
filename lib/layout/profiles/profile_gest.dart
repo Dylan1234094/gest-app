@@ -114,8 +114,11 @@ class _ViewFormGestState extends State<ViewFormGest> {
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case (ConnectionState.waiting):
-                return const Center(
-                  child: CircularProgressIndicator(),
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height / 1.3,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 );
               case (ConnectionState.done):
                 if (!snapshot.hasData) {

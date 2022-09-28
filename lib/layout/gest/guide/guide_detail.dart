@@ -45,7 +45,7 @@ class _GuideDetailPageState extends State<GuideDetailPage> {
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
                           snapshot.data!.title!,
-                          style: kTitulo,
+                          style: kTitulo1,
                         ),
                       ),
                       Padding(

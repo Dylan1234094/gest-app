@@ -1,25 +1,22 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gest_app/layout/gest/home/goals.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-
+import 'package:intl/date_symbol_data_local.dart';
 import '../../../utilities/designs.dart';
 
 class MetricDetailPage extends StatefulWidget {
   const MetricDetailPage(
-      {Key? key,
-      required this.userType,
+      {required this.userType,
       required this.vitalSignName,
       required this.vitalSign,
       required this.unit,
-      required this.rtoken})
-      : super(key: key);
+      required this.rtoken});
   final String userType;
   final String vitalSignName;
   final String vitalSign;
@@ -41,17 +38,18 @@ class _MetricDetailPageState extends State<MetricDetailPage>
     Tab(text: 'BIMESTRE'),
   ];
 
-  late TabController _tabController;
+  late TabController tabController;
 
   @override
   void initState() {
-    _tabController = TabController(length: tabs.length, vsync: this);
+    initializeDateFormatting();
+    tabController = TabController(length: tabs.length, vsync: this);
     super.initState();
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
+    tabController.dispose();
     super.dispose();
   }
 
@@ -72,12 +70,12 @@ class _MetricDetailPageState extends State<MetricDetailPage>
             indicatorSize: TabBarIndicatorSize.label,
             labelStyle: TextStyle(fontSize: 10),
             indicatorColor: Colors.white,
-            controller: _tabController,
+            controller: tabController,
             tabs: tabs,
           ),
         ),
         body: TabBarView(
-          controller: _tabController,
+          controller: tabController,
           children: [
             MetricDataPage(
               userType: widget.userType,
@@ -379,7 +377,7 @@ class _MetricDataPageState extends State<MetricDataPage> {
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
-              child: Divider(color: colorSecundario),
+              child: kLineaDivisora,
             ),
             FutureBuilder<List<_ChartData>>(
               future: widget.vitalSign == "presArt"
@@ -388,8 +386,11 @@ class _MetricDataPageState extends State<MetricDataPage> {
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case (ConnectionState.waiting):
-                    return const Center(
-                      child: CircularProgressIndicator(),
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.height / 1.3,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
                     );
                   case (ConnectionState.done):
                     if (!snapshot.hasData) {
@@ -451,8 +452,7 @@ class MetricDetail extends StatelessWidget {
   final _ChartData document;
   final String unit;
 
-  const MetricDetail({Key? key, required this.document, required this.unit})
-      : super(key: key);
+  const MetricDetail({required this.document, required this.unit});
 
   @override
   Widget build(BuildContext context) {
@@ -462,8 +462,10 @@ class MetricDetail extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Text(DateFormat.yMMMMEEEEd('es_MX').format(datetime),
-              style: kFechaDato),
+          Text(
+            DateFormat.yMMMMEEEEd('es_MX').format(datetime),
+            style: kFechaDato,
+          ),
           Text(
             NumberFormat('#,###.##').format(document.y).toString() + " " + unit,
             textAlign: TextAlign.left,

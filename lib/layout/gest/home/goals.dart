@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../utilities/designs.dart';
 
@@ -31,16 +32,19 @@ class GoalsPage extends StatelessWidget {
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData) {
-                return Center(
-                  child: CircularProgressIndicator(),
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height / 1.3,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 );
               }
               if (snapshot.data!.size == 0) {
                 return const Align(
                   alignment: Alignment.center,
-                  child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      child: Text("No se encontraron metas registradas")),
+                  child: Center(
+                    child: Text("No se encontraron metas registradas"),
+                  ),
                 );
               }
               return ListView(
@@ -61,7 +65,7 @@ class GoalsPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
                               Text(
-                                'Desde ${startTimeDate.day}/${startTimeDate.month}/${startTimeDate.year} hasta ${endTimeDate.day}/${endTimeDate.month}/${endTimeDate.year}',
+                                "Desde ${DateFormat('dd/MM/yyyy').format(startTimeDate)} hasta ${DateFormat('dd/MM/yyyy').format(endTimeDate)}",
                                 style: kFechaDato,
                               ),
                               Text(
