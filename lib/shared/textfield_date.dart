@@ -51,9 +51,10 @@ class _MyTextFormDate extends State<MyTextFormDate> {
         }
       },
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+        contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
         border: const OutlineInputBorder(),
         labelText: widget.label,
+        hintStyle: kInfo,
         labelStyle: kInfo,
         suffixIcon: const Icon(
           Icons.calendar_month,

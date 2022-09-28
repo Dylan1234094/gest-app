@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gest_app/data/model/obstetra.dart';
-import 'package:gest_app/layout/authentication/register_gest.dart';
 import 'package:gest_app/service/gestante_service.dart';
 
 import '../../utilities/designs.dart';
@@ -49,14 +48,16 @@ class _LinkObsState extends State<LinkObs> {
         child: Form(
           key: _keyForm,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.only(top: 20.0),
-                  child: Text('Vinculación con Obstetra', textAlign: TextAlign.center, style: kTitulo),
+                  child: Text('Vinculación con Obstetra',
+                      textAlign: TextAlign.center, style: kTitulo1),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 20.0),
@@ -74,7 +75,8 @@ class _LinkObsState extends State<LinkObs> {
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 10.0),
                       border: OutlineInputBorder(),
                       labelText: "Código Obstetra",
                       labelStyle: kInfo,
@@ -92,28 +94,34 @@ class _LinkObsState extends State<LinkObs> {
                         if (_keyForm.currentState!.validate())
                           {
                             _dialogWait(context),
-                            validateCodeObstetra(obsCodeController.text).then((value) {
+                            validateCodeObstetra(obsCodeController.text)
+                                .then((value) {
                               if (value.id != "") {
                                 Navigator.pop(context);
                                 _dialogCodeFound(context, value);
                               } else {
                                 Navigator.pop(context);
-                                _dialogCodeNotFound(context, obsCodeController.text);
+                                _dialogCodeNotFound(
+                                    context, obsCodeController.text);
                               }
                             })
                           }
                       },
-                      child: const Text('VINCULAR'),
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(colorPrincipal),
-                        foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                        fixedSize: MaterialStateProperty.all(const Size(160.0, 46.0)),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(colorPrincipal),
+                        foregroundColor:
+                            MaterialStateProperty.all<Color>(Colors.white),
+                        fixedSize:
+                            MaterialStateProperty.all(const Size(160.0, 46.0)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                         ),
                       ),
+                      child: const Text('VINCULAR'),
                     ),
                   ),
                 ),
@@ -148,10 +156,13 @@ Future<void> _dialogCodeNotFound(BuildContext context, String codeObs) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding:
+            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: const Text('Código Inválido', style: TextStyle(fontSize: 13)),
-        content: Text(
+        content:
+            //Richtext
+            Text(
           'El código "$codeObs" no se encuentra asociado a ninguna obstetra.\n\nPor favor, consulte nuevamente con su especialista para ingresar el código correcto.',
           style: kPopUpInfo,
           textAlign: TextAlign.justify,
@@ -172,7 +183,8 @@ Future<void> _dialogCodeFound(BuildContext context, Obstetra obstetra) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding:
+            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text('Vinculación exitosa', style: TextStyle(fontSize: 13)),
         content: Text(
@@ -187,7 +199,8 @@ Future<void> _dialogCodeFound(BuildContext context, Obstetra obstetra) {
             onPressed: () => Navigator.pushNamed(
               context,
               '/registerGestante',
-              arguments: linkObsArguments(obstetra.codigoObstetra!, obstetra.fcmToken!),
+              arguments: linkObsArguments(
+                  obstetra.codigoObstetra!, obstetra.fcmToken!),
             ),
           )
         ],

@@ -8,7 +8,6 @@ import 'package:gest_app/layout/gest/exam/exams.dart';
 import 'package:gest_app/layout/gest/guide/guides.dart';
 import 'package:gest_app/layout/gest/home/home.dart';
 import 'package:gest_app/service/gestante_service.dart';
-import 'package:gest_app/service/obstetra_service.dart';
 import 'package:gest_app/shared/chat.dart';
 import 'package:gest_app/shared/drawer_gest.dart';
 
@@ -28,7 +27,6 @@ class _TabsState extends State<Tabs> {
   var uid = FirebaseAuth.instance.currentUser!.uid;
 
   final List<Widget> _tabs = [HomePage(), GuidePage(), ExamPage()];
-  //final _tabsName = ["INICIO", "GUÍAS", "EXÁMENES"];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -48,7 +46,8 @@ class _TabsState extends State<Tabs> {
             builder: ((context, snapshotGest) {
               return FloatingActionButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute<void>(builder: (BuildContext context) {
+                  Navigator.of(context).push(
+                      MaterialPageRoute<void>(builder: (BuildContext context) {
                     return Chat(
                       nombreSender: snapshotGest.data!.nombre!,
                       apellidoSender: snapshotGest.data!.apellido!,
@@ -59,7 +58,7 @@ class _TabsState extends State<Tabs> {
                     );
                   }));
                 },
-                backgroundColor: Color(0xFF245470),
+                backgroundColor: colorPrincipal,
                 child: Icon(Icons.sms_outlined),
               );
             }),

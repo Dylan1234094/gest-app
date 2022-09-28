@@ -1,23 +1,23 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gest_app/data/model/goals.dart';
 import 'package:gest_app/layout/monitoring/monitor_goals/register_goals.dart';
 import 'package:gest_app/layout/monitoring/monitor_goals/update_goals.dart';
 import 'package:gest_app/service/goals_service.dart';
+import 'package:intl/intl.dart';
 
-import 'package:intl/intl.dart' as intl;
+import '../../../utilities/designs.dart';
 
-class MonitorGoalPage extends StatefulWidget {
+class ListaMetas extends StatefulWidget {
   final String gestId;
-  const MonitorGoalPage({Key? key, required this.gestId}) : super(key: key);
+  const ListaMetas({Key? key, required this.gestId}) : super(key: key);
 
   @override
-  _MonitorGoalPageState createState() => _MonitorGoalPageState();
+  _ListaMetasState createState() => _ListaMetasState();
 }
 
-class _MonitorGoalPageState extends State<MonitorGoalPage> {
+class _ListaMetasState extends State<ListaMetas> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -41,7 +41,12 @@ class _MonitorGoalPageState extends State<MonitorGoalPage> {
           future: null,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
+              return SizedBox(
+                height: MediaQuery.of(context).size.height / 1.3,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
             }
             return Padding(
               padding: const EdgeInsets.all(8.0),
@@ -53,11 +58,11 @@ class _MonitorGoalPageState extends State<MonitorGoalPage> {
                     builder: (context, snapshotGoals) {
                       switch (snapshotGoals.connectionState) {
                         case ConnectionState.waiting:
-                          return const Align(
-                            alignment: Alignment.center,
-                            child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                                child: CircularProgressIndicator()),
+                          return SizedBox(
+                            height: MediaQuery.of(context).size.height / 1.3,
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
                           );
                         case ConnectionState.done:
                           if (snapshotGoals.hasData) {
@@ -70,35 +75,35 @@ class _MonitorGoalPageState extends State<MonitorGoalPage> {
                                 itemBuilder: ((context, index) {
                                   Goal meta = snapshotGoals.data![index];
                                   return Padding(
-                                    padding: const EdgeInsets.only(left: 8, right: 8, top: 5),
+                                    padding: const EdgeInsets.only(
+                                        left: 8, right: 8, top: 5),
                                     child: GestureDetector(
                                       onTap: () {
                                         Navigator.of(context).push(
-                                          MaterialPageRoute<void>(builder: (BuildContext context) {
-                                            return UpdateGoalPage(gestId: widget.gestId, goalId: meta.id!); //! id
+                                          MaterialPageRoute<void>(
+                                              builder: (BuildContext context) {
+                                            return UpdateGoalPage(
+                                                gestId: widget.gestId,
+                                                goalId: meta.id!); //! id
                                           }),
                                         );
                                       },
-                                      child: Card(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(4),
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                      "Desde ${intl.DateFormat('dd/MM/yyyy').format(meta.startTime!.toDate())} hasta ${intl.DateFormat('dd/MM/yyyy').format(meta.endTime!.toDate())}",
-                                                      style: TextStyle(fontStyle: FontStyle.normal, fontSize: 15))
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Text("${meta.value!} min. diarios", style: TextStyle(fontSize: 24))
-                                                ],
-                                              ),
-                                            ],
-                                          ),
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 20.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                          children: <Widget>[
+                                            Text(
+                                              "Desde ${DateFormat('dd/MM/yyyy').format(meta.startTime!.toDate())} hasta ${DateFormat('dd/MM/yyyy').format(meta.endTime!.toDate())}",
+                                              style: kFechaDato,
+                                            ),
+                                            Text(
+                                              "${meta.value!} min. diarios",
+                                              style: kDato,
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
@@ -108,24 +113,26 @@ class _MonitorGoalPageState extends State<MonitorGoalPage> {
                             } else {
                               return const Align(
                                 alignment: Alignment.center,
-                                child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                                    child: Text("No se encontraron metas registradas")),
+                                child: Center(
+                                  child: Text(
+                                      "No se encontraron metas registradas"),
+                                ),
                               );
                             }
                           } else {
                             return const Align(
                               alignment: Alignment.center,
-                              child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                                  child: Text("Algo salió mal")),
+                              child: Center(
+                                child: Text("Algo salió mal"),
+                              ),
                             );
                           }
                         default:
                           return const Align(
                             alignment: Alignment.center,
-                            child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8), child: Text("Esperando")),
+                            child: Center(
+                              child: Text("Esperando"),
+                            ),
                           );
                       }
                     },

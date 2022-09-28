@@ -6,15 +6,15 @@ import 'package:gest_app/layout/gest/home/metric_detail.dart';
 import 'package:gest_app/service/gestante_service.dart';
 import 'package:intl/intl.dart' as intl;
 
-class DetailMonitorGest extends StatefulWidget {
+class PerfilGest extends StatefulWidget {
   final String gestId;
-  const DetailMonitorGest({Key? key, required this.gestId}) : super(key: key);
+  const PerfilGest({Key? key, required this.gestId}) : super(key: key);
 
   @override
-  State<DetailMonitorGest> createState() => _DetailMonitorGestState();
+  State<PerfilGest> createState() => _DetailMonitorGestState();
 }
 
-class _DetailMonitorGestState extends State<DetailMonitorGest> {
+class _DetailMonitorGestState extends State<PerfilGest> {
   late TabController tabController;
   final actFisicaController = TextEditingController();
   final freCardiController = TextEditingController();

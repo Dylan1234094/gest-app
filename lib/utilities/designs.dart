@@ -4,9 +4,19 @@ const Color colorPrincipal = Color(0xFF0479BD);
 
 const Color colorSecundario = Color(0xFF9A9A9A);
 
-const kTitulo = TextStyle(
+const kTitulo1 = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 20.0,
+);
+
+const kTitulo2 = TextStyle(
+  fontWeight: FontWeight.bold,
+  fontSize: 12.0,
+);
+
+const kTitulo3 = TextStyle(
+  fontWeight: FontWeight.bold,
+  fontSize: 10.0,
 );
 
 const kInfo = TextStyle(
@@ -17,12 +27,18 @@ const kInfo = TextStyle(
 const kTituloCabezera = TextStyle(
   color: Colors.white,
   fontWeight: FontWeight.bold,
-  fontSize: 20.0,
+  fontSize: 15.0,
 );
 
-const kTituloGrafico = TextStyle(
+const kGestHomeTitGrafic = TextStyle(
   fontWeight: FontWeight.bold,
-  fontSize: 10.0,
+  fontSize: 14.0,
+);
+
+const kGestHomeDescGrafic = TextStyle(
+  color: colorSecundario,
+  fontWeight: FontWeight.w300,
+  fontSize: 12.0,
 );
 
 const kTextoBoton = TextStyle(
@@ -31,11 +47,11 @@ const kTextoBoton = TextStyle(
 
 const kFechaDato = TextStyle(
   color: colorSecundario,
-  fontSize: 14.0,
+  fontSize: 13.0,
 );
 
 const kDato = TextStyle(
-  fontSize: 20.0,
+  fontSize: 16.0,
 );
 
 const kTituloSignoConfig = TextStyle(
@@ -53,6 +69,34 @@ const kInfoSignoConfig = TextStyle(
 const kPopUpInfo = TextStyle(
   fontSize: 11.0,
 );
+
+const kInfoGuia = TextStyle(
+  fontSize: 10.0,
+  color: colorSecundario,
+);
+
+const kDescGuia = TextStyle(
+  fontSize: 12,
+  height: 1.5,
+);
+
+const kNombreGestanteLista = TextStyle(
+  fontSize: 15.0,
+);
+
+const kEdadGestacionaLista = TextStyle(
+  fontSize: 11.0,
+  color: colorSecundario,
+);
+
+const kTituloPerfilGestante = TextStyle(
+  letterSpacing: 1.5,
+  fontWeight: FontWeight.bold,
+  fontSize: 10.0,
+  color: colorSecundario,
+);
+
+const kLineaDivisora = Divider(color: colorSecundario);
 
 ButtonStyle estiloBoton = ButtonStyle(
   backgroundColor: MaterialStateProperty.all<Color>(colorPrincipal),

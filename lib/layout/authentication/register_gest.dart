@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gest_app/layout/authentication/linkobs_gest.dart';
 import 'package:gest_app/layout/authentication/vitalsigns_gest.dart';
-import 'package:gest_app/shared/date_input.dart';
-import 'package:gest_app/service/gestante_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gest_app/shared/textfield_date.dart';
 
@@ -40,8 +38,18 @@ class registerGestArguments {
   final String fcmTokenObs;
   final String codigoObs;
 
-  registerGestArguments(this.nombre, this.apellido, this.correo, this.telefono, this.dni, this.fechaNacimiento,
-      this.fechaRegla, this.fechaEco, this.fechaCita, this.fcmTokenObs, this.codigoObs);
+  registerGestArguments(
+      this.nombre,
+      this.apellido,
+      this.correo,
+      this.telefono,
+      this.dni,
+      this.fechaNacimiento,
+      this.fechaRegla,
+      this.fechaEco,
+      this.fechaCita,
+      this.fcmTokenObs,
+      this.codigoObs);
 }
 
 class _FormGestState extends State<FormGest> {
@@ -89,14 +97,16 @@ class _FormGestState extends State<FormGest> {
         child: Form(
           key: _keyForm,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 const Padding(
                   padding: EdgeInsets.only(top: 20.0),
-                  child: Text('Registro de Datos', textAlign: TextAlign.center, style: kTitulo),
+                  child: Text('Registro de Datos',
+                      textAlign: TextAlign.center, style: kTitulo1),
                 ),
                 const Padding(
                   padding: EdgeInsets.only(top: 20.0, bottom: 12.0),
@@ -107,61 +117,61 @@ class _FormGestState extends State<FormGest> {
                 ),
                 InputTextWidget(
                   //! Nombre
-                  Controller: nombreController,
-                  Formatters: <TextInputFormatter>[
+                  controlador: nombreController,
+                  formatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
                   ],
-                  Label: 'Nombre(s)',
+                  label: 'Nombre(s)',
                   inputType: TextInputType.text,
-                  Validator: (value) {
+                  validacion: (value) {
                     return ValidateText("Nombre", value!);
                   },
-                  Enabled: true,
+                  habilitado: true,
                 ),
                 InputTextWidget(
                   //! Apellido
-                  Controller: apellidoController,
-                  Formatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
+                  controlador: apellidoController,
+                  formatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(RegExp("[a-z A-Z á-ú]")),
                   ],
-                  Label: 'Apellido(s)',
+                  label: 'Apellido(s)',
                   inputType: TextInputType.text,
-                  Validator: (value) {
+                  validacion: (value) {
                     return ValidateText("Apellido", value!);
                   },
-                  Enabled: true,
+                  habilitado: true,
                 ),
                 InputTextWidget(
                   //! Celular
-                  Controller: telefonoController,
-                  Formatters: [FilteringTextInputFormatter.digitsOnly],
-                  Label: 'Celular',
+                  controlador: telefonoController,
+                  formatters: [FilteringTextInputFormatter.digitsOnly],
+                  label: 'Celular',
                   inputType: TextInputType.number,
-                  Validator: (value) {
+                  validacion: (value) {
                     return ValidatePhoneNumber(value!);
                   },
-                  Enabled: true,
+                  habilitado: true,
                 ),
                 InputTextWidget(
                   //! Correo
-                  Controller: correoController,
-                  Formatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
+                  controlador: correoController,
+                  formatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.deny(RegExp("[ ]")),
                   ],
-                  Label: 'Correo',
+                  label: 'Correo',
                   inputType: TextInputType.emailAddress,
-                  Enabled: false,
+                  habilitado: false,
                 ),
                 InputTextWidget(
                   //! DNI
-                  Controller: dniController,
-                  Formatters: [FilteringTextInputFormatter.digitsOnly],
-                  Label: 'DNI',
+                  controlador: dniController,
+                  formatters: [FilteringTextInputFormatter.digitsOnly],
+                  label: 'DNI',
                   inputType: TextInputType.number,
-                  Validator: (value) {
+                  validacion: (value) {
                     return ValidateDNI(value!);
                   },
-                  Enabled: true,
+                  habilitado: true,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -196,10 +206,14 @@ class _FormGestState extends State<FormGest> {
                     padding: EdgeInsets.all(20.0),
                     child: ElevatedButton(
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(colorPrincipal),
-                        foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                        fixedSize: MaterialStateProperty.all(const Size(160.0, 46.0)),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(colorPrincipal),
+                        foregroundColor:
+                            MaterialStateProperty.all<Color>(Colors.white),
+                        fixedSize:
+                            MaterialStateProperty.all(const Size(160.0, 46.0)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
@@ -238,20 +252,20 @@ class _FormGestState extends State<FormGest> {
 
 class InputTextWidget extends StatelessWidget {
   InputTextWidget({
-    required this.Controller,
-    required this.Formatters,
-    required this.Label,
+    required this.controlador,
+    required this.formatters,
+    required this.label,
     required this.inputType,
-    this.Validator,
-    required this.Enabled,
+    this.validacion,
+    required this.habilitado,
   });
 
-  final TextEditingController Controller;
+  final TextEditingController controlador;
   final TextInputType inputType;
-  final List<TextInputFormatter> Formatters;
-  final String Label;
-  final FormFieldValidator<String>? Validator;
-  final bool Enabled;
+  final List<TextInputFormatter> formatters;
+  final String label;
+  final FormFieldValidator<String>? validacion;
+  final bool habilitado;
 
   @override
   Widget build(BuildContext context) {
@@ -259,17 +273,18 @@ class InputTextWidget extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
         style: TextStyle(fontSize: 13.0),
-        enabled: Enabled,
-        controller: Controller,
+        enabled: habilitado,
+        controller: controlador,
         keyboardType: inputType,
-        inputFormatters: Formatters,
+        inputFormatters: formatters,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+          contentPadding:
+              EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
           border: OutlineInputBorder(),
-          labelText: Label,
+          labelText: label,
           labelStyle: kInfo,
         ),
-        validator: Validator,
+        validator: validacion,
       ),
     );
   }
