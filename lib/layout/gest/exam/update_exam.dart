@@ -9,9 +9,11 @@ import 'package:gest_app/shared/textfield_date.dart';
 
 import 'package:intl/intl.dart' as intl;
 
+import '../../../utilities/designs.dart';
+
 class UpdateExamPage extends StatefulWidget {
   final String examId;
-  const UpdateExamPage({Key? key, required this.examId}) : super(key: key);
+  const UpdateExamPage({required this.examId});
 
   @override
   State<UpdateExamPage> createState() => _UpdateExamPageState();
@@ -27,27 +29,27 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
       context: context,
       builder: (BuildContext ctx) {
         return AlertDialog(
-          title: const Text('Confirmación'),
-          content: const Text('¿Desea actualizar los datos?'),
+          contentPadding:
+              EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+          actionsPadding: EdgeInsets.only(bottom: 10),
+          title: const Text('Confirmación', style: TextStyle(fontSize: 13)),
+          content: const Text('¿Desea actualizar los datos?',
+              style: kPopUpInfo, textAlign: TextAlign.justify),
           actions: [
             TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('No')),
+                child: const Text('CANCELAR',
+                    style: TextStyle(fontSize: 10, color: colorSecundario))),
             TextButton(
                 onPressed: () {
                   //! Update examen
-                  updateExamResult(uid, widget.examId, valueController.text, dateController.text, context)
-                      .then((value) {
-                    Navigator.of(context).pop();
-                    _updateExamSuccess(context);
-                  }).onError((error, stackTrace) {
-                    Navigator.of(context).pop();
-                    _updateExamFailed(context);
-                  });
+                  updateExamResult(uid, widget.examId, valueController.text,
+                      dateController.text, context);
+                  Navigator.of(context).popUntil(ModalRoute.withName("/"));
                 },
-                child: const Text('Si'))
+                child: const Text('ACEPTAR', style: TextStyle(fontSize: 10)))
           ],
         );
       },
@@ -59,26 +61,26 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
       context: context,
       builder: (BuildContext ctx) {
         return AlertDialog(
-          title: const Text('Confirmación'),
-          content: const Text('¿Desea elimar el registro?'),
+          contentPadding:
+              EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+          actionsPadding: EdgeInsets.only(bottom: 10),
+          title: const Text('Confirmación', style: TextStyle(fontSize: 13)),
+          content: const Text('¿Desea elimar el registro?',
+              style: kPopUpInfo, textAlign: TextAlign.justify),
           actions: [
             TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('No')),
+                child: const Text('CANCELAR',
+                    style: TextStyle(fontSize: 10, color: colorSecundario))),
             TextButton(
                 onPressed: () {
                   //! Delete examen
-                  deleteExamResult(uid, widget.examId, context).then((value) {
-                    Navigator.of(context).pop();
-                    _deleteExamSuccess(context);
-                  }).onError((error, stackTrace) {
-                    Navigator.of(context).pop();
-                    _deleteExamFailed(context);
-                  });
+                  deleteExamResult(uid, widget.examId, context);
+                  Navigator.of(context).popUntil(ModalRoute.withName("/"));
                 },
-                child: const Text('Si'))
+                child: const Text('ACEPTAR', style: TextStyle(fontSize: 10)))
           ],
         );
       },
@@ -98,89 +100,128 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
-            actions: <Widget>[
-              IconButton(
-                icon: const Icon(Icons.more_vert, color: Colors.white),
-                onPressed: () {
-                  showModalBottomSheet(
-                      context: context,
-                      builder: (BuildContext ctx) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            ListTile(
-                                leading: Icon(Icons.delete),
-                                title: const Text("Borrar"),
-                                onTap: () {
-                                  ConfirmDialogDelete(context);
-                                }),
-                            ListTile(
-                                leading: Icon(Icons.close),
-                                title: const Text("Cancelar"),
-                                onTap: () => Navigator.of(context).pop()),
-                          ],
-                        );
-                      });
-                },
-              ),
-            ],
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Navigator.of(context).pop(),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.more_vert, color: Colors.white),
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext ctx) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        ListTile(
+                            leading: Icon(Icons.delete),
+                            title: const Text("Borrar"),
+                            onTap: () {
+                              ConfirmDialogDelete(context);
+                            }),
+                        ListTile(
+                            leading: Icon(Icons.close),
+                            title: const Text("Cancelar"),
+                            onTap: () => Navigator.of(context).pop()),
+                      ],
+                    );
+                  },
+                );
+              },
             ),
-            title: Text("Actualizar Examen")),
+          ],
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
         body: FutureBuilder<Exam>(
             future: getExamResult(widget.examId, uid),
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case (ConnectionState.waiting):
-                  return const Center(
-                    child: CircularProgressIndicator(),
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height / 1.3,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   );
                 case (ConnectionState.done):
                   if (snapshot.hasData) {
                     valueController.text = snapshot.data!.value!.toString();
-                    dateController.text = intl.DateFormat('dd/MM/yyyy').format(snapshot.data!.dateResult!.toDate());
+                    dateController.text = intl.DateFormat('dd/MM/yyyy')
+                        .format(snapshot.data!.dateResult!.toDate());
                     return SingleChildScrollView(
                       child: Padding(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 20.0, horizontal: 10.0),
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(top: 30, bottom: 20),
-                              child: Text("Actualizar examen",
-                                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                              padding: EdgeInsets.only(top: 20.0),
+                              child: Text('Actualizar examen',
+                                  textAlign: TextAlign.center, style: kTitulo1),
                             ),
-                            Text("Edite el resultado a continuación", textAlign: TextAlign.justify),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 20.0),
+                              child: Text(
+                                'Edite el resultado a continuación',
+                                textAlign: TextAlign.justify,
+                                style: kInfo,
+                              ),
+                            ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: TextField(
+                                style: TextStyle(fontSize: 13.0),
                                 controller: valueController,
                                 keyboardType: TextInputType.number,
                                 inputFormatters: [
-                                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'^\d+\.?\d{0,2}')),
                                 ],
                                 decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 10.0, horizontal: 10.0),
                                   border: OutlineInputBorder(),
                                   labelText: 'Resultado (g/dL)',
+                                  hintStyle: kInfo,
+                                  labelStyle: kInfo,
                                 ),
                               ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: MyTextFormDate(
-                                label: "Fecha de entrega de resultados",
+                                label: "Fecha de resultado",
                                 dateController: dateController,
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 32),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  ConfirmDialog(context);
-                                },
-                                child: Text("GUARDAR"),
-                                style: ButtonStyle(fixedSize: MaterialStateProperty.all(Size(100, 40))),
+                            Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(20.0),
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            colorPrincipal),
+                                    foregroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Colors.white),
+                                    fixedSize: MaterialStateProperty.all(
+                                        const Size(160.0, 46.0)),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                      ),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    ConfirmDialog(context);
+                                  },
+                                  child: Text("GUARDAR"),
+                                ),
                               ),
                             )
                           ],
@@ -203,12 +244,14 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
   }
 }
 
-Future<void> updateExamResult(String gestID, String examID, String value, String date, BuildContext context) {
+Future<void> updateExamResult(String gestID, String examID, String value,
+    String date, BuildContext context) {
   ExamService _examService = ExamService();
   return _examService.updateExamResult(gestID, examID, value, date, context);
 }
 
-Future<void> deleteExamResult(String gestID, String examID, BuildContext context) {
+Future<void> deleteExamResult(
+    String gestID, String examID, BuildContext context) {
   ExamService _examService = ExamService();
   return _examService.deleteExamResult(gestID, examID, context);
 }
@@ -224,7 +267,8 @@ Future<void> _updateExamSuccess(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding:
+            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Examen Actualizado',
@@ -255,7 +299,8 @@ Future<void> _updateExamFailed(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding:
+            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Algo salió mal...',
@@ -263,7 +308,8 @@ Future<void> _updateExamFailed(BuildContext context) {
         ),
         content: RichText(
           text: TextSpan(
-            text: 'Su examen no fue actualizado. Por favor, inténtelo más tarde',
+            text:
+                'Su examen no fue actualizado. Por favor, inténtelo más tarde',
             style: DefaultTextStyle.of(context).style,
           ),
         ),
@@ -286,7 +332,8 @@ Future<void> _deleteExamSuccess(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding:
+            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Examen Eliminado',
@@ -312,7 +359,8 @@ Future<void> _deleteExamFailed(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding:
+            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Algo salió mal...',

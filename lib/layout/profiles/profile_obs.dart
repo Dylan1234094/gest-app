@@ -4,8 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:gest_app/data/model/obstetra.dart';
 import 'package:gest_app/service/obstetra_service.dart';
 
-import 'package:intl/intl.dart' as intl;
-
 class ProfileObs extends StatelessWidget {
   const ProfileObs({Key? key}) : super(key: key);
 
@@ -18,7 +16,7 @@ class ProfileObs extends StatelessWidget {
 }
 
 class ViewFormObs extends StatefulWidget {
-  const ViewFormObs({Key? key}) : super(key: key);
+  const ViewFormObs();
 
   @override
   State<ViewFormObs> createState() => _ViewFormObsState();
@@ -60,8 +58,11 @@ class _ViewFormObsState extends State<ViewFormObs> {
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case (ConnectionState.waiting):
-                return const Center(
-                  child: CircularProgressIndicator(),
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height / 1.3,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 );
               case (ConnectionState.done):
                 if (!snapshot.hasData) {
@@ -91,7 +92,8 @@ class _ViewFormObsState extends State<ViewFormObs> {
                             child: TextFormField(
                                 controller: nombreController,
                                 inputFormatters: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp("[a-zA-Z ]")),
                                 ],
                                 keyboardType: TextInputType.name,
                                 decoration: const InputDecoration(
@@ -107,7 +109,8 @@ class _ViewFormObsState extends State<ViewFormObs> {
                             child: TextFormField(
                                 controller: apellidoController,
                                 inputFormatters: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp("[a-zA-Z ]")),
                                 ],
                                 keyboardType: TextInputType.text,
                                 decoration: const InputDecoration(
@@ -137,7 +140,9 @@ class _ViewFormObsState extends State<ViewFormObs> {
                             child: TextFormField(
                                 controller: telefonoController,
                                 keyboardType: TextInputType.number,
-                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
                                   labelText: "Celular",
@@ -151,10 +156,16 @@ class _ViewFormObsState extends State<ViewFormObs> {
                             onPressed: () => {
                               if (_keyForm.currentState!.validate())
                                 {
-                                  updateObstetra(uid, nombreController.text, apellidoController.text,
-                                          telefonoController.text, context)
-                                      .then((value) => _updateObsSuccess(context))
-                                      .onError((error, stackTrace) => _updateObsFailed(context))
+                                  updateObstetra(
+                                          uid,
+                                          nombreController.text,
+                                          apellidoController.text,
+                                          telefonoController.text,
+                                          context)
+                                      .then(
+                                          (value) => _updateObsSuccess(context))
+                                      .onError((error, stackTrace) =>
+                                          _updateObsFailed(context))
                                 }
                             },
                             child: const Text('Guardar'),
@@ -178,8 +189,10 @@ Future<Obstetra> getObstetra(String id) {
   return _obstetraService.getObstetra(id);
 }
 
-Future<void> updateObstetra(String id, String nombre, String apellido, String telefono, BuildContext context) {
-  return _obstetraService.updateObstetra(id, nombre, apellido, telefono, context);
+Future<void> updateObstetra(String id, String nombre, String apellido,
+    String telefono, BuildContext context) {
+  return _obstetraService.updateObstetra(
+      id, nombre, apellido, telefono, context);
 }
 
 String? ValidateText(String label, String value) {
@@ -233,7 +246,8 @@ Future<void> _updateObsSuccess(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding:
+            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Perfil Actualizado',
@@ -264,7 +278,8 @@ Future<void> _updateObsFailed(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding:
+            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Algo salió mal...',
@@ -272,7 +287,8 @@ Future<void> _updateObsFailed(BuildContext context) {
         ),
         content: RichText(
           text: TextSpan(
-            text: 'Su perfil no fue actualizado. Por favor, inténtelo más tarde',
+            text:
+                'Su perfil no fue actualizado. Por favor, inténtelo más tarde',
             style: DefaultTextStyle.of(context).style,
           ),
         ),

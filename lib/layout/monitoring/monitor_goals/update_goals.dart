@@ -11,7 +11,7 @@ import 'package:intl/intl.dart' as intl;
 class UpdateGoalPage extends StatefulWidget {
   final String gestId;
   final String goalId;
-  const UpdateGoalPage({Key? key, required this.gestId, required this.goalId}) : super(key: key);
+  const UpdateGoalPage({required this.gestId, required this.goalId});
 
   @override
   State<UpdateGoalPage> createState() => _UpdateGoalPageState();
@@ -37,8 +37,13 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
                 child: const Text('No')),
             TextButton(
                 onPressed: () {
-                  updateGoal(widget.gestId, widget.goalId, valueController.text, startDateController.text,
-                          endDateController.text, context)
+                  updateGoal(
+                          widget.gestId,
+                          widget.goalId,
+                          valueController.text,
+                          startDateController.text,
+                          endDateController.text,
+                          context)
                       .then((value) {
                     Navigator.of(context).pop();
                     _updateGoalSuccess(context);
@@ -69,7 +74,8 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
                 child: const Text('No')),
             TextButton(
                 onPressed: () {
-                  deleteGoal(widget.gestId, widget.goalId, context).then((value) {
+                  deleteGoal(widget.gestId, widget.goalId, context)
+                      .then((value) {
                     Navigator.of(context).pop();
                     _deleteGoalSuccess(context);
                   }).onError((error, stackTrace) {
@@ -139,25 +145,33 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
                 case (ConnectionState.done):
                   if (snapshot.hasData) {
                     valueController.text = snapshot.data!.value!.toString();
-                    startDateController.text = intl.DateFormat('dd/MM/yyyy').format(snapshot.data!.startTime!.toDate());
-                    endDateController.text = intl.DateFormat('dd/MM/yyyy').format(snapshot.data!.endTime!.toDate());
+                    startDateController.text = intl.DateFormat('dd/MM/yyyy')
+                        .format(snapshot.data!.startTime!.toDate());
+                    endDateController.text = intl.DateFormat('dd/MM/yyyy')
+                        .format(snapshot.data!.endTime!.toDate());
                     return SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Column(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(top: 30, bottom: 20),
-                              child:
-                                  Text("Actualizar Meta", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                              padding:
+                                  const EdgeInsets.only(top: 30, bottom: 20),
+                              child: Text("Actualizar Meta",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold)),
                             ),
-                            Text("Edite la meta a continuación", textAlign: TextAlign.justify),
+                            Text("Edite la meta a continuación",
+                                textAlign: TextAlign.justify),
                             Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: TextFormField(
                                     controller: valueController,
                                     keyboardType: TextInputType.number,
-                                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly
+                                    ],
                                     decoration: InputDecoration(
                                       border: const OutlineInputBorder(),
                                       labelText: "Tiempo (min.)",
@@ -188,7 +202,9 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
                                   ConfirmDialog(context);
                                 },
                                 child: Text("GUARDAR"),
-                                style: ButtonStyle(fixedSize: MaterialStateProperty.all(Size(100, 40))),
+                                style: ButtonStyle(
+                                    fixedSize: MaterialStateProperty.all(
+                                        Size(100, 40))),
                               ),
                             )
                           ],
@@ -221,10 +237,11 @@ String? ValidateResult(String result) {
   return null;
 }
 
-Future<void> updateGoal(
-    String gestID, String goalID, String value, String startDate, String endDate, BuildContext context) {
+Future<void> updateGoal(String gestID, String goalID, String value,
+    String startDate, String endDate, BuildContext context) {
   GoalService _goalService = GoalService();
-  return _goalService.updateGoal(gestID, goalID, value, startDate, endDate, context);
+  return _goalService.updateGoal(
+      gestID, goalID, value, startDate, endDate, context);
 }
 
 Future<void> deleteGoal(String gestID, String goalID, BuildContext context) {
@@ -243,7 +260,8 @@ Future<void> _updateGoalSuccess(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding:
+            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Meta Actualizada',
@@ -274,7 +292,8 @@ Future<void> _updateGoalFailed(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding:
+            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Algo salió mal...',
@@ -305,7 +324,8 @@ Future<void> _deleteGoalSuccess(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding:
+            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Meta Eliminada',
@@ -331,7 +351,8 @@ Future<void> _deleteGoalFailed(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding:
+            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Algo salió mal...',

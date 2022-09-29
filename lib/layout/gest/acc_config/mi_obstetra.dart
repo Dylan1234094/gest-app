@@ -122,7 +122,7 @@ class _DatosObstetraState extends State<DatosObstetra> {
                                     Padding(
                                       padding: EdgeInsets.only(top: 20.0),
                                       child: Text(
-                                          'Apellido: ${snapshotObs.data!.nombre!}',
+                                          'Apellido: ${snapshotObs.data!.apellido!}',
                                           textAlign: TextAlign.start,
                                           style: kInfo),
                                     ),
