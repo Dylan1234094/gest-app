@@ -11,9 +11,7 @@ import '../../../utilities/designs.dart';
 class RegisterExamPage extends StatefulWidget {
   final String examId;
   final String examName;
-  const RegisterExamPage(
-      {Key? key, required this.examId, required this.examName})
-      : super(key: key);
+  const RegisterExamPage({Key? key, required this.examId, required this.examName}) : super(key: key);
 
   @override
   State<RegisterExamPage> createState() => _RegisterExamPageState();
@@ -31,25 +29,25 @@ class _RegisterExamPageState extends State<RegisterExamPage> {
       context: context,
       builder: (BuildContext ctx) {
         return AlertDialog(
-          contentPadding:
-              EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+          contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
           actionsPadding: EdgeInsets.only(bottom: 10),
           title: const Text('Confirmación', style: TextStyle(fontSize: 13)),
-          content: const Text('¿Desea enviar los datos?',
-              style: kPopUpInfo, textAlign: TextAlign.justify),
+          content: const Text('¿Desea enviar los datos?', style: kPopUpInfo, textAlign: TextAlign.justify),
           actions: [
             TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('CANCELAR',
-                    style: TextStyle(fontSize: 10, color: colorSecundario))),
+                child: const Text('CANCELAR', style: TextStyle(fontSize: 10, color: colorSecundario))),
             TextButton(
                 onPressed: () {
-                  //! Register exam
-                  registerExam(uid, widget.examName, valueController.text,
-                      dateController.text, context);
-                  Navigator.of(context).popUntil(ModalRoute.withName("/"));
+                  registerExam(uid, widget.examName, valueController.text, dateController.text, context).then((value) {
+                    Navigator.of(context).pop();
+                    _registerExamSuccess(context);
+                  }).onError((error, stackTrace) {
+                    Navigator.of(context).pop();
+                    _registerExamFailed(context);
+                  });
                 },
                 child: const Text('ACEPTAR', style: TextStyle(fontSize: 10)))
           ],
@@ -81,8 +79,7 @@ class _RegisterExamPageState extends State<RegisterExamPage> {
           builder: (context, snapshot) {
             return SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 20.0, horizontal: 10.0),
+                padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
                 child: Form(
                   key: _keyForm,
                   child: Column(
@@ -91,8 +88,7 @@ class _RegisterExamPageState extends State<RegisterExamPage> {
                     children: [
                       Padding(
                         padding: EdgeInsets.only(top: 20.0),
-                        child: Text("Registrar Examen",
-                            textAlign: TextAlign.center, style: kTitulo1),
+                        child: Text("Registrar Examen", textAlign: TextAlign.center, style: kTitulo1),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 20.0),
@@ -109,12 +105,10 @@ class _RegisterExamPageState extends State<RegisterExamPage> {
                           controller: valueController,
                           keyboardType: TextInputType.number,
                           inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                                RegExp(r'^\d+\.?\d{0,2}')),
+                            FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
                           ],
                           decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 10.0, horizontal: 10.0),
+                            contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                             border: OutlineInputBorder(),
                             labelText: "Resultado (g/dL)",
                             hintStyle: kInfo,
@@ -137,14 +131,10 @@ class _RegisterExamPageState extends State<RegisterExamPage> {
                           padding: EdgeInsets.all(20.0),
                           child: ElevatedButton(
                             style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  colorPrincipal),
-                              foregroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.white),
-                              fixedSize: MaterialStateProperty.all(
-                                  const Size(160.0, 46.0)),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
+                              backgroundColor: MaterialStateProperty.all<Color>(colorPrincipal),
+                              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                              fixedSize: MaterialStateProperty.all(const Size(160.0, 46.0)),
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
@@ -152,10 +142,7 @@ class _RegisterExamPageState extends State<RegisterExamPage> {
                             ),
                             onPressed: () {
                               if (_keyForm.currentState!.validate()) {
-                                print("Válido");
                                 ConfirmDialog(context);
-                              } else {
-                                print("Invalido");
                               }
                             },
                             child: Text("GUARDAR"),
@@ -184,11 +171,9 @@ String? ValidateResult(String result) {
   return null;
 }
 
-Future<void> registerExam(String gestID, String examType, String value,
-    String date, BuildContext context) {
+Future<void> registerExam(String gestID, String examType, String value, String date, BuildContext context) {
   ExamService _examService = ExamService();
-  return _examService.registerExamResult(
-      gestID, examType, value, date, context);
+  return _examService.registerExamResult(gestID, examType, value, date, context);
 }
 
 Future<void> _registerExamSuccess(BuildContext context) {
@@ -197,8 +182,7 @@ Future<void> _registerExamSuccess(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Examen Registrado',
@@ -229,8 +213,7 @@ Future<void> _registerExamFailed(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Algo salió mal...',
