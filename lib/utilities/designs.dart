@@ -5,23 +5,18 @@ const Color colorPrincipal = Color(0xFF0479BD);
 const Color colorSecundario = Color(0xFF9A9A9A);
 
 const kTitulo1 = TextStyle(
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.w500,
   fontSize: 20.0,
 );
 
 const kTitulo2 = TextStyle(
-  fontWeight: FontWeight.bold,
-  fontSize: 12.0,
+  fontWeight: FontWeight.w500,
+  fontSize: 16.0,
 );
 
 const kTitulo3 = TextStyle(
-  fontWeight: FontWeight.bold,
-  fontSize: 10.0,
-);
-
-const kInfo = TextStyle(
-  fontWeight: FontWeight.w300,
-  fontSize: 13.0,
+  fontWeight: FontWeight.w500,
+  fontSize: 14.0,
 );
 
 const kTituloCabezera = TextStyle(
@@ -30,32 +25,27 @@ const kTituloCabezera = TextStyle(
   fontSize: 15.0,
 );
 
-const kGestHomeTitGrafic = TextStyle(
-  fontWeight: FontWeight.bold,
-  fontSize: 14.0,
+const kSubTitulo1 = TextStyle(
+  fontWeight: FontWeight.w500,
+  fontSize: 12.0,
 );
 
-const kGestHomeDescGrafic = TextStyle(
-  color: colorSecundario,
+const kSubTitulo2 = TextStyle(
+  fontWeight: FontWeight.w500,
+  fontSize: 10.0,
+);
+
+const kDescripcion = TextStyle(
   fontWeight: FontWeight.w300,
   fontSize: 12.0,
 );
 
-const kTextoBoton = TextStyle(
-  fontSize: 14.0,
-);
-
-const kFechaDato = TextStyle(
-  color: colorSecundario,
-  fontSize: 13.0,
-);
-
-const kDato = TextStyle(
-  fontSize: 16.0,
+const kInfoPopUp = TextStyle(
+  fontSize: 11.0,
 );
 
 const kTituloSignoConfig = TextStyle(
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.w500,
   fontSize: 15.0,
   color: colorPrincipal,
 );
@@ -64,29 +54,6 @@ const kInfoSignoConfig = TextStyle(
   fontWeight: FontWeight.w300,
   fontSize: 10.0,
   color: colorPrincipal,
-);
-
-const kPopUpInfo = TextStyle(
-  fontSize: 11.0,
-);
-
-const kInfoGuia = TextStyle(
-  fontSize: 10.0,
-  color: colorSecundario,
-);
-
-const kDescGuia = TextStyle(
-  fontSize: 12,
-  height: 1.5,
-);
-
-const kNombreGestanteLista = TextStyle(
-  fontSize: 15.0,
-);
-
-const kEdadGestacionaLista = TextStyle(
-  fontSize: 11.0,
-  color: colorSecundario,
 );
 
 const kTituloPerfilGestante = TextStyle(

@@ -45,7 +45,7 @@ class _LoginGestState extends State<LoginGest> {
               child: Text(
                 'Inicie sesión con su cuenta de Google para continuar con la configuración de su cuenta',
                 textAlign: TextAlign.justify,
-                style: kInfo,
+                style: kDescripcion,
               ),
             ),
             Padding(

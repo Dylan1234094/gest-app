@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:gest_app/data/model/gestante.dart';
 import 'package:gest_app/service/gestante_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gest_app/shared/textfield_date.dart';
+import 'package:gest_app/utilities/textfield_date.dart';
 import 'package:gest_app/utilities/designs.dart';
 
 class ProfileGest extends StatelessWidget {
@@ -35,8 +35,16 @@ class registerGestArguments {
   final String fechaEco;
   final String fechaCita;
 
-  registerGestArguments(this.nombre, this.apellido, this.correo, this.telefono, this.dni, this.fechaNacimiento,
-      this.fechaRegla, this.fechaEco, this.fechaCita);
+  registerGestArguments(
+      this.nombre,
+      this.apellido,
+      this.correo,
+      this.telefono,
+      this.dni,
+      this.fechaNacimiento,
+      this.fechaRegla,
+      this.fechaEco,
+      this.fechaCita);
 }
 
 class _ViewFormGestState extends State<ViewFormGest> {
@@ -74,7 +82,7 @@ class _ViewFormGestState extends State<ViewFormGest> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Perfil"),
+        title: const Text("Perfil", style: kTituloCabezera),
       ),
       body: FutureBuilder<Gestante>(
           future: getGestante(uid),
@@ -94,7 +102,8 @@ class _ViewFormGestState extends State<ViewFormGest> {
                 apellidoController.text = snapshot.data!.apellido!;
                 telefonoController.text = snapshot.data!.telefono!;
                 dniController.text = snapshot.data!.dni!;
-                fechaNacimientoController.text = snapshot.data!.fechaNacimiento!;
+                fechaNacimientoController.text =
+                    snapshot.data!.fechaNacimiento!;
                 fechaReglaController.text = snapshot.data!.fechaRegla!;
                 fechaEcoController.text = snapshot.data!.fechaEco!;
                 fechaCitaController.text = snapshot.data!.fechaCita!;
@@ -102,69 +111,78 @@ class _ViewFormGestState extends State<ViewFormGest> {
                   child: Form(
                     key: _keyForm,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 20.0, horizontal: 10.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           const Padding(
                             padding: EdgeInsets.only(bottom: 10.0),
-                            child: Text('Actualice sus datos personales', style: kInfo),
+                            child: Text('Actualice sus datos personales',
+                                style: kDescripcion),
                           ),
                           InputTextWidget(
                             //! Nombre
-                            Controller: nombreController,
-                            Formatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.allow(RegExp("[a-z A-Z á-ú ]")),
+                            controlador: nombreController,
+                            formatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.allow(
+                                  RegExp("[a-z A-Z á-ú ]")),
                             ],
-                            Label: 'Nombre(s)',
+                            label: 'Nombre(s)',
                             inputType: TextInputType.text,
-                            Validator: (value) {
+                            validacion: (value) {
                               return ValidateText("Nombre", value!);
                             },
                             Enabled: true,
                           ),
                           InputTextWidget(
                             //! Apellido
-                            Controller: apellidoController,
-                            Formatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.allow(RegExp("[a-z A-Z á-ú ]")),
+                            controlador: apellidoController,
+                            formatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.allow(
+                                  RegExp("[a-z A-Z á-ú ]")),
                             ],
-                            Label: 'Apellido(s)',
+                            label: 'Apellido(s)',
                             inputType: TextInputType.text,
-                            Validator: (value) {
+                            validacion: (value) {
                               return ValidateText("Apellido", value!);
                             },
                             Enabled: true,
                           ),
                           InputTextWidget(
                             //! Celular
-                            Controller: telefonoController,
-                            Formatters: [FilteringTextInputFormatter.digitsOnly],
-                            Label: 'Celular',
+                            controlador: telefonoController,
+                            formatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            label: 'Celular',
                             inputType: TextInputType.number,
-                            Validator: (value) {
+                            validacion: (value) {
                               return ValidatePhoneNumber(value!);
                             },
                             Enabled: true,
                           ),
                           InputTextWidget(
                             //! Correo
-                            Controller: correoController,
-                            Formatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.allow(RegExp("[a-z A-Z á-ú ]")),
+                            controlador: correoController,
+                            formatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.allow(
+                                  RegExp("[a-z A-Z á-ú ]")),
                             ],
-                            Label: 'Correo',
+                            label: 'Correo',
                             inputType: TextInputType.emailAddress,
                             Enabled: false,
                           ),
                           InputTextWidget(
                             //! DNI
-                            Controller: dniController,
-                            Formatters: [FilteringTextInputFormatter.digitsOnly],
-                            Label: 'DNI',
+                            controlador: dniController,
+                            formatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            label: 'DNI',
                             inputType: TextInputType.number,
-                            Validator: (value) {
+                            validacion: (value) {
                               return ValidateDNI(value!);
                             },
                             Enabled: true,
@@ -202,10 +220,16 @@ class _ViewFormGestState extends State<ViewFormGest> {
                               padding: EdgeInsets.all(20.0),
                               child: ElevatedButton(
                                 style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all<Color>(colorPrincipal),
-                                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                                  fixedSize: MaterialStateProperty.all(const Size(160.0, 46.0)),
-                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          colorPrincipal),
+                                  foregroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.white),
+                                  fixedSize: MaterialStateProperty.all(
+                                      const Size(160.0, 46.0)),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
@@ -225,11 +249,13 @@ class _ViewFormGestState extends State<ViewFormGest> {
                                               fechaEcoController.text,
                                               fechaCitaController.text,
                                               context)
-                                          .then((value) => _updateGestSuccess(context))
-                                          .onError((error, stackTrace) => _updateGestFailed(context))
+                                          .then((value) =>
+                                              _updateGestSuccess(context))
+                                          .onError((error, stackTrace) =>
+                                              _updateGestFailed(context))
                                     },
                                 },
-                                child: const Text('GUARDAR', style: kTextoBoton),
+                                child: const Text('GUARDAR'),
                               ),
                             ),
                           ),
@@ -248,19 +274,19 @@ class _ViewFormGestState extends State<ViewFormGest> {
 
 class InputTextWidget extends StatelessWidget {
   InputTextWidget({
-    required this.Controller,
-    required this.Formatters,
-    required this.Label,
+    required this.controlador,
+    required this.formatters,
+    required this.label,
     required this.inputType,
-    this.Validator,
+    this.validacion,
     required this.Enabled,
   });
 
-  final TextEditingController Controller;
+  final TextEditingController controlador;
   final TextInputType inputType;
-  final List<TextInputFormatter> Formatters;
-  final String Label;
-  final FormFieldValidator<String>? Validator;
+  final List<TextInputFormatter> formatters;
+  final String label;
+  final FormFieldValidator<String>? validacion;
   final bool Enabled;
 
   @override
@@ -270,16 +296,17 @@ class InputTextWidget extends StatelessWidget {
       child: TextFormField(
         style: TextStyle(fontSize: 13.0),
         enabled: Enabled,
-        controller: Controller,
+        controller: controlador,
         keyboardType: inputType,
-        inputFormatters: Formatters,
+        inputFormatters: formatters,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+          contentPadding:
+              EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
           border: OutlineInputBorder(),
-          labelText: Label,
-          labelStyle: kInfo,
+          labelText: label,
+          labelStyle: kSubTitulo1,
         ),
-        validator: Validator,
+        validator: validacion,
       ),
     );
   }
@@ -291,12 +318,21 @@ Future<Gestante> getGestante(String id) {
   return _gestanteService.getGestante(id);
 }
 
-Future<void> updateGestante(String id, String nombre, String apellido, String telefono, String dni,
-    String fechaNacimiento, String fechaRegla, String fechaEco, String fechaCita, BuildContext context) {
+Future<void> updateGestante(
+    String id,
+    String nombre,
+    String apellido,
+    String telefono,
+    String dni,
+    String fechaNacimiento,
+    String fechaRegla,
+    String fechaEco,
+    String fechaCita,
+    BuildContext context) {
   GestanteService _gestanteService = GestanteService();
 
-  return _gestanteService.updateGestante(
-      id, nombre, apellido, telefono, dni, fechaNacimiento, fechaRegla, fechaEco, fechaCita, context);
+  return _gestanteService.updateGestante(id, nombre, apellido, telefono, dni,
+      fechaNacimiento, fechaRegla, fechaEco, fechaCita, context);
 }
 
 String? ValidateText(String label, String value) {
@@ -338,7 +374,8 @@ Future<void> _updateGestSuccess(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding:
+            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Perfil Actualizado',
@@ -369,7 +406,8 @@ Future<void> _updateGestFailed(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding:
+            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Algo salió mal...',
@@ -377,7 +415,8 @@ Future<void> _updateGestFailed(BuildContext context) {
         ),
         content: RichText(
           text: TextSpan(
-            text: 'Su perfil no fue actualizado. Por favor, inténtelo más tarde',
+            text:
+                'Su perfil no fue actualizado. Por favor, inténtelo más tarde',
             style: DefaultTextStyle.of(context).style,
           ),
         ),

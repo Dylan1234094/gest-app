@@ -88,7 +88,7 @@ class _LoginObsState extends State<LoginObs> {
                             vertical: 15.0, horizontal: 10.0),
                         border: OutlineInputBorder(),
                         labelText: "Correo",
-                        labelStyle: kInfo,
+                        labelStyle: kSubTitulo1,
                       ),
                       validator: (value) {
                         return ValidateEmail(value!);
@@ -113,7 +113,7 @@ class _LoginObsState extends State<LoginObs> {
                       EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
                   border: const OutlineInputBorder(),
                   labelText: "Contraseña",
-                  labelStyle: kInfo,
+                  labelStyle: kSubTitulo1,
                   suffixIcon: IconButton(
                     onPressed: () {
                       setState(() {
@@ -268,7 +268,8 @@ Future<void> _dialogWrongCredentials(BuildContext context) {
         actions: <Widget>[
           TextButton(
             child: const Text("Aceptar"),
-            style: TextButton.styleFrom(textStyle: Theme.of(context).textTheme.labelLarge),
+            style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge),
             onPressed: () => Navigator.pop(context),
           )
         ],
@@ -287,7 +288,8 @@ Future<void> _dialogSomethingWentWrong(BuildContext context) {
         actions: <Widget>[
           TextButton(
             child: const Text("Aceptar"),
-            style: TextButton.styleFrom(textStyle: Theme.of(context).textTheme.labelLarge),
+            style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge),
             onPressed: () => Navigator.pop(context),
           )
         ],

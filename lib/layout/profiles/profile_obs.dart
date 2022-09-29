@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gest_app/data/model/obstetra.dart';
 import 'package:gest_app/service/obstetra_service.dart';
+import 'package:gest_app/utilities/designs.dart';
 
 class ProfileObs extends StatelessWidget {
-  const ProfileObs({Key? key}) : super(key: key);
+  const ProfileObs();
 
   static String id = '/profileObs';
 
@@ -24,7 +25,6 @@ class ViewFormObs extends StatefulWidget {
 
 class _ViewFormObsState extends State<ViewFormObs> {
   final _keyForm = GlobalKey<FormState>();
-  late bool _passwordVisible;
   final nombreController = TextEditingController();
   final apellidoController = TextEditingController();
   final correoController = TextEditingController();
@@ -32,7 +32,6 @@ class _ViewFormObsState extends State<ViewFormObs> {
 
   @override
   void initState() {
-    _passwordVisible = false;
     super.initState();
   }
 
@@ -51,7 +50,7 @@ class _ViewFormObsState extends State<ViewFormObs> {
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Perfil"),
+          title: const Text("Perfil", style: kTituloCabezera),
         ),
         body: FutureBuilder<Obstetra>(
           future: getObstetra(uid),
@@ -77,101 +76,112 @@ class _ViewFormObsState extends State<ViewFormObs> {
                 return SingleChildScrollView(
                   child: Form(
                     key: _keyForm,
-                    child: Column(
-                      children: <Widget>[
-                        const Padding(
-                          padding: EdgeInsets.only(top: 12, bottom: 12),
-                          child: Text(
-                            'Actualice sus datos personales',
-                            style: TextStyle(fontSize: 18),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 20.0, horizontal: 10.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          const Padding(
+                            padding: EdgeInsets.only(bottom: 10.0),
+                            child: Text('Actualice sus datos personales',
+                                style: kDescripcion),
                           ),
-                        ),
-                        Padding(
+                          InputTextWidget(
                             //! Nombre
-                            padding: const EdgeInsets.all(8),
-                            child: TextFormField(
-                                controller: nombreController,
-                                inputFormatters: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp("[a-zA-Z ]")),
-                                ],
-                                keyboardType: TextInputType.name,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: "Nombre",
-                                ),
-                                validator: (value) {
-                                  return ValidateText("Nombre", value!);
-                                })),
-                        Padding(
-                            //! Apellido
-                            padding: const EdgeInsets.all(8),
-                            child: TextFormField(
-                                controller: apellidoController,
-                                inputFormatters: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp("[a-zA-Z ]")),
-                                ],
-                                keyboardType: TextInputType.text,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: "Apellido",
-                                ),
-                                validator: (value) {
-                                  return ValidateText("Apellido", value!);
-                                })),
-                        Padding(
-                            //! Correo
-                            padding: const EdgeInsets.all(8),
-                            child: TextFormField(
-                                enabled: false,
-                                controller: correoController,
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: "Correo",
-                                ),
-                                validator: (value) {
-                                  return ValidateEmail(value!);
-                                })),
-                        Padding(
-                            //! Telefono
-                            padding: const EdgeInsets.all(8),
-                            child: TextFormField(
-                                controller: telefonoController,
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly
-                                ],
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: "Celular",
-                                ),
-                                validator: (value) {
-                                  return ValidatePhoneNumber(value!);
-                                })),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 40),
-                          child: ElevatedButton(
-                            onPressed: () => {
-                              if (_keyForm.currentState!.validate())
-                                {
-                                  updateObstetra(
-                                          uid,
-                                          nombreController.text,
-                                          apellidoController.text,
-                                          telefonoController.text,
-                                          context)
-                                      .then(
-                                          (value) => _updateObsSuccess(context))
-                                      .onError((error, stackTrace) =>
-                                          _updateObsFailed(context))
-                                }
+                            controlador: nombreController,
+                            formatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.allow(
+                                  RegExp("[a-z A-Z á-ú ]")),
+                            ],
+                            label: 'Nombre(s)',
+                            inputType: TextInputType.text,
+                            validacion: (value) {
+                              return ValidateText("Nombre", value!);
                             },
-                            child: const Text('Guardar'),
                           ),
-                        ),
-                      ],
+                          InputTextWidget(
+                            //! Apellido
+                            controlador: apellidoController,
+                            formatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.allow(
+                                  RegExp("[a-z A-Z á-ú ]")),
+                            ],
+                            label: 'Apellido(s)',
+                            inputType: TextInputType.text,
+                            validacion: (value) {
+                              return ValidateText("Apellido", value!);
+                            },
+                          ),
+                          InputTextWidget(
+                            //! Correo
+                            controlador: correoController,
+                            formatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.deny(RegExp("[ ]")),
+                            ],
+                            label: 'Correo',
+                            inputType: TextInputType.emailAddress,
+                            validacion: (value) {
+                              return ValidateEmail(value!);
+                            },
+                          ),
+                          InputTextWidget(
+                            //! Celular
+                            controlador: telefonoController,
+                            formatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            label: 'Celular',
+                            inputType: TextInputType.number,
+                            validacion: (value) {
+                              return ValidatePhoneNumber(value!);
+                            },
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(20.0),
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          colorPrincipal),
+                                  foregroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.white),
+                                  fixedSize: MaterialStateProperty.all(
+                                      const Size(160.0, 46.0)),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                  ),
+                                ),
+                                onPressed: () => {
+                                  if (_keyForm.currentState!.validate())
+                                    {
+                                      updateObstetra(
+                                        uid,
+                                        nombreController.text,
+                                        apellidoController.text,
+                                        telefonoController.text,
+                                        context,
+                                      )
+                                          .then((value) =>
+                                              _updateObsSuccess(context))
+                                          .onError(
+                                            (error, stackTrace) =>
+                                                _updateObsFailed(context),
+                                          )
+                                    }
+                                },
+                                child: const Text('GUARDAR'),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -180,6 +190,43 @@ class _ViewFormObsState extends State<ViewFormObs> {
             }
           },
         ));
+  }
+}
+
+class InputTextWidget extends StatelessWidget {
+  InputTextWidget({
+    required this.controlador,
+    required this.formatters,
+    required this.label,
+    required this.inputType,
+    required this.validacion,
+  });
+
+  final TextEditingController controlador;
+  final TextInputType inputType;
+  final List<TextInputFormatter> formatters;
+  final String label;
+  final FormFieldValidator<String>? validacion;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        style: TextStyle(fontSize: 13.0),
+        controller: controlador,
+        keyboardType: inputType,
+        inputFormatters: formatters,
+        decoration: InputDecoration(
+          contentPadding:
+              EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+          border: OutlineInputBorder(),
+          labelText: label,
+          labelStyle: kSubTitulo1,
+        ),
+        validator: validacion,
+      ),
+    );
   }
 }
 

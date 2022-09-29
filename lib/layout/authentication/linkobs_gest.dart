@@ -64,7 +64,7 @@ class _LinkObsState extends State<LinkObs> {
                   child: Text(
                     'Ingresa el código de un(a) obstetra para compartirle sus resultados del monitoreo',
                     textAlign: TextAlign.justify,
-                    style: kInfo,
+                    style: kDescripcion,
                   ),
                 ),
                 Padding(
@@ -79,7 +79,7 @@ class _LinkObsState extends State<LinkObs> {
                           vertical: 15.0, horizontal: 10.0),
                       border: OutlineInputBorder(),
                       labelText: "Código Obstetra",
-                      labelStyle: kInfo,
+                      labelStyle: kSubTitulo1,
                     ),
                     validator: (value) {
                       return ValidateCodeFormat(value!);
@@ -164,7 +164,7 @@ Future<void> _dialogCodeNotFound(BuildContext context, String codeObs) {
             //Richtext
             Text(
           'El código "$codeObs" no se encuentra asociado a ninguna obstetra.\n\nPor favor, consulte nuevamente con su especialista para ingresar el código correcto.',
-          style: kPopUpInfo,
+          style: kInfoPopUp,
           textAlign: TextAlign.justify,
         ),
         actions: <Widget>[
@@ -189,7 +189,7 @@ Future<void> _dialogCodeFound(BuildContext context, Obstetra obstetra) {
         title: Text('Vinculación exitosa', style: TextStyle(fontSize: 13)),
         content: Text(
           'El/La obstetra ${obstetra.nombre} ${obstetra.apellido} estará controlando sus datos a partir del momento.',
-          style: kPopUpInfo,
+          style: kInfoPopUp,
           textAlign: TextAlign.justify,
         ),
         actions: <Widget>[

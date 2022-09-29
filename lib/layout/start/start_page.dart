@@ -45,7 +45,7 @@ class _StartPageState extends State<StartPage> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
-                    child: const Text('SOY GESTANTE', style: kTextoBoton),
+                    child: const Text('SOY GESTANTE'),
                     style: ButtonStyle(
                       backgroundColor:
                           MaterialStateProperty.all<Color>(colorPrincipal),
@@ -86,7 +86,7 @@ class _StartPageState extends State<StartPage> {
                       Navigator.pushNamed(context, LoginObsWidget.id);
                     },
                     child: const Text('SOY PROFESIONAL DE SALUD',
-                        textAlign: TextAlign.center, style: kTextoBoton),
+                        textAlign: TextAlign.center),
                   ),
                 ),
               ),

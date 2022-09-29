@@ -48,7 +48,8 @@ class _FormVitalGestState extends State<FormVitalGest> {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
-    final args = ModalRoute.of(context)!.settings.arguments as registerGestArguments;
+    final args =
+        ModalRoute.of(context)!.settings.arguments as registerGestArguments;
     actFisicaController.text = "true";
     freCardiController.text = "true";
     suenioController.text = "true";
@@ -68,13 +69,14 @@ class _FormVitalGestState extends State<FormVitalGest> {
             children: <Widget>[
               Text(
                 'Para finalizar el registro, seleccione los datos que desea compartir con su obstetra asignada, podrá modificar los signos vitales elegidos en la pantalla configuración.\n\nLos datos serán recopilados a través de la aplicación Google Fit.',
-                style: kInfo,
+                style: kDescripcion,
                 textAlign: TextAlign.justify,
               ),
               VitalSignWidget(
                 vitalSignController: actFisicaController,
                 title: 'Actividad Física',
-                infoMonitoreo: 'Se monitorea el número de pasos de la aplicación Google Fit.',
+                infoMonitoreo:
+                    'Se monitorea el número de pasos de la aplicación Google Fit.',
                 instrumento: '\u2022 Contador de Pasos',
                 infoMedicion:
                     'La actividad física ayuda a mejorar la condición física de las mujeres, se obtiene un peso más adecuado de la embarazada y se proporciona un mayor bienestar feta.',
@@ -83,7 +85,8 @@ class _FormVitalGestState extends State<FormVitalGest> {
               VitalSignWidget(
                 vitalSignController: freCardiController,
                 title: 'Frecuencia Cardíaca',
-                infoMonitoreo: 'Se monitorea la frecuencia cardíaca (bpm) registrada en la aplicación Google Fit.',
+                infoMonitoreo:
+                    'Se monitorea la frecuencia cardíaca (bpm) registrada en la aplicación Google Fit.',
                 instrumento: '\u2022 Pulsómetro',
                 infoMedicion:
                     'El control de la frecuencia cardíaca fetal es un procedimiento que se utiliza para evaluar el bienestar del feto mediante la determinación de la frecuencia y el ritmo de los latidos del corazón del feto.',
@@ -103,7 +106,8 @@ class _FormVitalGestState extends State<FormVitalGest> {
               VitalSignWidget(
                 vitalSignController: presArtController,
                 title: 'Presión Arterial',
-                infoMonitoreo: 'Se monitorea la presión arterial (mmHg) registrada en la aplicación Google Fit.',
+                infoMonitoreo:
+                    'Se monitorea la presión arterial (mmHg) registrada en la aplicación Google Fit.',
                 instrumento: '\u2022 Tensiómetro',
                 infoMedicion:
                     'La presión arterial ayuda a controlar a que el feto reciba suficiente oxígeno y nutrientes. La presión alta indica la falta de cantidad suficiente de sangre.',
@@ -112,7 +116,8 @@ class _FormVitalGestState extends State<FormVitalGest> {
               VitalSignWidget(
                 vitalSignController: satOxigController,
                 title: 'Saturación de Oxígeno',
-                infoMonitoreo: 'Se monitorea la saturación de oxígeno (%) registrada en la aplicación Google Fit.',
+                infoMonitoreo:
+                    'Se monitorea la saturación de oxígeno (%) registrada en la aplicación Google Fit.',
                 instrumento: '\u2022 Pulsioxímetro',
                 infoMedicion:
                     'Se debe controlar el nivel de oxígeno en el cuerpo (%) para evitar problemas de desarrollo en el feto que puede afectar a sus órganos como su cerebro',
@@ -121,7 +126,8 @@ class _FormVitalGestState extends State<FormVitalGest> {
               VitalSignWidget(
                 vitalSignController: pesoController,
                 title: 'Peso',
-                infoMonitoreo: 'Se monitorea el peso gestacional (kg) registrada en la aplicación Google Fit.',
+                infoMonitoreo:
+                    'Se monitorea el peso gestacional (kg) registrada en la aplicación Google Fit.',
                 instrumento: '\u2022 Báscula',
                 infoMedicion:
                     'El monitoreo del peso (kg) durante la gestación sirve para identificar una ganancia excesiva de peso y retención de peso postparto.',
@@ -130,7 +136,8 @@ class _FormVitalGestState extends State<FormVitalGest> {
               VitalSignWidget(
                 vitalSignController: glucoController,
                 title: 'Glucosa',
-                infoMonitoreo: 'Se monitorea el nivel de glucosa (g/dL) registrada en la aplicación Google Fit.',
+                infoMonitoreo:
+                    'Se monitorea el nivel de glucosa (g/dL) registrada en la aplicación Google Fit.',
                 instrumento: '\u2022 Glucómetro',
                 infoMedicion:
                     'Los niveles altos de glucosa en la sangre pueden dar indicio a la diabetes gestacional y problemas en el desarollo feto como en el nacimiento del mismo.',
@@ -166,9 +173,12 @@ class _FormVitalGestState extends State<FormVitalGest> {
                     },
                     child: const Text('FINALIZAR'),
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(colorPrincipal),
-                      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                      fixedSize: MaterialStateProperty.all(const Size(160.0, 46.0)),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(colorPrincipal),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
+                      fixedSize:
+                          MaterialStateProperty.all(const Size(160.0, 46.0)),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
@@ -299,7 +309,8 @@ class _VitalSignState extends State<VitalSignWidget> {
                 textAlign: TextAlign.start,
               ),
             ),
-            SimpleDialogOption(child: Text(widget.instrumento, style: kInfoSignoConfig))
+            SimpleDialogOption(
+                child: Text(widget.instrumento, style: kInfoSignoConfig))
           ],
         );
       },
@@ -339,6 +350,19 @@ void insertDataGestante(
       peso: peso,
       gluco: gluco);
 
-  _gestanteService.createDataGestante(id, nombre, apellido, correo, telefono, dni, fechaNacimiento, fechaRegla,
-      fechaEco, fechaCita, codeObs, fcmTokenObs, vitals, context);
+  _gestanteService.createDataGestante(
+      id,
+      nombre,
+      apellido,
+      correo,
+      telefono,
+      dni,
+      fechaNacimiento,
+      fechaRegla,
+      fechaEco,
+      fechaCita,
+      codeObs,
+      fcmTokenObs,
+      vitals,
+      context);
 }

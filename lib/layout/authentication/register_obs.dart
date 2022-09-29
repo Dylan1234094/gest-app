@@ -74,14 +74,14 @@ class _FormObsState extends State<FormObs> {
                   padding: EdgeInsets.only(top: 20.0, bottom: 12.0),
                   child: Text(
                     'Registre sus datos personales',
-                    style: kInfo,
+                    style: kDescripcion,
                   ),
                 ),
                 InputTextWidget(
                   //! Nombre
                   controlador: nombreController,
                   inputType: TextInputType.text,
-                  formatter: <TextInputFormatter>[
+                  formatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.allow(RegExp("[a-z A-Z á-ú]")),
                   ],
                   label: 'Nombre',
@@ -93,7 +93,7 @@ class _FormObsState extends State<FormObs> {
                   //! Apellido
                   controlador: apellidoController,
                   inputType: TextInputType.text,
-                  formatter: <TextInputFormatter>[
+                  formatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.allow(RegExp("[a-z A-Z á-ú]")),
                   ],
                   label: 'Apellido',
@@ -105,7 +105,7 @@ class _FormObsState extends State<FormObs> {
                   //! Correo
                   controlador: correoController,
                   inputType: TextInputType.emailAddress,
-                  formatter: <TextInputFormatter>[
+                  formatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.deny(RegExp("[ ]")),
                   ],
                   label: 'Correo',
@@ -117,7 +117,7 @@ class _FormObsState extends State<FormObs> {
                   //! Telefono
                   controlador: telefonoController,
                   inputType: TextInputType.number,
-                  formatter: [FilteringTextInputFormatter.digitsOnly],
+                  formatters: [FilteringTextInputFormatter.digitsOnly],
                   label: 'Celular',
                   validacion: (value) {
                     return ValidatePhoneNumber(value!);
@@ -135,7 +135,7 @@ class _FormObsState extends State<FormObs> {
                         decoration: InputDecoration(
                           border: const OutlineInputBorder(),
                           labelText: "Contraseña",
-                          labelStyle: kInfo,
+                          labelStyle: kSubTitulo1,
                           suffixIcon: IconButton(
                             onPressed: () {
                               setState(() {
@@ -168,7 +168,7 @@ class _FormObsState extends State<FormObs> {
                         decoration: InputDecoration(
                           border: const OutlineInputBorder(),
                           labelText: "Repetir contraseña",
-                          labelStyle: kInfo,
+                          labelStyle: kSubTitulo1,
                           suffixIcon: IconButton(
                             onPressed: () {
                               setState(() {
@@ -237,13 +237,13 @@ class InputTextWidget extends StatelessWidget {
   const InputTextWidget(
       {required this.controlador,
       required this.inputType,
-      required this.formatter,
+      required this.formatters,
       required this.label,
       required this.validacion});
 
   final TextEditingController controlador;
   final TextInputType inputType;
-  final List<TextInputFormatter> formatter;
+  final List<TextInputFormatter> formatters;
   final String label;
   final FormFieldValidator<String>? validacion;
 
@@ -254,14 +254,14 @@ class InputTextWidget extends StatelessWidget {
       child: TextFormField(
           style: TextStyle(fontSize: 13.0),
           controller: controlador,
-          inputFormatters: formatter,
+          inputFormatters: formatters,
           keyboardType: inputType,
           decoration: InputDecoration(
             contentPadding:
                 EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
             border: OutlineInputBorder(),
             labelText: label,
-            labelStyle: kInfo,
+            labelStyle: kSubTitulo1,
           ),
           validator: validacion),
     );

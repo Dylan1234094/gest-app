@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:gest_app/layout/authentication/linkobs_gest.dart';
 import 'package:gest_app/layout/authentication/vitalsigns_gest.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gest_app/shared/textfield_date.dart';
+import 'package:gest_app/utilities/textfield_date.dart';
 
 import '../../utilities/designs.dart';
 
@@ -112,7 +112,7 @@ class _FormGestState extends State<FormGest> {
                   padding: EdgeInsets.only(top: 20.0, bottom: 12.0),
                   child: Text(
                     'Registre sus datos que permitan a usted y al obstetra brindar un mejor monitoreo de su estado de salud gestacional.',
-                    style: kInfo,
+                    style: kDescripcion,
                   ),
                 ),
                 InputTextWidget(
@@ -237,7 +237,7 @@ class _FormGestState extends State<FormGest> {
                                     linkObsController.text))
                           }
                       },
-                      child: const Text('SIGUIENTE', style: kTextoBoton),
+                      child: const Text('SIGUIENTE'),
                     ),
                   ),
                 ),
@@ -282,7 +282,7 @@ class InputTextWidget extends StatelessWidget {
               EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
           border: OutlineInputBorder(),
           labelText: label,
-          labelStyle: kInfo,
+          labelStyle: kSubTitulo1,
         ),
         validator: validacion,
       ),
