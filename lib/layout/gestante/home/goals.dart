@@ -44,43 +44,39 @@ class GoalsPage extends StatelessWidget {
               ),
             );
           }
-          return SingleChildScrollView(
-            physics: AlwaysScrollableScrollPhysics(),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: ListView(
-                children: snapshot.data!.docs.map((document) {
-                  Timestamp startTime = document['startTime'] as Timestamp;
-                  DateTime startTimeDate = startTime.toDate();
-                  Timestamp endTime = document['endTime'] as Timestamp;
-                  DateTime endTimeDate = endTime.toDate();
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 20.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              Text(
-                                "Desde ${DateFormat('dd/MM/yyyy').format(startTimeDate)} hasta ${DateFormat('dd/MM/yyyy').format(endTimeDate)}",
-                                style: kSubTitulo1.copyWith(
-                                    color: colorSecundario),
-                              ),
-                              Text(
-                                document['value'].toString() + ' min. diarios',
-                                style: kTitulo2,
-                              ),
-                            ],
-                          ),
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+            child: ListView(
+              children: snapshot.data!.docs.map((document) {
+                Timestamp startTime = document['startTime'] as Timestamp;
+                DateTime startTimeDate = startTime.toDate();
+                Timestamp endTime = document['endTime'] as Timestamp;
+                DateTime endTimeDate = endTime.toDate();
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 5.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            Text(
+                              "Desde ${DateFormat('dd/MM/yyyy').format(startTimeDate)} hasta ${DateFormat('dd/MM/yyyy').format(endTimeDate)}",
+                              style: kSubTitulo1.copyWith(color: colorSecundario),
+                            ),
+                            Text(
+                              document['value'].toString() + ' min. diarios',
+                              style: kTitulo2,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
             ),
           );
         },
