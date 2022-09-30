@@ -2,6 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gest_app/data/model/gestante.dart';
 import 'package:gest_app/data/model/obstetra.dart';
 import 'package:gest_app/service/gestante_service.dart';
 import 'package:gest_app/service/obstetra_service.dart';
@@ -10,6 +11,8 @@ import 'acc_config/mi_obstetra.dart';
 import 'acc_config/update_vitalsign.dart';
 import '../profiles/profile_gest.dart';
 import '../../utilities/designs.dart';
+
+import 'package:intl/intl.dart' as intl;
 
 class DrawerGest extends StatelessWidget {
   const DrawerGest({Key? key}) : super(key: key);
@@ -21,30 +24,26 @@ class DrawerGest extends StatelessWidget {
       width: MediaQuery.of(context).size.width * 0.85,
       child: ListView(
         children: [
-          FutureBuilder<Obstetra>(
-            future: getObstetra(user.uid), //! getObstetra(user.id)
+          FutureBuilder<Gestante>(
+            future: getGestante(user.uid), //! getObstetra(user.id)
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
                   return UserAccountsDrawerHeader(
                     accountName: CircularProgressIndicator(color: Colors.white),
-                    accountEmail:
-                        CircularProgressIndicator(color: Colors.white),
-                    currentAccountPicture:
-                        CircularProgressIndicator(color: Colors.white),
+                    accountEmail: CircularProgressIndicator(color: Colors.white),
+                    currentAccountPicture: CircularProgressIndicator(color: Colors.white),
                   );
                 case ConnectionState.done:
                   if (snapshot.hasData) {
                     return UserAccountsDrawerHeader(
                       accountName: Text(
-                        user.displayName!,
-                        style: TextStyle(
-                            fontSize: 12.0, fontWeight: FontWeight.bold),
+                        "${snapshot.data!.nombre!} ${snapshot.data!.apellido}",
+                        style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
                       ),
                       accountEmail: Text(
-                        user.email!,
-                        style: TextStyle(
-                            fontSize: 12.0, fontWeight: FontWeight.bold),
+                        "${(DateTime.now().difference(intl.DateFormat("dd/MM/yyyy hh:mm:ss").parse(snapshot.data!.fechaRegla! + " 00:00:00")).inDays / 4).round()} semanas de embarazo",
+                        style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
                       ),
                       currentAccountPicture: CircleAvatar(
                         backgroundImage: NetworkImage(user.photoURL!),
@@ -114,10 +113,10 @@ class DrawerGest extends StatelessWidget {
   }
 }
 
-Future<Obstetra> getObstetra(String id) {
-  ObstetraService _obstetraService = ObstetraService();
+Future<Gestante> getGestante(String id) {
+  GestanteService _gestanteService = GestanteService();
 
-  return _obstetraService.getObstetra(id);
+  return _gestanteService.getGestante(id);
 }
 
 void logOutGestante(BuildContext context) {

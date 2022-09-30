@@ -46,8 +46,7 @@ class _TabsState extends State<Tabs> {
             builder: ((context, snapshotGest) {
               return FloatingActionButton(
                 onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute<void>(builder: (BuildContext context) {
+                  Navigator.of(context).push(MaterialPageRoute<void>(builder: (BuildContext context) {
                     return Chat(
                       nombreSender: snapshotGest.data!.nombre!,
                       apellidoSender: snapshotGest.data!.apellido!,
@@ -96,4 +95,10 @@ class _TabsState extends State<Tabs> {
 Future<Obstetra> getObstetraChat(String gestID) {
   GestanteService _gestanteService = GestanteService();
   return _gestanteService.getObstetraChat(gestID);
+}
+
+Future<Gestante> getGestante(String id) {
+  GestanteService _gestanteService = GestanteService();
+
+  return _gestanteService.getGestante(id);
 }
