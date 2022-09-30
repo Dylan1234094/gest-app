@@ -183,7 +183,7 @@ class InfoGestante extends StatelessWidget {
                       padding: const EdgeInsets.only(bottom: 2.0),
                       child: Text(
                         "${gestante.nombre!} ${gestante.apellido}",
-                        style: kTitulo3,
+                        style: kSubTitulo1,
                       ),
                     ),
                     Padding(

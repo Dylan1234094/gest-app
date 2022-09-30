@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'package:intl/intl.dart';
+import '../utilities/designs.dart';
 
 class Chat extends StatefulWidget {
   final String nombreSender;
@@ -133,59 +132,102 @@ class _ChatState extends State<Chat> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          centerTitle: true,
-          title:
-              Text("${widget.anotherUserName} ${widget.anotherUserSurname}")),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(
+          "${widget.anotherUserName} ${widget.anotherUserSurname}",
+          style: kTituloCabezera.copyWith(fontSize: 11.0),
+        ),
+      ),
       body: Column(
-        children: <Widget>[
+        children: [
           // List of messages
-          buildListMessages(context),
+          StreamBuilder<QuerySnapshot>(
+            stream: chats
+                .doc(chatDocId)
+                .collection('messages')
+                .orderBy('timestamp', descending: true)
+                .snapshots(),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError) {
+                return const Center(
+                  child: Text("Algo salió mal"),
+                );
+              }
+
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              if (!snapshot.hasData) {
+                return const Center(
+                  child: Text("Todavia no se han enviado mensajes"),
+                );
+              }
+              return Expanded(
+                child: ListView(
+                  reverse: true,
+                  children: snapshot.data!.docs
+                      .map<Widget>((DocumentSnapshot document) {
+                    return buildItem(document);
+                  }).toList(),
+                ),
+              );
+            },
+          ),
           // Input content
-          buildInput(),
+          Container(
+            child: Row(
+              children: <Widget>[
+                // Edit text
+                Flexible(
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 15),
+                    child: TextField(
+                      onSubmitted: (value) {
+                        sendMessage(_textController.text);
+                      },
+                      style: const TextStyle(color: Colors.black, fontSize: 15),
+                      controller: _textController,
+                      decoration: const InputDecoration.collapsed(
+                        hintText: 'Escribe un mensaje...',
+                        hintStyle: kSubTitulo1,
+                      ),
+                      focusNode: focusNode,
+                      autofocus: true,
+                    ),
+                  ),
+                ),
+
+                // Button send message
+                Material(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 8),
+                    child: IconButton(
+                      icon: const Icon(Icons.send),
+                      onPressed: () => sendMessage(_textController.text),
+                      color: colorPrincipal,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            width: double.infinity,
+            height: 50,
+            decoration: const BoxDecoration(
+              border: Border(
+                top: BorderSide(color: Colors.grey, width: 0.5),
+              ),
+            ),
+          ),
         ],
       ),
     );
-  }
-
-  Widget buildListMessages(BuildContext context) {
-    var data;
-    return StreamBuilder<QuerySnapshot>(
-        stream: chats
-            .doc(chatDocId)
-            .collection('messages')
-            .orderBy('timestamp', descending: true)
-            .snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return const Center(
-              child: Text("Algo salió mal"),
-            );
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          if (!snapshot.hasData) {
-            return const Center(
-              child: Text("Todavia no se han enviado mensajes"),
-            );
-          }
-          return Expanded(
-              child: ListView(
-            reverse: true,
-            children:
-                snapshot.data!.docs.map<Widget>((DocumentSnapshot document) {
-              return buildItem(document);
-            }).toList(),
-          ));
-        });
   }
 
   Widget buildItem(DocumentSnapshot? document) {
@@ -193,121 +235,71 @@ class _ChatState extends State<Chat> {
       return const SizedBox.shrink();
     }
     MessageChat messageChat = MessageChat.fromDocument(document);
-    if (messageChat.idFrom == currentUserId) {
-      // Right (my message)
-      return Row(
-        children: <Widget>[
-          Column(
-            children: [
-              Container(
-                child: Text(
-                  messageChat.content,
-                  style: TextStyle(color: Colors.white),
-                ),
-                padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
-                width: 200,
-                decoration: BoxDecoration(
-                    color: Colors.blue, borderRadius: BorderRadius.circular(8)),
-                margin: EdgeInsets.only(right: 10),
-              ),
-              Container(
-                child: Text(
-                  DateFormat('dd MMM kk:mm').format(
-                      DateTime.fromMillisecondsSinceEpoch(
-                          int.parse(messageChat.timestamp))),
-                  style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 8,
-                      fontStyle: FontStyle.italic),
-                ),
-                margin: EdgeInsets.only(left: 140, top: 5, bottom: 5),
-              ),
-            ],
-          )
-        ],
-        mainAxisAlignment: MainAxisAlignment.end,
-      );
-    } else {
-      // Left (peer message)
-      return Container(
-        child: Column(
-          children: <Widget>[
-            Container(
-              child: Text(
-                messageChat.content,
-                style: TextStyle(color: Colors.blue),
-              ),
-              padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
-              width: 200,
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.blue),
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8)),
-              margin: EdgeInsets.only(left: 10),
-            ),
-            Container(
-              child: Text(
-                DateFormat('dd MMM kk:mm').format(
-                    DateTime.fromMillisecondsSinceEpoch(
-                        int.parse(messageChat.timestamp))),
-                style: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 8,
-                    fontStyle: FontStyle.italic),
-              ),
-              margin: const EdgeInsets.only(left: 165, top: 5, bottom: 5),
-            ),
-          ],
-          crossAxisAlignment: CrossAxisAlignment.start,
-        ),
-        margin: const EdgeInsets.only(bottom: 10),
-      );
-    }
+    return BurbujaMensaje(
+      messageChat: messageChat,
+      isMe: messageChat.idFrom == currentUserId,
+    );
   }
+}
 
-  Widget buildInput() {
-    return Container(
-      child: Row(
-        children: <Widget>[
-          // Edit text
-          Flexible(
-            child: Container(
-              margin: const EdgeInsets.only(left: 15),
-              child: TextField(
-                onSubmitted: (value) {
-                  sendMessage(_textController.text);
-                },
-                style: const TextStyle(color: Colors.black, fontSize: 15),
-                controller: _textController,
-                decoration: const InputDecoration.collapsed(
-                  hintText: 'Escribe tu mensaje...',
-                  hintStyle: TextStyle(color: Colors.grey),
+class BurbujaMensaje extends StatelessWidget {
+  const BurbujaMensaje({required this.messageChat, required this.isMe});
+
+  final MessageChat messageChat;
+  final bool isMe;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 10.0),
+      child: Align(
+        alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+        child: Card(
+          color: isMe ? colorPrincipal : colorSecundario,
+          elevation: 5.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: isMe
+                ? BorderRadius.only(
+                    topLeft: Radius.circular(10.0),
+                    topRight: Radius.circular(10.0),
+                    bottomLeft: Radius.circular(10.0),
+                  )
+                : BorderRadius.only(
+                    topLeft: Radius.circular(10.0),
+                    topRight: Radius.circular(10.0),
+                    bottomRight: Radius.circular(10.0),
+                  ),
+          ),
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+            child: Column(
+              crossAxisAlignment:
+                  isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              children: [
+                Text(
+                  messageChat.content,
+                  style: TextStyle(color: Colors.white, fontSize: 10.0),
+                  textAlign: TextAlign.start,
                 ),
-                focusNode: focusNode,
-                autofocus: true,
-              ),
+                Text(
+                  DateFormat('d/M kk:mm').format(
+                    DateTime.fromMillisecondsSinceEpoch(
+                      int.parse(messageChat.timestamp),
+                    ),
+                  ),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 8.0,
+                    fontWeight: FontWeight.w300,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
           ),
-
-          // Button send message
-          Material(
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 8),
-              child: IconButton(
-                icon: const Icon(Icons.send),
-                onPressed: () => sendMessage(_textController.text),
-                color: Colors.blue,
-              ),
-            ),
-            color: Colors.white,
-          ),
-        ],
+        ),
       ),
-      width: double.infinity,
-      height: 50,
-      decoration: const BoxDecoration(
-          border: Border(top: BorderSide(color: Colors.grey, width: 0.5)),
-          color: Colors.white),
     );
   }
 }

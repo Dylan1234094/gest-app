@@ -203,7 +203,8 @@ class InfoGestante extends StatelessWidget {
                     maxLines: 1,
                     style: kSubTitulo1,
                   ),
-                  Text('Mensaje', style: kSubTitulo1)
+                  Text('Conversar',
+                      style: kSubTitulo1.copyWith(color: colorSecundario))
                 ],
               ),
             ],
