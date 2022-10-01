@@ -29,6 +29,7 @@ class _ListaMetasState extends State<ListaMetas> {
           );
         },
         child: Icon(Icons.add),
+        backgroundColor: colorPrincipal,
       ),
       body: RefreshIndicator(
         onRefresh: () {

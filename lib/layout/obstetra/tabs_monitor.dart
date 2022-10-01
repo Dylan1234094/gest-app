@@ -19,7 +19,7 @@ class _TabsMonitorState extends State<TabsMonitor>
 
   static const List<Tab> tabs = <Tab>[
     Tab(text: 'PERFIL'),
-    Tab(text: 'EXAMENES'),
+    Tab(text: 'EXÁMENES'),
     Tab(text: 'METAS DE ACT.'),
   ];
 

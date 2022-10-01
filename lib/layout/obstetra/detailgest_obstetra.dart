@@ -292,17 +292,18 @@ class _VitalCardObsState extends State<VitalCardObs> {
               child: Align(
                 alignment: Alignment.center,
                 child: Center(
-                    child: Container(
-                  height: 35.0,
-                  width: 35.0,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(widget.iconPath),
-                      fit: BoxFit.fill,
+                  child: Container(
+                    height: 35.0,
+                    width: 35.0,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(widget.iconPath),
+                        fit: BoxFit.fill,
+                      ),
+                      shape: BoxShape.rectangle,
                     ),
-                    shape: BoxShape.rectangle,
                   ),
-                )),
+                ),
               ),
             ),
             Expanded(

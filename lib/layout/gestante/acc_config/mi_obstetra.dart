@@ -32,7 +32,7 @@ class _DatosObstetraState extends State<DatosObstetra> {
           actionsPadding: EdgeInsets.only(bottom: 10),
           title: Text(
             '¿Estás seguro de desvincular obstetra?',
-            style: TextStyle(fontSize: 13),
+            style: TextStyle(fontSize: 13.0),
           ),
           content: RichText(
             text: TextSpan(

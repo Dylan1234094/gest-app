@@ -152,26 +152,21 @@ class InfoGestante extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5.0),
+          padding: const EdgeInsets.symmetric(vertical: 3.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Expanded(
                 flex: 2,
-                child: Column(
-                  children: <Widget>[
-                    Align(
-                      alignment: Alignment.center,
-                      child: CircleAvatar(
-                        radius: 22,
-                        backgroundImage: gestante.photoUrl! != ""
-                            ? NetworkImage(gestante.photoUrl!)
-                            : Image.asset(
-                                    "assets/mini_default_profile_icon.png")
-                                .image,
-                      ),
-                    ),
-                  ],
+                child: Align(
+                  alignment: Alignment.center,
+                  child: CircleAvatar(
+                    radius: 22,
+                    backgroundImage: gestante.photoUrl! != ""
+                        ? NetworkImage(gestante.photoUrl!)
+                        : Image.asset("assets/mini_default_profile_icon.png")
+                            .image,
+                  ),
                 ),
               ),
               Expanded(
@@ -186,51 +181,44 @@ class InfoGestante extends StatelessWidget {
                         style: kSubTitulo1,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 5.0),
-                      child: Text(
-                        "${(DateTime.now().difference(intl.DateFormat("dd/MM/yyyy hh:mm:ss").parse(gestante.fechaRegla! + " 00:00:00")).inDays / 4).round()} semanas de embarazo",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 11.0,
-                          color: colorSecundario,
-                        ),
+                    Text(
+                      "${(DateTime.now().difference(intl.DateFormat("dd/MM/yyyy hh:mm:ss").parse(gestante.fechaRegla! + " 00:00:00")).inDays / 4).round()} semanas de embarazo",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 11.0,
+                        color: colorSecundario,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 2.0),
-                      child: Row(
-                        children: [
-                          vitals.actFisica == "true"
-                              ? const VitalIconWidget(
-                                  iconPath:
-                                      'assets/IconsVitals/act_fisica_icon.png')
-                              : const Text(""),
-                          vitals.freCardi == "true"
-                              ? const VitalIconWidget(
-                                  iconPath:
-                                      'assets/IconsVitals/fre_car_icon.png')
-                              : const Text(""),
-                          vitals.gluco == "true"
-                              ? const VitalIconWidget(
-                                  iconPath: 'assets/IconsVitals/gluco_icon.png')
-                              : const Text(""),
-                          vitals.peso == "true"
-                              ? const VitalIconWidget(
-                                  iconPath: 'assets/IconsVitals/peso_icon.png')
-                              : const Text(""),
-                          vitals.presArt == "true"
-                              ? const VitalIconWidget(
-                                  iconPath:
-                                      'assets/IconsVitals/pres_art_icon.png')
-                              : const Text(""),
-                          vitals.satOxig == "true"
-                              ? const VitalIconWidget(
-                                  iconPath:
-                                      'assets/IconsVitals/sat_oxig_icon.png')
-                              : const Text("")
-                        ],
-                      ),
+                    Row(
+                      children: [
+                        vitals.actFisica == "true"
+                            ? const VitalIconWidget(
+                                iconPath:
+                                    'assets/IconsVitals/act_fisica_icon.png')
+                            : const Text(""),
+                        vitals.freCardi == "true"
+                            ? const VitalIconWidget(
+                                iconPath: 'assets/IconsVitals/fre_car_icon.png')
+                            : const Text(""),
+                        vitals.gluco == "true"
+                            ? const VitalIconWidget(
+                                iconPath: 'assets/IconsVitals/gluco_icon.png')
+                            : const Text(""),
+                        vitals.peso == "true"
+                            ? const VitalIconWidget(
+                                iconPath: 'assets/IconsVitals/peso_icon.png')
+                            : const Text(""),
+                        vitals.presArt == "true"
+                            ? const VitalIconWidget(
+                                iconPath:
+                                    'assets/IconsVitals/pres_art_icon.png')
+                            : const Text(""),
+                        vitals.satOxig == "true"
+                            ? const VitalIconWidget(
+                                iconPath:
+                                    'assets/IconsVitals/sat_oxig_icon.png')
+                            : const Text("")
+                      ],
                     ),
                   ],
                 ),

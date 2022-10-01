@@ -3,9 +3,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gest_app/data/model/gestante.dart';
-import 'package:gest_app/data/model/obstetra.dart';
 import 'package:gest_app/service/gestante_service.dart';
-import 'package:gest_app/service/obstetra_service.dart';
 
 import 'acc_config/mi_obstetra.dart';
 import 'acc_config/update_vitalsign.dart';
@@ -31,19 +29,22 @@ class DrawerGest extends StatelessWidget {
                 case ConnectionState.waiting:
                   return UserAccountsDrawerHeader(
                     accountName: CircularProgressIndicator(color: Colors.white),
-                    accountEmail: CircularProgressIndicator(color: Colors.white),
-                    currentAccountPicture: CircularProgressIndicator(color: Colors.white),
+                    accountEmail:
+                        CircularProgressIndicator(color: Colors.white),
+                    currentAccountPicture:
+                        CircularProgressIndicator(color: Colors.white),
                   );
                 case ConnectionState.done:
                   if (snapshot.hasData) {
                     return UserAccountsDrawerHeader(
                       accountName: Text(
                         "${snapshot.data!.nombre!} ${snapshot.data!.apellido}",
-                        style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 13.0, fontWeight: FontWeight.bold),
                       ),
                       accountEmail: Text(
                         "${(DateTime.now().difference(intl.DateFormat("dd/MM/yyyy hh:mm:ss").parse(snapshot.data!.fechaRegla! + " 00:00:00")).inDays / 4).round()} semanas de embarazo",
-                        style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 12.0),
                       ),
                       currentAccountPicture: CircleAvatar(
                         backgroundImage: NetworkImage(user.photoURL!),

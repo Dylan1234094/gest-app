@@ -265,16 +265,22 @@ Future<void> _dialogWrongCredentials(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
+        title: const Text(
+          "Credenciales Incorrectas",
+          style: TextStyle(fontSize: 13.0),
+        ),
+        content: Text(
+          "El usuario o la contraseña ingresadas no son correctas",
+          style: TextStyle(fontSize: 11.0),
+        ),
         actions: <Widget>[
           TextButton(
-            child: const Text("Aceptar"),
+            child: const Text("ACEPTAR", style: TextStyle(fontSize: 10)),
             style: TextButton.styleFrom(
                 textStyle: Theme.of(context).textTheme.labelLarge),
             onPressed: () => Navigator.pop(context),
           )
         ],
-        title: const Text("Credenciales Incorrectas"),
-        content: Text("El usuario o la contraseña ingresadas no son correctas"),
       );
     },
   );
@@ -287,14 +293,17 @@ Future<void> _dialogSomethingWentWrong(BuildContext context) {
       return AlertDialog(
         actions: <Widget>[
           TextButton(
-            child: const Text("Aceptar"),
+            child: const Text("ACEPTAR", style: TextStyle(fontSize: 10)),
             style: TextButton.styleFrom(
                 textStyle: Theme.of(context).textTheme.labelLarge),
             onPressed: () => Navigator.pop(context),
           )
         ],
-        title: const Text("Algo salió mal"),
-        content: Text("Por favor inténtelo más tarde"),
+        title: const Text("Algo salió mal", style: TextStyle(fontSize: 13.0)),
+        content: Text(
+          "Por favor inténtelo más tarde",
+          style: TextStyle(fontSize: 11.0),
+        ),
       );
     },
   );
