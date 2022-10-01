@@ -49,7 +49,7 @@ class _FormVitalGestState extends State<FormVitalGest> {
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
     final args =
-        ModalRoute.of(context)!.settings.arguments as registerGestArguments;
+        ModalRoute.of(context)!.settings.arguments as RegisterGestArguments;
     actFisicaController.text = "true";
     freCardiController.text = "true";
     suenioController.text = "true";
@@ -67,7 +67,7 @@ class _FormVitalGestState extends State<FormVitalGest> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              Text(
+              const Text(
                 'Para finalizar el registro, seleccione los datos que desea compartir con su obstetra asignada, podrá modificar los signos vitales elegidos en la pantalla configuración.\n\nLos datos serán recopilados a través de la aplicación Google Fit.',
                 style: kDescripcion,
                 textAlign: TextAlign.justify,
@@ -198,12 +198,14 @@ class _FormVitalGestState extends State<FormVitalGest> {
 
 class VitalSignWidget extends StatefulWidget {
   const VitalSignWidget(
-      {required this.vitalSignController,
+      {Key? key,
+      required this.vitalSignController,
       required this.title,
       required this.infoMonitoreo,
       required this.instrumento,
       required this.infoMedicion,
-      required this.imagen});
+      required this.imagen})
+      : super(key: key);
 
   final TextEditingController vitalSignController;
   final String title;
@@ -240,7 +242,7 @@ class _VitalSignState extends State<VitalSignWidget> {
                       width: 30.0,
                       child: IconButton(
                         onPressed: () => infoSigno(context),
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.info_outline_rounded,
                           color: colorSecundario,
                         ),
@@ -302,7 +304,7 @@ class _VitalSignState extends State<VitalSignWidget> {
               child: Image.asset(widget.imagen, height: 80.0, width: 80.0),
             ),
             SimpleDialogOption(
-              padding: EdgeInsets.only(left: 25, right: 25, top: 10),
+              padding: const EdgeInsets.only(left: 25, right: 25, top: 10),
               child: Text(
                 'Instrumento de medición',
                 style: kTituloSignoConfig.copyWith(fontSize: 10.0),

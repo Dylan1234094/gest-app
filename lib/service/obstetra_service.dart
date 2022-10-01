@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -15,22 +13,34 @@ class ObstetraService {
     int codigo = 0;
     try {
       final docRef = db.collection("obstetras");
-      await docRef.orderBy("codigoObstetra", descending: true).limit(1).get().then((querySnapshot) {
+      await docRef
+          .orderBy("codigoObstetra", descending: true)
+          .limit(1)
+          .get()
+          .then((querySnapshot) {
         if (querySnapshot.size == 1) {
           var querydocumentSnapshot = querySnapshot.docs[0];
           codigo = int.parse(querydocumentSnapshot["codigoObstetra"]);
         }
       });
     } catch (e) {
-      print(e);
+      //print(e);
     }
     return codigo;
   }
 
-  bool registerObstetra(String nombre, String apellido, String correo, String telefono, String contrasenia,
-      String codigoObstetra, BuildContext context) {
+  bool registerObstetra(
+      String nombre,
+      String apellido,
+      String correo,
+      String telefono,
+      String contrasenia,
+      String codigoObstetra,
+      BuildContext context) {
     try {
-      FirebaseAuth.instance.createUserWithEmailAndPassword(email: correo, password: contrasenia).then((data) async {
+      FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: correo, password: contrasenia)
+          .then((data) async {
         final fcmtoken = await FirebaseMessaging.instance.getToken();
         final obstetra = Obstetra(
             id: data.user?.uid,
@@ -44,27 +54,31 @@ class ObstetraService {
             .collection("obstetras")
             .withConverter(
               fromFirestore: Obstetra.fromFirestore,
-              toFirestore: (Obstetra obstetra, options) => obstetra.toFirestore(),
+              toFirestore: (Obstetra obstetra, options) =>
+                  obstetra.toFirestore(),
             )
             .doc(data.user?.uid);
-        await docRef.set(obstetra).then((data) => Navigator.popUntil(context, ModalRoute.withName('/')));
-      }, onError: (e) => print("Algo salió mal al registrar a la Obstetra"));
+        await docRef.set(obstetra).then(
+            (data) => Navigator.popUntil(context, ModalRoute.withName('/')));
+      }, onError: (e) {}); // print("Algo salió mal al registrar a la Obstetra"));
       return true;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print("contrasenia muy debil");
+        // print("contrasenia muy debil");
       } else if (e.code == "email-already-in-use") {
-        print("ya existe una cuenta con correo " + correo);
+        // print("ya existe una cuenta con correo " + correo);
       }
       return false;
     } catch (e) {
-      print(e);
+      // print(e);
       return false;
     }
   }
 
-  Future<void> updateObstetra(String id, String nombre, String apellido, String telefono, BuildContext context) async {
-    final obstetra = Obstetra(id: id, nombre: nombre, apellido: apellido, telefono: telefono);
+  Future<void> updateObstetra(String id, String nombre, String apellido,
+      String telefono, BuildContext context) async {
+    final obstetra = Obstetra(
+        id: id, nombre: nombre, apellido: apellido, telefono: telefono);
     try {
       final docRef = db
           .collection("obstetras")
@@ -75,13 +89,16 @@ class ObstetraService {
           .doc(id);
       await docRef.set(obstetra, SetOptions(merge: true));
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
-  Future<String> loginObstetra(String email, String contrasenia, BuildContext context) async {
+  Future<String> loginObstetra(
+      String email, String contrasenia, BuildContext context) async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: contrasenia).then((data) async {
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: contrasenia)
+          .then((data) async {
         final fcmtoken = await FirebaseMessaging.instance.getToken();
         final obstetra = Obstetra(fcmToken: fcmtoken);
 
@@ -89,7 +106,8 @@ class ObstetraService {
             .collection("obstetras")
             .withConverter(
               fromFirestore: Obstetra.fromFirestore,
-              toFirestore: (Obstetra obstetra, options) => obstetra.toFirestore(),
+              toFirestore: (Obstetra obstetra, options) =>
+                  obstetra.toFirestore(),
             )
             .doc(data.user!.uid);
         await docRef.set(obstetra, SetOptions(merge: true));
@@ -111,19 +129,20 @@ class ObstetraService {
     try {
       var uid = FirebaseAuth.instance.currentUser!.uid;
       await FirebaseAuth.instance.signOut().then((data) async {
-        final obstetra = Obstetra(fcmToken: "");
+        const obstetra = Obstetra(fcmToken: "");
 
         final docRef = db
             .collection("obstetras")
             .withConverter(
               fromFirestore: Obstetra.fromFirestore,
-              toFirestore: (Obstetra obstetra, options) => obstetra.toFirestore(),
+              toFirestore: (Obstetra obstetra, options) =>
+                  obstetra.toFirestore(),
             )
             .doc(uid);
         await docRef.set(obstetra, SetOptions(merge: true));
       });
     } catch (e) {
-      print(e);
+      // print(e);
     }
   }
 
@@ -146,10 +165,10 @@ class ObstetraService {
           correo = data["correo"];
           telefono = data["telefono"];
         },
-        onError: (e) => print("Error al intentar obtener doc $uid"),
+        onError: (e) {}, // print("Error al intentar obtener doc $uid"),
       );
     } catch (e) {
-      print(e);
+      // print(e);
     }
     return obstetra = Obstetra(
         id: uid,
@@ -165,7 +184,11 @@ class ObstetraService {
     Gestante gestante;
 
     try {
-      await db.collection("gestantes").where("codigoObstetra", isEqualTo: codigoObstetra).get().then((event) {
+      await db
+          .collection("gestantes")
+          .where("codigoObstetra", isEqualTo: codigoObstetra)
+          .get()
+          .then((event) {
         for (var doc in event.docs) {
           gestante = Gestante(
               id: doc.data()["id"],
@@ -179,7 +202,7 @@ class ObstetraService {
         }
       });
     } catch (e) {
-      print(e);
+      // print(e);
     }
 
     return listaGestantes;

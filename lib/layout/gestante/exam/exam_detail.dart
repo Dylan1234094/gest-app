@@ -11,7 +11,11 @@ import '../../../utilities/designs.dart';
 class ExamDetailPage extends StatefulWidget {
   final String examId;
   final String examName;
-  const ExamDetailPage({required this.examId, required this.examName});
+  const ExamDetailPage({
+    Key? key,
+    required this.examId,
+    required this.examName,
+  }) : super(key: key);
 
   @override
   State<ExamDetailPage> createState() => _ExamDetailPageState();
@@ -41,7 +45,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
           );
         },
         backgroundColor: colorPrincipal,
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       appBar: AppBar(
         leading: IconButton(
@@ -55,13 +59,13 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
           if (snapshot.hasData) {
             return SizedBox(
               height: MediaQuery.of(context).size.height / 1.3,
-              child: Center(
+              child: const Center(
                 child: CircularProgressIndicator(),
               ),
             );
           }
           return SingleChildScrollView(
-            physics: AlwaysScrollableScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(),
             child: Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
@@ -69,7 +73,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.only(bottom: 10.0),
+                    padding: const EdgeInsets.only(bottom: 10.0),
                     child: Text(
                       'Resultados de exámenes de ${widget.examName}',
                       style: kTitulo1,
@@ -82,7 +86,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
                         case ConnectionState.waiting:
                           return SizedBox(
                             height: MediaQuery.of(context).size.height / 1.3,
-                            child: Center(
+                            child: const Center(
                               child: CircularProgressIndicator(),
                             ),
                           );
@@ -140,7 +144,7 @@ class _ExamDetailPageState extends State<ExamDetailPage> {
 }
 
 class DatoExamen extends StatelessWidget {
-  const DatoExamen({required this.exam});
+  const DatoExamen({Key? key, required this.exam}) : super(key: key);
 
   final Exam exam;
 

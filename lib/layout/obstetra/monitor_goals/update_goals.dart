@@ -13,7 +13,11 @@ import '../../../utilities/designs.dart';
 class UpdateGoalPage extends StatefulWidget {
   final String gestId;
   final String goalId;
-  const UpdateGoalPage({required this.gestId, required this.goalId});
+  const UpdateGoalPage({
+    Key? key,
+    required this.gestId,
+    required this.goalId,
+  }) : super(key: key);
 
   @override
   State<UpdateGoalPage> createState() => _UpdateGoalPageState();
@@ -24,7 +28,7 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
   final endDateController = TextEditingController();
   final valueController = TextEditingController();
 
-  void ConfirmDialog(BuildContext context) {
+  void confirmDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext ctx) {
@@ -70,7 +74,7 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
     );
   }
 
-  void ConfirmDialogDelete(BuildContext context) {
+  void confirmDialogDelete(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext ctx) {
@@ -136,7 +140,7 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
                             leading: Icon(Icons.delete),
                             title: const Text("Borrar"),
                             onTap: () {
-                              ConfirmDialogDelete(context);
+                              confirmDialogDelete(context);
                             }),
                         ListTile(
                             leading: Icon(Icons.close),
@@ -208,7 +212,7 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
                                 labelStyle: kSubTitulo1,
                               ),
                               validator: (result) {
-                                return ValidateResult(result!);
+                                return validateResult(result!);
                               },
                             ),
                           ),
@@ -249,7 +253,7 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  ConfirmDialog(context);
+                                  confirmDialog(context);
                                 },
                                 child: Text("GUARDAR"),
                               ),
@@ -276,7 +280,7 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
   }
 }
 
-String? ValidateResult(String result) {
+String? validateResult(String result) {
   if (result.isEmpty) {
     return 'Resultado no puede estar vacio';
   }

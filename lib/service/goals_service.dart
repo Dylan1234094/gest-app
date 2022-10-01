@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:gest_app/data/model/goals.dart';
 import 'dart:async';
-import 'package:intl/intl.dart' as intl;
 
 final db = FirebaseFirestore.instance;
 
@@ -15,7 +14,11 @@ class GoalService {
     var registerStatus = 0;
 
     try {
-      final docRef = db.collection("gestantes").doc(gestID).collection("metas_act_fisica").doc(uid);
+      final docRef = db
+          .collection("gestantes")
+          .doc(gestID)
+          .collection("metas_act_fisica")
+          .doc(uid);
       await docRef.get().then(
         (DocumentSnapshot doc) {
           final data = doc.data() as Map<String, dynamic>;
@@ -24,20 +27,24 @@ class GoalService {
           endTime = data["endTime"];
           registerStatus = data["registerStatus"];
         },
-        onError: (e) => print("Error al intentar obtener doc $uid en metas"),
+        onError:
+            (e) {}, // print("Error al intentar obtener doc $uid en metas"),
       );
     } catch (e) {
-      print(e);
-      throw e;
+      // print(e);
+      rethrow;
     }
-    return meta = Goal(id: uid, startTime: startTime, endTime: endTime, value: value);
+    return meta =
+        Goal(id: uid, startTime: startTime, endTime: endTime, value: value);
   }
 
-  Future<void> registerGoal(String gestID, String value, String startDate, String endDate, BuildContext context) async {
+  Future<void> registerGoal(String gestID, String value, String startDate,
+      String endDate, BuildContext context) async {
     var startDay = startDate.substring(0, 2);
     var startMonth = startDate.substring(3, 5);
     var startYear = startDate.substring(6, 10);
-    DateTime startDa = DateTime.parse("$startYear-$startMonth-$startDay 00:00:00.000");
+    DateTime startDa =
+        DateTime.parse("$startYear-$startMonth-$startDay 00:00:00.000");
     Timestamp startTs = Timestamp.fromDate(startDa);
 
     var endDay = endDate.substring(0, 2);
@@ -46,26 +53,35 @@ class GoalService {
     DateTime endDa = DateTime.parse("$endYear-$endMonth-$endDay 00:00:00.000");
     Timestamp endTs = Timestamp.fromDate(endDa);
 
-    Goal meta = Goal(value: int.parse(value), startTime: startTs, endTime: endTs, registerStatus: 1);
+    Goal meta = Goal(
+        value: int.parse(value),
+        startTime: startTs,
+        endTime: endTs,
+        registerStatus: 1);
 
     try {
-      final docRef = db.collection("gestantes").doc(gestID).collection("metas_act_fisica").withConverter(
+      final docRef = db
+          .collection("gestantes")
+          .doc(gestID)
+          .collection("metas_act_fisica")
+          .withConverter(
             fromFirestore: Goal.fromFirestore,
             toFirestore: (Goal meta, options) => meta.toFirestore(),
           );
       await docRef.add(meta);
     } catch (e) {
-      print(e);
-      throw e;
+      // print(e);
+      rethrow;
     }
   }
 
-  Future<void> updateGoal(
-      String gestID, String goalId, String value, String startDate, String endDate, BuildContext context) async {
+  Future<void> updateGoal(String gestID, String goalId, String value,
+      String startDate, String endDate, BuildContext context) async {
     var startDay = startDate.substring(0, 2);
     var startMonth = startDate.substring(3, 5);
     var startYear = startDate.substring(6, 10);
-    DateTime startDa = DateTime.parse("$startYear-$startMonth-$startDay 00:00:00.000");
+    DateTime startDa =
+        DateTime.parse("$startYear-$startMonth-$startDay 00:00:00.000");
     Timestamp startTs = Timestamp.fromDate(startDa);
 
     var endDay = endDate.substring(0, 2);
@@ -74,32 +90,47 @@ class GoalService {
     DateTime endDa = DateTime.parse("$endYear-$endMonth-$endDay 00:00:00.000");
     Timestamp endTs = Timestamp.fromDate(endDa);
 
-    Goal meta = Goal(value: int.parse(value), startTime: startTs, endTime: endTs, registerStatus: 2);
+    Goal meta = Goal(
+        value: int.parse(value),
+        startTime: startTs,
+        endTime: endTs,
+        registerStatus: 2);
 
     try {
-      final docRef = db.collection("gestantes").doc(gestID).collection("metas_act_fisica").doc(goalId).withConverter(
+      final docRef = db
+          .collection("gestantes")
+          .doc(gestID)
+          .collection("metas_act_fisica")
+          .doc(goalId)
+          .withConverter(
             fromFirestore: Goal.fromFirestore,
             toFirestore: (Goal meta, options) => meta.toFirestore(),
           );
       await docRef.set(meta, SetOptions(merge: true));
     } catch (e) {
-      print("error: $e");
-      throw e;
+      // print("error: $e");
+      rethrow;
     }
   }
 
-  Future<void> deleteGoal(String gestID, String goalID, BuildContext context) async {
+  Future<void> deleteGoal(
+      String gestID, String goalID, BuildContext context) async {
     Goal meta = const Goal(registerStatus: 3);
 
     try {
-      final docRef = db.collection("gestantes").doc(gestID).collection("metas_act_fisica").doc(goalID).withConverter(
+      final docRef = db
+          .collection("gestantes")
+          .doc(gestID)
+          .collection("metas_act_fisica")
+          .doc(goalID)
+          .withConverter(
             fromFirestore: Goal.fromFirestore,
             toFirestore: (Goal exam, options) => exam.toFirestore(),
           );
       await docRef.set(meta, SetOptions(merge: true));
     } catch (e) {
-      print(e);
-      throw e;
+      // print(e);
+      rethrow;
     }
   }
 
@@ -125,7 +156,7 @@ class GoalService {
             }
           });
     } catch (e) {
-      print(e);
+      // print(e);
     }
 
     return listaMetas;

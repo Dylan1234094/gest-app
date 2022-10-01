@@ -9,7 +9,7 @@ import '../../../utilities/designs.dart';
 class ListaExamenes extends StatefulWidget {
   final String gestId;
 
-  const ListaExamenes({required this.gestId});
+  const ListaExamenes({Key? key, required this.gestId}) : super(key: key);
   @override
   _ListaExamenesState createState() => _ListaExamenesState();
 }
@@ -21,8 +21,12 @@ class _ListaExamenesState extends State<ListaExamenes> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('examenes').orderBy("order", descending: false).snapshots(),
-          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          stream: FirebaseFirestore.instance
+              .collection('examenes')
+              .orderBy("order", descending: false)
+              .snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
               return SizedBox(
                 height: MediaQuery.of(context).size.height / 1.3,

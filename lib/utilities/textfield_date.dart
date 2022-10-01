@@ -22,7 +22,7 @@ class _MyTextFormDate extends State<MyTextFormDate> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      style: TextStyle(fontSize: 13.0),
+      style: const TextStyle(fontSize: 13.0),
       readOnly: true,
       showCursor: true,
       validator: (text) {
@@ -51,7 +51,8 @@ class _MyTextFormDate extends State<MyTextFormDate> {
         }
       },
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
         border: const OutlineInputBorder(),
         labelText: widget.label,
         hintStyle: kSubTitulo1,

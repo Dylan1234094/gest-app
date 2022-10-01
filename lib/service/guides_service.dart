@@ -8,8 +8,6 @@ final db = FirebaseFirestore.instance;
 
 class GuideService {
   Future<Guide> getGuideByID(String id) async {
-    Guide guide;
-
     var title = "";
     var shortDescription = "";
     var largeDescription = "";
@@ -25,12 +23,13 @@ class GuideService {
           largeDescription = data["largeDescription"];
           thumbnail = data["thumbnail"];
         },
-        onError: (e) => print("Error al intentar obtener doc $id en guia"),
+        onError: (e) {}, // print("Error al intentar obtener doc $id en guia"),
       );
     } catch (e) {
-      print(e);
-      print("error en catch");
+      // print(e);
+      // print("error en catch");
     }
+    Guide guide;
     return guide = Guide(
         id: id,
         title: title,
@@ -55,7 +54,7 @@ class GuideService {
         }
       });
     } catch (e) {
-      print(e);
+      // print(e);
     }
 
     return listaGuias;

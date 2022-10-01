@@ -86,7 +86,7 @@ class _FormObsState extends State<FormObs> {
                   ],
                   label: 'Nombre',
                   validacion: (value) {
-                    return ValidateText("Nombre", value!);
+                    return validateText("Nombre", value!);
                   },
                 ),
                 InputTextWidget(
@@ -98,7 +98,7 @@ class _FormObsState extends State<FormObs> {
                   ],
                   label: 'Apellido',
                   validacion: (value) {
-                    return ValidateText("Apellido", value!);
+                    return validateText("Apellido", value!);
                   },
                 ),
                 InputTextWidget(
@@ -110,7 +110,7 @@ class _FormObsState extends State<FormObs> {
                   ],
                   label: 'Correo',
                   validacion: (value) {
-                    return ValidateEmail(value!);
+                    return validateEmail(value!);
                   },
                 ),
                 InputTextWidget(
@@ -120,7 +120,7 @@ class _FormObsState extends State<FormObs> {
                   formatters: [FilteringTextInputFormatter.digitsOnly],
                   label: 'Celular',
                   validacion: (value) {
-                    return ValidatePhoneNumber(value!);
+                    return validatePhoneNumber(value!);
                   },
                 ),
                 Padding(
@@ -148,13 +148,13 @@ class _FormObsState extends State<FormObs> {
                           ),
                         ),
                         validator: (value) {
-                          if (ValidatePassword(value!) == null) {
+                          if (validatePassword(value!) == null) {
                             if (contraseniaController.text !=
                                 contraseniaRepeController.text) {
                               return 'Las Contraseñas no son iguales';
                             }
                           }
-                          return ValidatePassword(value);
+                          return validatePassword(value);
                         })),
                 Padding(
                     //! Contraseña
@@ -181,17 +181,17 @@ class _FormObsState extends State<FormObs> {
                           ),
                         ),
                         validator: (value) {
-                          if (ValidatePassword(value!) == null) {
+                          if (validatePassword(value!) == null) {
                             if (contraseniaController.text !=
                                 contraseniaRepeController.text) {
                               return 'Las Contraseñas no son iguales';
                             }
                           }
-                          return ValidatePassword(value);
+                          return validatePassword(value);
                         })),
                 Center(
                   child: Padding(
-                    padding: EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.all(20.0),
                     child: ElevatedButton(
                       style: ButtonStyle(
                         backgroundColor:
@@ -235,11 +235,13 @@ class _FormObsState extends State<FormObs> {
 
 class InputTextWidget extends StatelessWidget {
   const InputTextWidget(
-      {required this.controlador,
+      {Key? key,
+      required this.controlador,
       required this.inputType,
       required this.formatters,
       required this.label,
-      required this.validacion});
+      required this.validacion})
+      : super(key: key);
 
   final TextEditingController controlador;
   final TextInputType inputType;
@@ -252,14 +254,14 @@ class InputTextWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: TextFormField(
-          style: TextStyle(fontSize: 13.0),
+          style: const TextStyle(fontSize: 13.0),
           controller: controlador,
           inputFormatters: formatters,
           keyboardType: inputType,
           decoration: InputDecoration(
             contentPadding:
-                EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-            border: OutlineInputBorder(),
+                const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+            border: const OutlineInputBorder(),
             labelText: label,
             labelStyle: kSubTitulo1,
           ),
@@ -282,27 +284,27 @@ void insertDataObstetra(
     String codigoObstetra = "";
 
     _obstetraService.obtenerMaxCodigo().then((value) {
-      intl.NumberFormat formatNumber = new intl.NumberFormat("000000");
+      intl.NumberFormat formatNumber = intl.NumberFormat("000000");
       codigoObstetra = (formatNumber.format(value + 1).toString());
       _obstetraService.registerObstetra(nombre, apellido, correo, telefono,
           contrasenia, codigoObstetra, context);
     });
   } else {
-    print("las contrasenias no son iguales");
+    // print("las contrasenias no son iguales");
   }
 }
 
-String? ValidateText(String label, String value) {
+String? validateText(String label, String value) {
   if (value.isEmpty) {
-    return '${label} es obligatorio';
+    return '$label es obligatorio';
   }
   if (value.length < 3) {
-    return '${label} debe tener mínimo 3 carácteres';
+    return '$label debe tener mínimo 3 carácteres';
   }
   return null;
 }
 
-String? ValidatePhoneNumber(String value) {
+String? validatePhoneNumber(String value) {
   if (value.isEmpty) {
     return 'Celular es obligatorio';
   }
@@ -315,7 +317,7 @@ String? ValidatePhoneNumber(String value) {
   return null;
 }
 
-String? ValidateEmail(String value) {
+String? validateEmail(String value) {
   if (value.isEmpty) {
     return 'Email es obligatorio';
   }
@@ -327,7 +329,7 @@ String? ValidateEmail(String value) {
   return null;
 }
 
-String? ValidatePassword(String value) {
+String? validatePassword(String value) {
   if (value.isEmpty) {
     return 'Contraseña es obligatorio';
   }

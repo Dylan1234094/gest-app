@@ -25,7 +25,7 @@ class FormGest extends StatefulWidget {
   State<FormGest> createState() => _FormGestState();
 }
 
-class registerGestArguments {
+class RegisterGestArguments {
   final String nombre;
   final String apellido;
   final String correo;
@@ -38,7 +38,7 @@ class registerGestArguments {
   final String fcmTokenObs;
   final String codigoObs;
 
-  registerGestArguments(
+  RegisterGestArguments(
       this.nombre,
       this.apellido,
       this.correo,
@@ -84,7 +84,7 @@ class _FormGestState extends State<FormGest> {
   @override
   Widget build(BuildContext context) {
     final _keyForm = GlobalKey<FormState>();
-    final args = ModalRoute.of(context)!.settings.arguments as linkObsArguments;
+    final args = ModalRoute.of(context)!.settings.arguments as LinkObsArguments;
     var correo = FirebaseAuth.instance.currentUser!.email;
 
     linkObsController.text = args.codigoObs;
@@ -124,7 +124,7 @@ class _FormGestState extends State<FormGest> {
                   label: 'Nombre(s)',
                   inputType: TextInputType.text,
                   validacion: (value) {
-                    return ValidateText("Nombre", value!);
+                    return validateText("Nombre", value!);
                   },
                   habilitado: true,
                 ),
@@ -137,7 +137,7 @@ class _FormGestState extends State<FormGest> {
                   label: 'Apellido(s)',
                   inputType: TextInputType.text,
                   validacion: (value) {
-                    return ValidateText("Apellido", value!);
+                    return validateText("Apellido", value!);
                   },
                   habilitado: true,
                 ),
@@ -148,7 +148,7 @@ class _FormGestState extends State<FormGest> {
                   label: 'Celular',
                   inputType: TextInputType.number,
                   validacion: (value) {
-                    return ValidatePhoneNumber(value!);
+                    return validatePhoneNumber(value!);
                   },
                   habilitado: true,
                 ),
@@ -169,7 +169,7 @@ class _FormGestState extends State<FormGest> {
                   label: 'DNI',
                   inputType: TextInputType.number,
                   validacion: (value) {
-                    return ValidateDNI(value!);
+                    return validateDNI(value!);
                   },
                   habilitado: true,
                 ),
@@ -203,7 +203,7 @@ class _FormGestState extends State<FormGest> {
                 ),
                 Center(
                   child: Padding(
-                    padding: EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.all(20.0),
                     child: ElevatedButton(
                       style: ButtonStyle(
                         backgroundColor:
@@ -223,7 +223,7 @@ class _FormGestState extends State<FormGest> {
                         if (_keyForm.currentState!.validate())
                           {
                             Navigator.pushNamed(context, VitalSignsGest.id,
-                                arguments: registerGestArguments(
+                                arguments: RegisterGestArguments(
                                     nombreController.text,
                                     apellidoController.text,
                                     correoController.text,
@@ -251,14 +251,15 @@ class _FormGestState extends State<FormGest> {
 }
 
 class InputTextWidget extends StatelessWidget {
-  InputTextWidget({
+  const InputTextWidget({
+    Key? key,
     required this.controlador,
     required this.formatters,
     required this.label,
     required this.inputType,
     this.validacion,
     required this.habilitado,
-  });
+  }) : super(key: key);
 
   final TextEditingController controlador;
   final TextInputType inputType;
@@ -272,15 +273,15 @@ class InputTextWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
-        style: TextStyle(fontSize: 13.0),
+        style: const TextStyle(fontSize: 13.0),
         enabled: habilitado,
         controller: controlador,
         keyboardType: inputType,
         inputFormatters: formatters,
         decoration: InputDecoration(
           contentPadding:
-              EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-          border: OutlineInputBorder(),
+              const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+          border: const OutlineInputBorder(),
           labelText: label,
           labelStyle: kSubTitulo1,
         ),
@@ -290,17 +291,17 @@ class InputTextWidget extends StatelessWidget {
   }
 }
 
-String? ValidateText(String label, String value) {
+String? validateText(String label, String value) {
   if (value.isEmpty) {
-    return '${label} es obligatorio';
+    return '$label es obligatorio';
   }
   if (value.length < 3) {
-    return '${label} debe tener mínimo 3 carácteres';
+    return '$label debe tener mínimo 3 carácteres';
   }
   return null;
 }
 
-String? ValidatePhoneNumber(String value) {
+String? validatePhoneNumber(String value) {
   if (value.isEmpty) {
     return 'Celular es obligatorio';
   }
@@ -313,7 +314,7 @@ String? ValidatePhoneNumber(String value) {
   return null;
 }
 
-String? ValidateDNI(String value) {
+String? validateDNI(String value) {
   if (value.isEmpty) {
     return 'DNI es obligatorio';
   }

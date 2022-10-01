@@ -7,6 +7,8 @@ import 'package:gest_app/layout/gestante/exam/exam_detail.dart';
 import '../../../utilities/designs.dart';
 
 class ExamPage extends StatefulWidget {
+  const ExamPage({Key? key}) : super(key: key);
+
   @override
   _ExamPageState createState() => _ExamPageState();
 }
@@ -18,8 +20,12 @@ class _ExamPageState extends State<ExamPage> {
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
         child: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('examenes').orderBy("order", descending: false).snapshots(),
-          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          stream: FirebaseFirestore.instance
+              .collection('examenes')
+              .orderBy("order", descending: false)
+              .snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
               return SizedBox(
                 height: MediaQuery.of(context).size.height / 1.3,

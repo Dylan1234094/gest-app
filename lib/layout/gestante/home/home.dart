@@ -10,6 +10,8 @@ import 'package:gest_app/service/gestante_service.dart';
 import 'package:gest_app/utilities/designs.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -139,7 +141,7 @@ class _HomePageState extends State<HomePage> {
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 10.0),
                                   child: Text(
-                                    user.displayName!,
+                                    "${snapshot.data!.nombre!} ${snapshot.data!.apellido}",
                                     style: TextStyle(
                                       fontSize: 17.0,
                                       fontWeight: FontWeight.bold,
@@ -151,8 +153,7 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                         (actFisicaController.text == "true")
-                            ? Container(
-                                child: VitalCard(
+                            ? VitalCard(
                                 userType: "gestante",
                                 title: "Actividad Física",
                                 iconPath:
@@ -160,44 +161,40 @@ class _HomePageState extends State<HomePage> {
                                 vitalSign: "actFisica",
                                 unit: "Pasos",
                                 rtoken: snapshot.data!.rtoken!,
-                              ))
+                              )
                             : Container(),
                         (freCardiController.text == "true")
-                            ? Container(
-                                child: VitalCard(
+                            ? VitalCard(
                                 userType: "gestante",
                                 title: "Frecuencia Cardíaca",
                                 iconPath: "assets/IconsVitals/fre_car_icon.png",
                                 vitalSign: "freCardi",
                                 unit: "bpm",
                                 rtoken: snapshot.data!.rtoken!,
-                              ))
+                              )
                             : Container(),
                         (glucoController.text == "true")
-                            ? Container(
-                                child: VitalCard(
+                            ? VitalCard(
                                 userType: "gestante",
                                 title: "Glucosa",
                                 iconPath: "assets/IconsVitals/gluco_icon.png",
                                 vitalSign: "gluco",
                                 unit: "mmol/L",
                                 rtoken: snapshot.data!.rtoken!,
-                              ))
+                              )
                             : Container(),
                         (pesoController.text == "true")
-                            ? Container(
-                                child: VitalCard(
+                            ? VitalCard(
                                 userType: "gestante",
                                 title: "Peso",
                                 iconPath: "assets/IconsVitals/peso_icon.png",
                                 vitalSign: "peso",
                                 unit: "kg",
                                 rtoken: snapshot.data!.rtoken!,
-                              ))
+                              )
                             : Container(),
                         (presArtController.text == "true")
-                            ? Container(
-                                child: VitalCard(
+                            ? VitalCard(
                                 userType: "gestante",
                                 title: "Presión Arterial",
                                 iconPath:
@@ -205,11 +202,10 @@ class _HomePageState extends State<HomePage> {
                                 vitalSign: "presArt",
                                 unit: "mmHg",
                                 rtoken: snapshot.data!.rtoken!,
-                              ))
+                              )
                             : Container(),
                         (satOxigController.text == "true")
-                            ? Container(
-                                child: VitalCard(
+                            ? VitalCard(
                                 userType: "gestante",
                                 title: "Saturación de Oxígeno",
                                 iconPath:
@@ -217,18 +213,17 @@ class _HomePageState extends State<HomePage> {
                                 vitalSign: "satOxig",
                                 unit: "%",
                                 rtoken: snapshot.data!.rtoken!,
-                              ))
+                              )
                             : Container(),
                         (suenioController.text == "true")
-                            ? Container(
-                                child: VitalCard(
+                            ? VitalCard(
                                 userType: "gestante",
                                 title: "Sueño",
                                 iconPath: "assets/IconsVitals/suenio_icon.png",
                                 vitalSign: "suenio",
                                 unit: "h",
                                 rtoken: snapshot.data!.rtoken!,
-                              ))
+                              )
                             : Container(),
                       ],
                     ),
@@ -332,14 +327,15 @@ Future<Gestante> getGestante(String id) {
 }
 
 class VitalCard extends StatefulWidget {
-  VitalCard({
+  const VitalCard({
+    Key? key,
     required this.userType,
     required this.title,
     required this.iconPath,
     required this.vitalSign,
     required this.unit,
     required this.rtoken,
-  });
+  }) : super(key: key);
 
   final String userType;
   final String title;
@@ -354,56 +350,54 @@ class VitalCard extends StatefulWidget {
 class _VitalCardState extends State<VitalCard> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute<void>(builder: (BuildContext context) {
-              return MetricDetailPage(
-                userType: widget.userType,
-                vitalSignName: widget.title,
-                vitalSign: widget.vitalSign,
-                unit: widget.unit,
-                rtoken: widget.rtoken,
-              ); //! GuideId
-            }),
-          );
-        },
-        child: Card(
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                flex: 2,
-                child: Center(
-                  child: Container(
-                    height: 35.0,
-                    width: 35.0,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(widget.iconPath),
-                        fit: BoxFit.fill,
-                      ),
-                      shape: BoxShape.rectangle,
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (BuildContext context) {
+            return MetricDetailPage(
+              userType: widget.userType,
+              vitalSignName: widget.title,
+              vitalSign: widget.vitalSign,
+              unit: widget.unit,
+              rtoken: widget.rtoken,
+            ); //! GuideId
+          }),
+        );
+      },
+      child: Card(
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              flex: 2,
+              child: Center(
+                child: Container(
+                  height: 35.0,
+                  width: 35.0,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(widget.iconPath),
+                      fit: BoxFit.fill,
                     ),
+                    shape: BoxShape.rectangle,
                   ),
                 ),
               ),
-              Expanded(
-                flex: 8,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(widget.title, style: kTitulo3),
-                      Text('Ver evolución',
-                          style: kSubTitulo1.copyWith(color: colorSecundario))
-                    ],
-                  ),
+            ),
+            Expanded(
+              flex: 8,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(widget.title, style: kTitulo3),
+                    Text('Ver evolución',
+                        style: kSubTitulo1.copyWith(color: colorSecundario))
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

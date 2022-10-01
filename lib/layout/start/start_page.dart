@@ -5,7 +5,7 @@ import '../authentication/login_gest.dart';
 import '../authentication/login_obs.dart';
 
 class Start extends StatelessWidget {
-  const Start();
+  const Start({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +32,11 @@ class _StartPageState extends State<StartPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(50.0),
-                  child: Hero(
-                    tag: 'logo',
-                    child: Image.asset('assets/Gest_Icon.png'),
-                  ),
+              Padding(
+                padding: const EdgeInsets.all(50.0),
+                child: Hero(
+                  tag: 'logo',
+                  child: Image.asset('assets/Gest_Icon.png'),
                 ),
               ),
               Center(

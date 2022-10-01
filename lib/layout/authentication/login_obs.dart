@@ -51,7 +51,7 @@ class _LoginObsState extends State<LoginObs> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(top: 20),
               child: Text(
                 "Inicio de sesión",
@@ -59,14 +59,12 @@ class _LoginObsState extends State<LoginObs> {
                 style: kTitulo1,
               ),
             ),
-            Container(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 10.0, horizontal: 90.0),
-                child: Hero(
-                  tag: 'logo',
-                  child: Image.asset('assets/Gest_Icon.png'),
-                ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 90.0),
+              child: Hero(
+                tag: 'logo',
+                child: Image.asset('assets/Gest_Icon.png'),
               ),
             ),
             Form(
@@ -77,7 +75,7 @@ class _LoginObsState extends State<LoginObs> {
                     //! Correo
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
-                      style: TextStyle(fontSize: 13.0),
+                      style: const TextStyle(fontSize: 13.0),
                       controller: correoController,
                       keyboardType: TextInputType.emailAddress,
                       inputFormatters: <TextInputFormatter>[
@@ -91,7 +89,7 @@ class _LoginObsState extends State<LoginObs> {
                         labelStyle: kSubTitulo1,
                       ),
                       validator: (value) {
-                        return ValidateEmail(value!);
+                        return validateEmail(value!);
                       },
                     ),
                   ),
@@ -102,15 +100,15 @@ class _LoginObsState extends State<LoginObs> {
               //! Contraseña
               padding: const EdgeInsets.all(8),
               child: TextFormField(
-                style: TextStyle(fontSize: 13.0),
+                style: const TextStyle(fontSize: 13.0),
                 obscureText: !_passwordVisible,
                 enableSuggestions: false,
                 autocorrect: false,
                 controller: contraseniaController,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 15.0, horizontal: 10.0),
                   border: const OutlineInputBorder(),
                   labelText: "Contraseña",
                   labelStyle: kSubTitulo1,
@@ -126,13 +124,13 @@ class _LoginObsState extends State<LoginObs> {
                   ),
                 ),
                 validator: (value) {
-                  return ValidatePassword(value!);
+                  return validatePassword(value!);
                 },
               ),
             ),
             Center(
               child: Padding(
-                padding: EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(20.0),
                 child: ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor:
@@ -170,7 +168,6 @@ class _LoginObsState extends State<LoginObs> {
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           //! Enviar a recuperar contraseña
-                          print("Recuperar contraseña");
                         })
                 ],
               ),
@@ -221,7 +218,7 @@ void loginObstetra(String correo, String contrasenia, BuildContext context) {
   });
 }
 
-String? ValidateEmail(String value) {
+String? validateEmail(String value) {
   if (value.isEmpty) {
     return 'Correo es obligatorio';
   }
@@ -233,7 +230,7 @@ String? ValidateEmail(String value) {
   return null;
 }
 
-String? ValidatePassword(String value) {
+String? validatePassword(String value) {
   if (value.isEmpty) {
     return 'Contraseña es obligatorio';
   }
@@ -269,7 +266,7 @@ Future<void> _dialogWrongCredentials(BuildContext context) {
           "Credenciales Incorrectas",
           style: TextStyle(fontSize: 13.0),
         ),
-        content: Text(
+        content: const Text(
           "El usuario o la contraseña ingresadas no son correctas",
           style: TextStyle(fontSize: 11.0),
         ),
@@ -300,7 +297,7 @@ Future<void> _dialogSomethingWentWrong(BuildContext context) {
           )
         ],
         title: const Text("Algo salió mal", style: TextStyle(fontSize: 13.0)),
-        content: Text(
+        content: const Text(
           "Por favor inténtelo más tarde",
           style: TextStyle(fontSize: 11.0),
         ),

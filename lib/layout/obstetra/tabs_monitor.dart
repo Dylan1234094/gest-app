@@ -5,7 +5,7 @@ import 'package:gest_app/layout/obstetra/monitor_goals/monitor_goals.dart';
 
 class TabsMonitor extends StatefulWidget {
   final String gestId;
-  const TabsMonitor({required this.gestId});
+  const TabsMonitor({Key? key, required this.gestId}) : super(key: key);
 
   static String id = '/tabsObstetra';
 
@@ -47,9 +47,9 @@ class _TabsMonitorState extends State<TabsMonitor>
             pinned: true,
             floating: true,
             bottom: TabBar(
-              labelPadding: EdgeInsets.symmetric(horizontal: 5),
+              labelPadding: const EdgeInsets.symmetric(horizontal: 5),
               indicatorSize: TabBarIndicatorSize.label,
-              labelStyle: TextStyle(fontSize: 10),
+              labelStyle: const TextStyle(fontSize: 10),
               indicatorColor: Colors.white,
               controller: tabController,
               tabs: tabs,

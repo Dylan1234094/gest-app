@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -46,56 +45,54 @@ class GestanteService {
           idToken: googleSignInAuthentication.idToken);
       await _auth.signInWithCredential(credential).then((value) async {
         try {
-          print(_googleSignIn.currentUser);
+          // print(_googleSignIn.currentUser);
           final docRef = db.collection("gestantes").doc(value.user!.uid);
-          await docRef.get().then(
-            (DocumentSnapshot doc) async {
-              if (doc.exists) {
-                //get fcmToken and update it on firestore
-                final fcmtoken = await FirebaseMessaging.instance.getToken();
-                final gestante = Gestante(fcmToken: fcmtoken);
+          await docRef.get().then((DocumentSnapshot doc) async {
+            if (doc.exists) {
+              //get fcmToken and update it on firestore
+              final fcmtoken = await FirebaseMessaging.instance.getToken();
+              final gestante = Gestante(fcmToken: fcmtoken);
 
-                final docRef = db
-                    .collection("gestantes")
-                    .withConverter(
-                      fromFirestore: Gestante.fromFirestore,
-                      toFirestore: (Gestante gestante, options) =>
-                          gestante.toFirestore(),
-                    )
-                    .doc(value.user!.uid);
-                await docRef
-                    .set(gestante, SetOptions(merge: true))
-                    .then((value) => Navigator.pop(context, '/'));
-              } else {
-                //request rtoken, create gestante with rtoken then update
-                var rtoken = "";
-                var url =
-                    'https://upc-cloud-test.azurewebsites.net/api/getVitalData';
-                Map data = {
-                  'email': _googleSignIn.currentUser!.email,
-                  'serverToken': _googleSignIn.currentUser!.serverAuthCode,
-                };
-                var body = json.encode(data);
-                try {
-                  var response = await http.post(Uri.parse(url),
-                      headers: {"Content-Type": "application/json"},
-                      body: body);
-                  rtoken = response.body;
-                } catch (e) {
-                  print(e);
-                }
-                createGestante(value.user!.uid, rtoken, context);
+              final docRef = db
+                  .collection("gestantes")
+                  .withConverter(
+                    fromFirestore: Gestante.fromFirestore,
+                    toFirestore: (Gestante gestante, options) =>
+                        gestante.toFirestore(),
+                  )
+                  .doc(value.user!.uid);
+              await docRef
+                  .set(gestante, SetOptions(merge: true))
+                  .then((value) => Navigator.pop(context, '/'));
+            } else {
+              //request rtoken, create gestante with rtoken then update
+              var rtoken = "";
+              var url =
+                  'https://upc-cloud-test.azurewebsites.net/api/getVitalData';
+              Map data = {
+                'email': _googleSignIn.currentUser!.email,
+                'serverToken': _googleSignIn.currentUser!.serverAuthCode,
+              };
+              var body = json.encode(data);
+              try {
+                var response = await http.post(Uri.parse(url),
+                    headers: {"Content-Type": "application/json"}, body: body);
+                rtoken = response.body;
+              } catch (e) {
+                // print(e);
               }
-            },
-            onError: (e) => print(
-                "Error al intentar obtener doc ${value.user!.uid} en gestante"),
-          );
+              createGestante(value.user!.uid, rtoken, context);
+            }
+          }, onError: (e) {}
+              //       print(
+              //       "Error al intentar obtener doc ${value.user!.uid} en gestante"),
+              );
         } catch (e) {
-          print(e);
+          // print(e);
         }
       });
-    } on FirebaseAuthException catch (e) {
-      print(e.message);
+    } on FirebaseAuthException {
+      // print(e.message);
     }
   }
 
@@ -104,7 +101,7 @@ class GestanteService {
       var uid = _auth.currentUser!.uid;
       await _googleSignIn.signOut();
       await _auth.signOut().then((data) async {
-        final gestante = Gestante(fcmToken: "");
+        const gestante = Gestante(fcmToken: "");
 
         final docRef = db
             .collection("gestantes")
@@ -117,8 +114,8 @@ class GestanteService {
         await docRef.set(gestante, SetOptions(merge: true)).then(
             (value) => Navigator.popUntil(context, ModalRoute.withName('/')));
       });
-    } on FirebaseAuthException catch (e) {
-      print(e.message);
+    } on FirebaseAuthException {
+      // print(e.message);
     }
   }
 
@@ -194,9 +191,9 @@ class GestanteService {
       try {
         var response = await http.post(Uri.parse(url),
             headers: {"Content-Type": "application/json"}, body: body);
-        print(response.body);
+        // print(response.body);
       } catch (e) {
-        print(e);
+        // print(e);
       }
     });
   }
@@ -232,7 +229,7 @@ class GestanteService {
           .doc(id);
       await docRef.set(gestante, SetOptions(merge: true));
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -288,7 +285,7 @@ class GestanteService {
         satOxig: "");
 
     try {
-      print(uid);
+      // print(uid);
       final docRef = db.collection("gestantes").doc(uid);
       await docRef.get().then(
         (DocumentSnapshot doc) {
@@ -313,11 +310,12 @@ class GestanteService {
               presArt: data["vitals"]["presArt"],
               satOxig: data["vitals"]["satOxig"]);
         },
-        onError: (e) => print("Error al intentar obtener doc $uid en gestante"),
+        onError:
+            (e) {}, // print("Error al intentar obtener doc $uid en gestante"),
       );
     } catch (e) {
-      print(e);
-      throw e;
+      // print(e);
+      rethrow;
     }
     return gestante = Gestante(
         id: uid,
@@ -360,7 +358,7 @@ class GestanteService {
         }
       });
     } catch (e) {
-      print(e);
+      // print(e);
     }
     return obstetra = Obstetra(
         id: uid,
@@ -392,7 +390,8 @@ class GestanteService {
           nombreGest = data["nombre"];
           apellidoGest = data["apellido"];
         },
-        onError: (e) => print("Error al intentar obtener doc $id en gestante"),
+        onError:
+            (e) {}, // print("Error al intentar obtener doc $id en gestante"),
       );
       Navigator.of(context).popUntil(ModalRoute.withName("/"));
 
@@ -408,9 +407,9 @@ class GestanteService {
       try {
         var response = await http.post(Uri.parse(url),
             headers: {"Content-Type": "application/json"}, body: body);
-        print(response.body);
+        // print(response.body);
       } catch (e) {
-        print(e);
+        // print(e);
       }
     });
   }
@@ -445,7 +444,7 @@ class GestanteService {
         });
       });
     } catch (e) {
-      print(e);
+      // print(e);
     }
     return obstetra = Obstetra(
         id: uid,

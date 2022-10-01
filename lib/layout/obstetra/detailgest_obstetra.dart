@@ -51,7 +51,7 @@ class _DetailMonitorGestState extends State<PerfilGest> {
           });
         },
         child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           child: FutureBuilder<Gestante>(
             future: getGestante(widget.gestId),
             builder: (context, snapshotGest) {
@@ -94,24 +94,24 @@ class _DetailMonitorGestState extends State<PerfilGest> {
                                   : Image.asset(
                                           "assets/default_profile_icon.png")
                                       .image,
-                              backgroundColor: Color(0xFF245470),
+                              backgroundColor: Colors.lightBlue[900],
                             ),
                           ),
                           PerfilData(
-                            TitleData: 'NOMBRE COMPLETO',
-                            Data:
+                            titleData: 'NOMBRE COMPLETO',
+                            data:
                                 '${snapshotGest.data!.nombre!} ${snapshotGest.data!.apellido!}',
                           ),
                           PerfilData(
-                            TitleData: 'FECHA DE NACIMIENTO',
-                            Data: '${snapshotGest.data!.fechaNacimiento!}',
+                            titleData: 'FECHA DE NACIMIENTO',
+                            data: snapshotGest.data!.fechaNacimiento!,
                           ),
                           PerfilData(
-                            TitleData: 'EDAD GESTACIONAL',
-                            Data:
+                            titleData: 'EDAD GESTACIONAL',
+                            data:
                                 '${(DateTime.now().difference(intl.DateFormat("dd/MM/yyyy hh:mm:ss").parse(snapshotGest.data!.fechaRegla! + " 00:00:00")).inDays).round()} semanas de embarazo',
                           ),
-                          Padding(
+                          const Padding(
                             padding: EdgeInsets.symmetric(vertical: 10.0),
                             child: Text(
                               'GRÁFICOS EVOLUTIVOS',
@@ -210,7 +210,7 @@ class _DetailMonitorGestState extends State<PerfilGest> {
                     return const Text("ERROR BODY");
                   }
                 default:
-                  return Text("data");
+                  return const Text("data");
               }
             },
           ),
@@ -221,10 +221,14 @@ class _DetailMonitorGestState extends State<PerfilGest> {
 }
 
 class PerfilData extends StatelessWidget {
-  const PerfilData({required this.Data, required this.TitleData});
+  const PerfilData({
+    Key? key,
+    required this.data,
+    required this.titleData,
+  }) : super(key: key);
 
-  final String TitleData;
-  final String Data;
+  final String titleData;
+  final String data;
 
   @override
   Widget build(BuildContext context) {
@@ -232,9 +236,9 @@ class PerfilData extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(TitleData, style: kTituloPerfilGestante),
-        SizedBox(height: 2.0),
-        Text(Data, textAlign: TextAlign.left, style: kTitulo2),
+        Text(titleData, style: kTituloPerfilGestante),
+        const SizedBox(height: 2.0),
+        Text(data, textAlign: TextAlign.left, style: kTitulo2),
         kLineaDivisora,
       ],
     );
@@ -248,14 +252,15 @@ Future<Gestante> getGestante(String id) {
 }
 
 class VitalCardObs extends StatefulWidget {
-  VitalCardObs({
+  const VitalCardObs({
+    Key? key,
     required this.userType,
     required this.title,
     required this.iconPath,
     required this.vitalSign,
     required this.unit,
     required this.rtoken,
-  });
+  }) : super(key: key);
 
   final String userType;
   final String title;
@@ -270,59 +275,56 @@ class VitalCardObs extends StatefulWidget {
 class _VitalCardObsState extends State<VitalCardObs> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute<void>(builder: (BuildContext context) {
-              return MetricDetailPage(
-                userType: widget.userType,
-                vitalSignName: widget.title,
-                vitalSign: widget.vitalSign,
-                unit: widget.unit,
-                rtoken: widget.rtoken,
-              ); //! GuideId
-            }),
-          );
-        },
-        child: Card(
-          child: Row(children: <Widget>[
-            Expanded(
-              flex: 2,
-              child: Align(
-                alignment: Alignment.center,
-                child: Center(
-                  child: Container(
-                    height: 35.0,
-                    width: 35.0,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(widget.iconPath),
-                        fit: BoxFit.fill,
-                      ),
-                      shape: BoxShape.rectangle,
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (BuildContext context) {
+            return MetricDetailPage(
+              userType: widget.userType,
+              vitalSignName: widget.title,
+              vitalSign: widget.vitalSign,
+              unit: widget.unit,
+              rtoken: widget.rtoken,
+            ); //! GuideId
+          }),
+        );
+      },
+      child: Card(
+        child: Row(children: <Widget>[
+          Expanded(
+            flex: 2,
+            child: Align(
+              alignment: Alignment.center,
+              child: Center(
+                child: Container(
+                  height: 35.0,
+                  width: 35.0,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(widget.iconPath),
+                      fit: BoxFit.fill,
                     ),
+                    shape: BoxShape.rectangle,
                   ),
                 ),
               ),
             ),
-            Expanded(
-              flex: 8,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(widget.title,
-                        textAlign: TextAlign.end, style: kTitulo3),
-                    Text('Ver evolución',
-                        style: kSubTitulo1.copyWith(color: colorSecundario))
-                  ],
-                ),
+          ),
+          Expanded(
+            flex: 8,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(widget.title, textAlign: TextAlign.end, style: kTitulo3),
+                  Text('Ver evolución',
+                      style: kSubTitulo1.copyWith(color: colorSecundario))
+                ],
               ),
             ),
-          ]),
-        ),
+          ),
+        ]),
       ),
     );
   }

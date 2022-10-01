@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:convert';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gest_app/layout/gestante/home/goals.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -12,11 +11,13 @@ import '../../../utilities/designs.dart';
 
 class MetricDetailPage extends StatefulWidget {
   const MetricDetailPage(
-      {required this.userType,
+      {Key? key,
+      required this.userType,
       required this.vitalSignName,
       required this.vitalSign,
       required this.unit,
-      required this.rtoken});
+      required this.rtoken})
+      : super(key: key);
   final String userType;
   final String vitalSignName;
   final String vitalSign;
@@ -27,7 +28,8 @@ class MetricDetailPage extends StatefulWidget {
   State<MetricDetailPage> createState() => _MetricDetailPageState();
 }
 
-class _MetricDetailPageState extends State<MetricDetailPage> with SingleTickerProviderStateMixin {
+class _MetricDetailPageState extends State<MetricDetailPage>
+    with SingleTickerProviderStateMixin {
   List<_ChartData> chartData = <_ChartData>[];
   String bpType = "sistolic"; //only for blood pressure data
 
@@ -82,7 +84,8 @@ class _MetricDetailPageState extends State<MetricDetailPage> with SingleTickerPr
               vitalSignName: widget.vitalSignName,
               rtoken: widget.rtoken,
               unit: widget.unit,
-              startDate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: -7))),
+              startDate: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.now().add(const Duration(days: -7))),
               endDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
             ),
             MetricDataPage(
@@ -91,7 +94,8 @@ class _MetricDetailPageState extends State<MetricDetailPage> with SingleTickerPr
               vitalSignName: widget.vitalSignName,
               rtoken: widget.rtoken,
               unit: widget.unit,
-              startDate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: -30))),
+              startDate: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.now().add(const Duration(days: -30))),
               endDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
             ),
             MetricDataPage(
@@ -100,7 +104,8 @@ class _MetricDetailPageState extends State<MetricDetailPage> with SingleTickerPr
               vitalSignName: widget.vitalSignName,
               rtoken: widget.rtoken,
               unit: widget.unit,
-              startDate: DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: -60))),
+              startDate: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.now().add(const Duration(days: -60))),
               endDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
             ),
           ],
@@ -147,23 +152,27 @@ class _MetricDataPageState extends State<MetricDataPage> {
     };
     var body = json.encode(data);
     try {
-      var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
+      var response = await http.post(Uri.parse(url),
+          headers: {"Content-Type": "application/json"}, body: body);
       var vitalArray = await json.decode(response.body) as List;
-      for (var element in vitalArray) {
-        print(DateFormat('dd/MM/yyyy HH:mm:ss').format(
-            Timestamp.fromMillisecondsSinceEpoch(((int.parse(element['endNanos']) / 1000000) - 1).round()).toDate()));
-        print(element['value']);
-      }
+      // for (var element in vitalArray) {
+      //print(DateFormat('dd/MM/yyyy HH:mm:ss').format(
+      //     Timestamp.fromMillisecondsSinceEpoch(
+      //             ((int.parse(element['endNanos']) / 1000000) - 1).round())
+      //         .toDate()));
+      // print(element['value']);
+      // }
       List<_ChartData> list = vitalArray
           .map((e) => _ChartData(
-              x: DateTime.fromMillisecondsSinceEpoch(((int.parse(e['endNanos']) / 1000000) - 1).round()),
+              x: DateTime.fromMillisecondsSinceEpoch(
+                  ((int.parse(e['endNanos']) / 1000000) - 1).round()),
               y: e['value']))
           .toList();
       setState(() {
         chartData = list;
       });
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
@@ -178,7 +187,8 @@ class _MetricDataPageState extends State<MetricDataPage> {
     };
     var body = json.encode(data);
     try {
-      var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
+      var response = await http.post(Uri.parse(url),
+          headers: {"Content-Type": "application/json"}, body: body);
       var bpJson = await json.decode(response.body);
 
       var sistolicArray = bpJson["sistolic"] as List;
@@ -187,13 +197,15 @@ class _MetricDataPageState extends State<MetricDataPage> {
       if (bpType == "sistolic") {
         list = sistolicArray
             .map((e) => _ChartData(
-                x: DateTime.fromMillisecondsSinceEpoch(((int.parse(e['endNanos']) / 1000000) - 1).round()),
+                x: DateTime.fromMillisecondsSinceEpoch(
+                    ((int.parse(e['endNanos']) / 1000000) - 1).round()),
                 y: e['value']))
             .toList();
       } else {
         list = diastolicArray
             .map((e) => _ChartData(
-                x: DateTime.fromMillisecondsSinceEpoch(((int.parse(e['endNanos']) / 1000000) - 1).round()),
+                x: DateTime.fromMillisecondsSinceEpoch(
+                    ((int.parse(e['endNanos']) / 1000000) - 1).round()),
                 y: e['value']))
             .toList();
       }
@@ -201,7 +213,7 @@ class _MetricDataPageState extends State<MetricDataPage> {
         chartData = list;
       });
     } catch (e) {
-      print(e);
+      // print(e);
     }
   }
 
@@ -216,20 +228,24 @@ class _MetricDataPageState extends State<MetricDataPage> {
     };
     var body = json.encode(data);
     try {
-      var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
+      var response = await http.post(Uri.parse(url),
+          headers: {"Content-Type": "application/json"}, body: body);
       var vitalArray = await json.decode(response.body) as List;
-      for (var element in vitalArray) {
-        print(DateFormat('dd/MM/yyyy HH:mm:ss').format(
-            Timestamp.fromMillisecondsSinceEpoch(((int.parse(element['endNanos']) / 1000000) - 1).round()).toDate()));
-        print(element['value']);
-      }
+      // for (var element in vitalArray) {
+      // print(DateFormat('dd/MM/yyyy HH:mm:ss').format(
+      //     Timestamp.fromMillisecondsSinceEpoch(
+      //             ((int.parse(element['endNanos']) / 1000000) - 1).round())
+      //         .toDate()));
+      // print(element['value']);
+      // }
       list = vitalArray
           .map((e) => _ChartData(
-              x: DateTime.fromMillisecondsSinceEpoch(((int.parse(e['endNanos']) / 1000000) - 1).round()),
+              x: DateTime.fromMillisecondsSinceEpoch(
+                  ((int.parse(e['endNanos']) / 1000000) - 1).round()),
               y: e['value']))
           .toList();
     } catch (e) {
-      print(e);
+      // print(e);
     }
     return list;
   }
@@ -245,7 +261,8 @@ class _MetricDataPageState extends State<MetricDataPage> {
     };
     var body = json.encode(data);
     try {
-      var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
+      var response = await http.post(Uri.parse(url),
+          headers: {"Content-Type": "application/json"}, body: body);
       var bpJson = await json.decode(response.body);
 
       var sistolicArray = bpJson["sistolic"] as List;
@@ -254,18 +271,20 @@ class _MetricDataPageState extends State<MetricDataPage> {
       if (bpType == "sistolic") {
         list = sistolicArray
             .map((e) => _ChartData(
-                x: DateTime.fromMillisecondsSinceEpoch(((int.parse(e['endNanos']) / 1000000) - 1).round()),
+                x: DateTime.fromMillisecondsSinceEpoch(
+                    ((int.parse(e['endNanos']) / 1000000) - 1).round()),
                 y: e['value']))
             .toList();
       } else {
         list = diastolicArray
             .map((e) => _ChartData(
-                x: DateTime.fromMillisecondsSinceEpoch(((int.parse(e['endNanos']) / 1000000) - 1).round()),
+                x: DateTime.fromMillisecondsSinceEpoch(
+                    ((int.parse(e['endNanos']) / 1000000) - 1).round()),
                 y: e['value']))
             .toList();
       }
     } catch (e) {
-      print(e);
+      // print(e);
     }
     return list;
   }
@@ -306,10 +325,14 @@ class _MetricDataPageState extends State<MetricDataPage> {
                       children: [
                         ElevatedButton(
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(colorPrincipal),
-                            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                            fixedSize: MaterialStateProperty.all(const Size(130.0, 30.0)),
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                colorPrincipal),
+                            foregroundColor:
+                                MaterialStateProperty.all<Color>(Colors.white),
+                            fixedSize: MaterialStateProperty.all(
+                                const Size(130.0, 30.0)),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
@@ -331,10 +354,14 @@ class _MetricDataPageState extends State<MetricDataPage> {
                         SizedBox(width: 30.0),
                         ElevatedButton(
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(colorPrincipal),
-                            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                            fixedSize: MaterialStateProperty.all(const Size(130.0, 30.0)),
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                colorPrincipal),
+                            foregroundColor:
+                                MaterialStateProperty.all<Color>(Colors.white),
+                            fixedSize: MaterialStateProperty.all(
+                                const Size(130.0, 30.0)),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
@@ -360,14 +387,20 @@ class _MetricDataPageState extends State<MetricDataPage> {
             Container(
               padding: const EdgeInsets.only(bottom: 10.0),
               //! Boton "Ver Metas" si metrica es Actividad
-              child: (widget.vitalSign == "actFisica" && widget.userType == "gestante")
+              child: (widget.vitalSign == "actFisica" &&
+                      widget.userType == "gestante")
                   ? ElevatedButton(
-                      child: const Text('VER METAS DE ACTIVIDAD FÍSICA', style: TextStyle(fontSize: 10.0)),
+                      child: const Text('VER METAS DE ACTIVIDAD FÍSICA',
+                          style: TextStyle(fontSize: 10.0)),
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(colorPrincipal),
-                        foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                        fixedSize: MaterialStateProperty.all(const Size(350.0, 30.0)),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(colorPrincipal),
+                        foregroundColor:
+                            MaterialStateProperty.all<Color>(Colors.white),
+                        fixedSize:
+                            MaterialStateProperty.all(const Size(350.0, 30.0)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
@@ -375,7 +408,8 @@ class _MetricDataPageState extends State<MetricDataPage> {
                       ),
                       onPressed: () {
                         Navigator.of(context).push(
-                          MaterialPageRoute<void>(builder: (BuildContext context) {
+                          MaterialPageRoute<void>(
+                              builder: (BuildContext context) {
                             return const GoalsPage();
                           }),
                         );
@@ -388,7 +422,9 @@ class _MetricDataPageState extends State<MetricDataPage> {
               child: kLineaDivisora,
             ),
             FutureBuilder<List<_ChartData>>(
-              future: widget.vitalSign == "presArt" ? getPresArtDataList() : getVitalDataList(),
+              future: widget.vitalSign == "presArt"
+                  ? getPresArtDataList()
+                  : getVitalDataList(),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case (ConnectionState.waiting):
@@ -425,7 +461,8 @@ class MetricList extends StatelessWidget {
   final AsyncSnapshot<List<_ChartData>> data;
   final String unit;
 
-  const MetricList({Key? key, required this.data, required this.unit}) : super(key: key);
+  const MetricList({Key? key, required this.data, required this.unit})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -453,7 +490,11 @@ class MetricDetail extends StatelessWidget {
   final _ChartData document;
   final String unit;
 
-  const MetricDetail({required this.document, required this.unit});
+  const MetricDetail({
+    Key? key,
+    required this.document,
+    required this.unit,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

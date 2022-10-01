@@ -6,7 +6,7 @@ import 'package:gest_app/service/obstetra_service.dart';
 import 'package:gest_app/utilities/designs.dart';
 
 class ProfileObs extends StatelessWidget {
-  const ProfileObs();
+  const ProfileObs({Key? key}) : super(key: key);
 
   static String id = '/profileObs';
 
@@ -17,7 +17,7 @@ class ProfileObs extends StatelessWidget {
 }
 
 class ViewFormObs extends StatefulWidget {
-  const ViewFormObs();
+  const ViewFormObs({Key? key}) : super(key: key);
 
   @override
   State<ViewFormObs> createState() => _ViewFormObsState();
@@ -59,7 +59,7 @@ class _ViewFormObsState extends State<ViewFormObs> {
               case (ConnectionState.waiting):
                 return SizedBox(
                   height: MediaQuery.of(context).size.height / 1.3,
-                  child: Center(
+                  child: const Center(
                     child: CircularProgressIndicator(),
                   ),
                 );
@@ -98,7 +98,7 @@ class _ViewFormObsState extends State<ViewFormObs> {
                             label: 'Nombre(s)',
                             inputType: TextInputType.text,
                             validacion: (value) {
-                              return ValidateText("Nombre", value!);
+                              return validateText("Nombre", value!);
                             },
                           ),
                           InputTextWidget(
@@ -111,7 +111,7 @@ class _ViewFormObsState extends State<ViewFormObs> {
                             label: 'Apellido(s)',
                             inputType: TextInputType.text,
                             validacion: (value) {
-                              return ValidateText("Apellido", value!);
+                              return validateText("Apellido", value!);
                             },
                           ),
                           InputTextWidget(
@@ -123,7 +123,7 @@ class _ViewFormObsState extends State<ViewFormObs> {
                             label: 'Correo',
                             inputType: TextInputType.emailAddress,
                             validacion: (value) {
-                              return ValidateEmail(value!);
+                              return validateEmail(value!);
                             },
                           ),
                           InputTextWidget(
@@ -135,12 +135,12 @@ class _ViewFormObsState extends State<ViewFormObs> {
                             label: 'Celular',
                             inputType: TextInputType.number,
                             validacion: (value) {
-                              return ValidatePhoneNumber(value!);
+                              return validatePhoneNumber(value!);
                             },
                           ),
                           Center(
                             child: Padding(
-                              padding: EdgeInsets.all(20.0),
+                              padding: const EdgeInsets.all(20.0),
                               child: ElevatedButton(
                                 style: ButtonStyle(
                                   backgroundColor:
@@ -169,10 +169,10 @@ class _ViewFormObsState extends State<ViewFormObs> {
                                         context,
                                       )
                                           .then((value) =>
-                                              _updateObsSuccess(context))
+                                              updateObsSuccess(context))
                                           .onError(
                                             (error, stackTrace) =>
-                                                _updateObsFailed(context),
+                                                updateObsFailed(context),
                                           )
                                     }
                                 },
@@ -194,13 +194,14 @@ class _ViewFormObsState extends State<ViewFormObs> {
 }
 
 class InputTextWidget extends StatelessWidget {
-  InputTextWidget({
+  const InputTextWidget({
+    Key? key,
     required this.controlador,
     required this.formatters,
     required this.label,
     required this.inputType,
     required this.validacion,
-  });
+  }) : super(key: key);
 
   final TextEditingController controlador;
   final TextInputType inputType;
@@ -213,14 +214,14 @@ class InputTextWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
-        style: TextStyle(fontSize: 13.0),
+        style: const TextStyle(fontSize: 13.0),
         controller: controlador,
         keyboardType: inputType,
         inputFormatters: formatters,
         decoration: InputDecoration(
           contentPadding:
-              EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-          border: OutlineInputBorder(),
+              const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+          border: const OutlineInputBorder(),
           labelText: label,
           labelStyle: kSubTitulo1,
         ),
@@ -242,17 +243,17 @@ Future<void> updateObstetra(String id, String nombre, String apellido,
       id, nombre, apellido, telefono, context);
 }
 
-String? ValidateText(String label, String value) {
+String? validateText(String label, String value) {
   if (value.isEmpty) {
-    return '${label} es obligatorio';
+    return '$label es obligatorio';
   }
   if (value.length < 3) {
-    return '${label} debe tener mínimo 3 carácteres';
+    return '$label debe tener mínimo 3 carácteres';
   }
   return null;
 }
 
-String? ValidatePhoneNumber(String value) {
+String? validatePhoneNumber(String value) {
   if (value.isEmpty) {
     return 'Celular es obligatorio';
   }
@@ -265,7 +266,7 @@ String? ValidatePhoneNumber(String value) {
   return null;
 }
 
-String? ValidateEmail(String value) {
+String? validateEmail(String value) {
   if (value.isEmpty) {
     return 'Email es obligatorio';
   }
@@ -277,7 +278,7 @@ String? ValidateEmail(String value) {
   return null;
 }
 
-String? ValidatePassword(String value) {
+String? validatePassword(String value) {
   if (value.isEmpty) {
     return 'Contraseña es obligatorio';
   }
@@ -287,16 +288,16 @@ String? ValidatePassword(String value) {
   return null;
 }
 
-Future<void> _updateObsSuccess(BuildContext context) {
+Future<void> updateObsSuccess(BuildContext context) {
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
         contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
-        actionsPadding: EdgeInsets.only(bottom: 10),
-        title: Text(
+            const EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: const EdgeInsets.only(bottom: 10),
+        title: const Text(
           'Perfil Actualizado',
           style: TextStyle(fontSize: 13),
         ),
@@ -308,7 +309,7 @@ Future<void> _updateObsSuccess(BuildContext context) {
         ),
         actions: <Widget>[
           TextButton(
-            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            child: const Text("ACEPTAR", style: TextStyle(fontSize: 10)),
             onPressed: () {
               Navigator.of(context).popUntil(ModalRoute.withName("/"));
             },
@@ -319,16 +320,16 @@ Future<void> _updateObsSuccess(BuildContext context) {
   );
 }
 
-Future<void> _updateObsFailed(BuildContext context) {
+Future<void> updateObsFailed(BuildContext context) {
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
         contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
-        actionsPadding: EdgeInsets.only(bottom: 10),
-        title: Text(
+            const EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: const EdgeInsets.only(bottom: 10),
+        title: const Text(
           'Algo salió mal...',
           style: TextStyle(fontSize: 13),
         ),
@@ -341,7 +342,7 @@ Future<void> _updateObsFailed(BuildContext context) {
         ),
         actions: <Widget>[
           TextButton(
-            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            child: const Text("ACEPTAR", style: TextStyle(fontSize: 10)),
             onPressed: () {
               Navigator.of(context).pop();
             },

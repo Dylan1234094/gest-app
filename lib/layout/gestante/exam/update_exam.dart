@@ -13,7 +13,7 @@ import '../../../utilities/designs.dart';
 
 class UpdateExamPage extends StatefulWidget {
   final String examId;
-  const UpdateExamPage({required this.examId});
+  const UpdateExamPage({Key? key, required this.examId}) : super(key: key);
 
   @override
   State<UpdateExamPage> createState() => _UpdateExamPageState();
@@ -24,7 +24,7 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
   final valueController = TextEditingController();
   var uid = FirebaseAuth.instance.currentUser!.uid;
 
-  void ConfirmDialog(BuildContext context) {
+  void confirmDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext ctx) {
@@ -62,7 +62,7 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
     );
   }
 
-  void ConfirmDialogDelete(BuildContext context) {
+  void confirmDialogDelete(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext ctx) {
@@ -124,7 +124,7 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
                             leading: Icon(Icons.delete),
                             title: const Text("Borrar"),
                             onTap: () {
-                              ConfirmDialogDelete(context);
+                              confirmDialogDelete(context);
                             }),
                         ListTile(
                             leading: Icon(Icons.close),
@@ -228,7 +228,7 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    ConfirmDialog(context);
+                                    confirmDialog(context);
                                   },
                                   child: Text("GUARDAR"),
                                 ),

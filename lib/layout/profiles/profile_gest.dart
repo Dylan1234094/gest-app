@@ -7,7 +7,7 @@ import 'package:gest_app/utilities/textfield_date.dart';
 import 'package:gest_app/utilities/designs.dart';
 
 class ProfileGest extends StatelessWidget {
-  const ProfileGest();
+  const ProfileGest({Key? key}) : super(key: key);
 
   static String id = '/profileGest';
 
@@ -24,7 +24,7 @@ class ViewFormGest extends StatefulWidget {
   State<ViewFormGest> createState() => _ViewFormGestState();
 }
 
-class registerGestArguments {
+class RegisterGestArguments {
   final String nombre;
   final String apellido;
   final String correo;
@@ -35,7 +35,7 @@ class registerGestArguments {
   final String fechaEco;
   final String fechaCita;
 
-  registerGestArguments(
+  RegisterGestArguments(
       this.nombre,
       this.apellido,
       this.correo,
@@ -85,224 +85,221 @@ class _ViewFormGestState extends State<ViewFormGest> {
         title: const Text("Perfil", style: kTituloCabezera),
       ),
       body: FutureBuilder<Gestante>(
-          future: getGestante(uid),
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case (ConnectionState.waiting):
+        future: getGestante(uid),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case (ConnectionState.waiting):
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            case (ConnectionState.done):
+              if (!snapshot.hasData) {
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child: Text("Algo salió mal..."),
                 );
-              case (ConnectionState.done):
-                if (!snapshot.hasData) {
-                  return const Center(
-                    child: Text("Algo salió mal..."),
-                  );
-                }
-                nombreController.text = snapshot.data!.nombre!;
-                apellidoController.text = snapshot.data!.apellido!;
-                telefonoController.text = snapshot.data!.telefono!;
-                dniController.text = snapshot.data!.dni!;
-                fechaNacimientoController.text =
-                    snapshot.data!.fechaNacimiento!;
-                fechaReglaController.text = snapshot.data!.fechaRegla!;
-                fechaEcoController.text = snapshot.data!.fechaEco!;
-                fechaCitaController.text = snapshot.data!.fechaCita!;
-                return SingleChildScrollView(
-                  child: Form(
-                    key: _keyForm,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 20.0, horizontal: 10.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(bottom: 10.0),
-                            child: Text('Actualice sus datos personales',
-                                style: kDescripcion),
+              }
+              nombreController.text = snapshot.data!.nombre!;
+              apellidoController.text = snapshot.data!.apellido!;
+              telefonoController.text = snapshot.data!.telefono!;
+              dniController.text = snapshot.data!.dni!;
+              fechaNacimientoController.text = snapshot.data!.fechaNacimiento!;
+              fechaReglaController.text = snapshot.data!.fechaRegla!;
+              fechaEcoController.text = snapshot.data!.fechaEco!;
+              fechaCitaController.text = snapshot.data!.fechaCita!;
+              return SingleChildScrollView(
+                child: Form(
+                  key: _keyForm,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 20.0, horizontal: 10.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 10.0),
+                          child: Text('Actualice sus datos personales',
+                              style: kDescripcion),
+                        ),
+                        InputTextWidget(
+                          //! Nombre
+                          controlador: nombreController,
+                          formatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.allow(
+                                RegExp("[a-z A-Z á-ú ]")),
+                          ],
+                          label: 'Nombre(s)',
+                          inputType: TextInputType.text,
+                          validacion: (value) {
+                            return validateText("Nombre", value!);
+                          },
+                          enabled: true,
+                        ),
+                        InputTextWidget(
+                          //! Apellido
+                          controlador: apellidoController,
+                          formatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.allow(
+                                RegExp("[a-z A-Z á-ú ]")),
+                          ],
+                          label: 'Apellido(s)',
+                          inputType: TextInputType.text,
+                          validacion: (value) {
+                            return validateText("Apellido", value!);
+                          },
+                          enabled: true,
+                        ),
+                        InputTextWidget(
+                          //! Celular
+                          controlador: telefonoController,
+                          formatters: [FilteringTextInputFormatter.digitsOnly],
+                          label: 'Celular',
+                          inputType: TextInputType.number,
+                          validacion: (value) {
+                            return validatePhoneNumber(value!);
+                          },
+                          enabled: true,
+                        ),
+                        InputTextWidget(
+                          //! Correo
+                          controlador: correoController,
+                          formatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.allow(
+                                RegExp("[a-z A-Z á-ú ]")),
+                          ],
+                          label: 'Correo',
+                          inputType: TextInputType.emailAddress,
+                          enabled: false,
+                        ),
+                        InputTextWidget(
+                          //! DNI
+                          controlador: dniController,
+                          formatters: [FilteringTextInputFormatter.digitsOnly],
+                          label: 'DNI',
+                          inputType: TextInputType.number,
+                          validacion: (value) {
+                            return validateDNI(value!);
+                          },
+                          enabled: true,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: MyTextFormDate(
+                            label: 'Fecha de nacimiento',
+                            dateController: fechaNacimientoController,
                           ),
-                          InputTextWidget(
-                            //! Nombre
-                            controlador: nombreController,
-                            formatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.allow(
-                                  RegExp("[a-z A-Z á-ú ]")),
-                            ],
-                            label: 'Nombre(s)',
-                            inputType: TextInputType.text,
-                            validacion: (value) {
-                              return ValidateText("Nombre", value!);
-                            },
-                            Enabled: true,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: MyTextFormDate(
+                            label: 'Fecha de última regla',
+                            dateController: fechaReglaController,
                           ),
-                          InputTextWidget(
-                            //! Apellido
-                            controlador: apellidoController,
-                            formatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.allow(
-                                  RegExp("[a-z A-Z á-ú ]")),
-                            ],
-                            label: 'Apellido(s)',
-                            inputType: TextInputType.text,
-                            validacion: (value) {
-                              return ValidateText("Apellido", value!);
-                            },
-                            Enabled: true,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: MyTextFormDate(
+                            label: 'Fecha de primera ecografía',
+                            dateController: fechaEcoController,
                           ),
-                          InputTextWidget(
-                            //! Celular
-                            controlador: telefonoController,
-                            formatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            label: 'Celular',
-                            inputType: TextInputType.number,
-                            validacion: (value) {
-                              return ValidatePhoneNumber(value!);
-                            },
-                            Enabled: true,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: MyTextFormDate(
+                            label: 'Fecha de primera cita',
+                            dateController: fechaCitaController,
                           ),
-                          InputTextWidget(
-                            //! Correo
-                            controlador: correoController,
-                            formatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.allow(
-                                  RegExp("[a-z A-Z á-ú ]")),
-                            ],
-                            label: 'Correo',
-                            inputType: TextInputType.emailAddress,
-                            Enabled: false,
-                          ),
-                          InputTextWidget(
-                            //! DNI
-                            controlador: dniController,
-                            formatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            label: 'DNI',
-                            inputType: TextInputType.number,
-                            validacion: (value) {
-                              return ValidateDNI(value!);
-                            },
-                            Enabled: true,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: MyTextFormDate(
-                              label: 'Fecha de nacimiento',
-                              dateController: fechaNacimientoController,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: MyTextFormDate(
-                              label: 'Fecha de última regla',
-                              dateController: fechaReglaController,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: MyTextFormDate(
-                              label: 'Fecha de primera ecografía',
-                              dateController: fechaEcoController,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: MyTextFormDate(
-                              label: 'Fecha de primera cita',
-                              dateController: fechaCitaController,
-                            ),
-                          ),
-                          Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(20.0),
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          colorPrincipal),
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.white),
-                                  fixedSize: MaterialStateProperty.all(
-                                      const Size(160.0, 46.0)),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
+                        ),
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        colorPrincipal),
+                                foregroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.white),
+                                fixedSize: MaterialStateProperty.all(
+                                    const Size(160.0, 46.0)),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
                                   ),
                                 ),
-                                onPressed: () => {
-                                  if (_keyForm.currentState!.validate())
-                                    {
-                                      updateGestante(
-                                              uid,
-                                              nombreController.text,
-                                              apellidoController.text,
-                                              telefonoController.text,
-                                              dniController.text,
-                                              fechaNacimientoController.text,
-                                              fechaReglaController.text,
-                                              fechaEcoController.text,
-                                              fechaCitaController.text,
-                                              context)
-                                          .then((value) =>
-                                              _updateGestSuccess(context))
-                                          .onError((error, stackTrace) =>
-                                              _updateGestFailed(context))
-                                    },
-                                },
-                                child: const Text('GUARDAR'),
                               ),
+                              onPressed: () => {
+                                if (_keyForm.currentState!.validate())
+                                  {
+                                    updateGestante(
+                                            uid,
+                                            nombreController.text,
+                                            apellidoController.text,
+                                            telefonoController.text,
+                                            dniController.text,
+                                            fechaNacimientoController.text,
+                                            fechaReglaController.text,
+                                            fechaEcoController.text,
+                                            fechaCitaController.text,
+                                            context)
+                                        .then((value) =>
+                                            updateGestSuccess(context))
+                                        .onError((error, stackTrace) =>
+                                            updateGestFailed(context))
+                                  },
+                              },
+                              child: const Text('GUARDAR'),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                );
-              default:
-                return const Text("Algo salió mal");
-            }
-          }),
+                ),
+              );
+            default:
+              return const Text("Algo salió mal");
+          }
+        },
+      ),
     );
   }
 }
 
 class InputTextWidget extends StatelessWidget {
-  InputTextWidget({
+  const InputTextWidget({
+    Key? key,
     required this.controlador,
     required this.formatters,
     required this.label,
     required this.inputType,
     this.validacion,
-    required this.Enabled,
-  });
+    required this.enabled,
+  }) : super(key: key);
 
   final TextEditingController controlador;
   final TextInputType inputType;
   final List<TextInputFormatter> formatters;
   final String label;
   final FormFieldValidator<String>? validacion;
-  final bool Enabled;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
-        style: TextStyle(fontSize: 13.0),
-        enabled: Enabled,
+        style: const TextStyle(fontSize: 13.0),
+        enabled: enabled,
         controller: controlador,
         keyboardType: inputType,
         inputFormatters: formatters,
         decoration: InputDecoration(
           contentPadding:
-              EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-          border: OutlineInputBorder(),
+              const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+          border: const OutlineInputBorder(),
           labelText: label,
           labelStyle: kSubTitulo1,
         ),
@@ -335,17 +332,17 @@ Future<void> updateGestante(
       fechaNacimiento, fechaRegla, fechaEco, fechaCita, context);
 }
 
-String? ValidateText(String label, String value) {
+String? validateText(String label, String value) {
   if (value.isEmpty) {
-    return '${label} es obligatorio';
+    return '$label es obligatorio';
   }
   if (value.length < 3) {
-    return '${label} debe tener mínimo 3 carácteres';
+    return '$label debe tener mínimo 3 carácteres';
   }
   return null;
 }
 
-String? ValidatePhoneNumber(String value) {
+String? validatePhoneNumber(String value) {
   if (value.isEmpty) {
     return 'Celular es obligatorio';
   }
@@ -358,7 +355,7 @@ String? ValidatePhoneNumber(String value) {
   return null;
 }
 
-String? ValidateDNI(String value) {
+String? validateDNI(String value) {
   if (value.isEmpty) {
     return 'DNI es obligatorio';
   }
@@ -368,28 +365,28 @@ String? ValidateDNI(String value) {
   return null;
 }
 
-Future<void> _updateGestSuccess(BuildContext context) {
+Future<void> updateGestSuccess(BuildContext context) {
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
         contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
-        actionsPadding: EdgeInsets.only(bottom: 10),
-        title: Text(
+            const EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: const EdgeInsets.only(bottom: 10),
+        title: const Text(
           'Perfil Actualizado',
           style: TextStyle(fontSize: 13),
         ),
         content: RichText(
           text: TextSpan(
-            text: 'Su perfil fue actualizado correctamente',
+            text: 'Su perfil se ha actualizado correctamente',
             style: DefaultTextStyle.of(context).style,
           ),
         ),
         actions: <Widget>[
           TextButton(
-            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            child: const Text("ACEPTAR", style: TextStyle(fontSize: 10)),
             onPressed: () {
               Navigator.of(context).popUntil(ModalRoute.withName("/"));
             },
@@ -400,16 +397,16 @@ Future<void> _updateGestSuccess(BuildContext context) {
   );
 }
 
-Future<void> _updateGestFailed(BuildContext context) {
+Future<void> updateGestFailed(BuildContext context) {
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
         contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
-        actionsPadding: EdgeInsets.only(bottom: 10),
-        title: Text(
+            const EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: const EdgeInsets.only(bottom: 10),
+        title: const Text(
           'Algo salió mal...',
           style: TextStyle(fontSize: 13),
         ),
@@ -422,7 +419,7 @@ Future<void> _updateGestFailed(BuildContext context) {
         ),
         actions: <Widget>[
           TextButton(
-            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            child: const Text("ACEPTAR", style: TextStyle(fontSize: 10)),
             onPressed: () {
               Navigator.of(context).pop();
             },

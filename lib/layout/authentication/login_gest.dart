@@ -35,12 +35,12 @@ class _LoginGestState extends State<LoginGest> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(top: 20.0),
               child: Text('Inicio de Sesión',
                   textAlign: TextAlign.center, style: kTitulo1),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(top: 20.0),
               child: Text(
                 'Inicie sesión con su cuenta de Google para continuar con la configuración de su cuenta',
@@ -62,8 +62,8 @@ class _LoginGestState extends State<LoginGest> {
                   children: [
                     Image.asset('assets/google_icon.png',
                         width: 30, height: 30),
-                    SizedBox(width: 5.0),
-                    Text(
+                    const SizedBox(width: 5.0),
+                    const Text(
                       'Iniciar sesión con Google',
                       style: TextStyle(
                           fontSize: 12.0,

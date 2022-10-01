@@ -40,7 +40,7 @@ class _GestanteListState extends State<GestanteList> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: TextFormField(
-                  style: TextStyle(fontSize: 13.0),
+                  style: const TextStyle(fontSize: 13.0),
                   onChanged: (value) {
                     setState(
                       () {
@@ -65,7 +65,7 @@ class _GestanteListState extends State<GestanteList> {
                     if (!snapshotObs.hasData) {
                       return SizedBox(
                         height: MediaQuery.of(context).size.height / 1.3,
-                        child: Center(
+                        child: const Center(
                           child: CircularProgressIndicator(),
                         ),
                       );
@@ -77,7 +77,7 @@ class _GestanteListState extends State<GestanteList> {
                         if (!snapshotGests.hasData) {
                           return SizedBox(
                             height: MediaQuery.of(context).size.height / 1.3,
-                            child: Center(
+                            child: const Center(
                               child: CircularProgressIndicator(),
                             ),
                           );
@@ -89,7 +89,7 @@ class _GestanteListState extends State<GestanteList> {
                           );
                         }
                         return ListView.builder(
-                          physics: AlwaysScrollableScrollPhysics(),
+                          physics: const AlwaysScrollableScrollPhysics(),
                           itemCount: snapshotGests.data!.length,
                           itemBuilder: ((context, index) {
                             Gestante gestante = snapshotGests.data![index];
@@ -168,7 +168,7 @@ class _GestanteListState extends State<GestanteList> {
 }
 
 class InfoGestante extends StatelessWidget {
-  const InfoGestante({required this.gestante});
+  const InfoGestante({Key? key, required this.gestante}) : super(key: key);
 
   final Gestante gestante;
 
@@ -193,7 +193,7 @@ class InfoGestante extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(width: 15.0),
+              const SizedBox(width: 15.0),
               //! Nombre
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

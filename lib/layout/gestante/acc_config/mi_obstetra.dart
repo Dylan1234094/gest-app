@@ -9,7 +9,7 @@ import '../../../utilities/designs.dart';
 import '../../obstetra/detailgest_obstetra.dart';
 
 class DatosObstetra extends StatefulWidget {
-  const DatosObstetra();
+  const DatosObstetra({Key? key}) : super(key: key);
 
   static String id = '/datosObstetra';
 
@@ -22,15 +22,15 @@ class _DatosObstetraState extends State<DatosObstetra> {
   final _keyForm = GlobalKey<FormState>();
   final obsCodeController = TextEditingController();
 
-  void ConfirmDialog(BuildContext context) {
+  void confirmDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext ctx) {
         return AlertDialog(
           contentPadding:
-              EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
-          actionsPadding: EdgeInsets.only(bottom: 10),
-          title: Text(
+              const EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+          actionsPadding: const EdgeInsets.only(bottom: 10),
+          title: const Text(
             '¿Estás seguro de desvincular obstetra?',
             style: TextStyle(fontSize: 13.0),
           ),
@@ -43,14 +43,14 @@ class _DatosObstetraState extends State<DatosObstetra> {
           ),
           actions: [
             TextButton(
-              child: Text("CANCELAR",
+              child: const Text("CANCELAR",
                   style: TextStyle(fontSize: 10, color: colorSecundario)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+              child: const Text("ACEPTAR", style: TextStyle(fontSize: 10)),
               onPressed: () {
                 desvincularObstetra(uid, context);
               },
@@ -71,7 +71,7 @@ class _DatosObstetraState extends State<DatosObstetra> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mi Obstetra', style: kTituloCabezera),
+        title: const Text('Mi Obstetra', style: kTituloCabezera),
       ),
       body: FutureBuilder<Gestante>(
         future: getGestante(uid),
@@ -80,7 +80,7 @@ class _DatosObstetraState extends State<DatosObstetra> {
             case (ConnectionState.waiting):
               return SizedBox(
                 height: MediaQuery.of(context).size.height / 1.3,
-                child: Center(
+                child: const Center(
                   child: CircularProgressIndicator(),
                 ),
               );
@@ -97,7 +97,7 @@ class _DatosObstetraState extends State<DatosObstetra> {
                       case (ConnectionState.waiting):
                         return SizedBox(
                           height: MediaQuery.of(context).size.height / 1.3,
-                          child: Center(
+                          child: const Center(
                             child: CircularProgressIndicator(),
                           ),
                         );
@@ -128,21 +128,21 @@ class _DatosObstetraState extends State<DatosObstetra> {
                                         textAlign: TextAlign.start,
                                         style: kDescripcion),
                                     Padding(
-                                      padding: EdgeInsets.only(top: 20.0),
+                                      padding: const EdgeInsets.only(top: 20.0),
                                       child: Text(
                                           'Apellido: ${snapshotObs.data!.apellido!}',
                                           textAlign: TextAlign.start,
                                           style: kDescripcion),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.only(top: 20.0),
+                                      padding: const EdgeInsets.only(top: 20.0),
                                       child: Text(
                                           'Correo: ${snapshotObs.data!.correo!}',
                                           textAlign: TextAlign.start,
                                           style: kDescripcion),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.only(top: 20.0),
+                                      padding: const EdgeInsets.only(top: 20.0),
                                       child: Text(
                                           'Código: ${snapshotObs.data!.codigoObstetra!}',
                                           textAlign: TextAlign.start,
@@ -150,10 +150,10 @@ class _DatosObstetraState extends State<DatosObstetra> {
                                     ),
                                     Center(
                                       child: Padding(
-                                        padding: EdgeInsets.all(20.0),
+                                        padding: const EdgeInsets.all(20.0),
                                         child: ElevatedButton(
                                           onPressed: () =>
-                                              {ConfirmDialog(context)},
+                                              {confirmDialog(context)},
                                           child: const Text('DESVINCULAR'),
                                           style: ButtonStyle(
                                             backgroundColor:
@@ -224,13 +224,13 @@ class _DatosObstetraState extends State<DatosObstetra> {
                                               labelStyle: kSubTitulo1,
                                             ),
                                             validator: (value) {
-                                              return ValidateCodeFormat(value!);
+                                              return validateCodeFormat(value!);
                                             },
                                           ),
                                         ),
                                         Center(
                                           child: Padding(
-                                            padding: EdgeInsets.all(20.0),
+                                            padding: const EdgeInsets.all(20.0),
                                             child: ElevatedButton(
                                               onPressed: () => {
                                                 if (_keyForm.currentState!
@@ -306,7 +306,7 @@ void desvincularObstetra(String id, BuildContext context) {
 }
 
 //Vinculación
-String? ValidateCodeFormat(String value) {
+String? validateCodeFormat(String value) {
   if (value.isEmpty) {
     return 'Debe ingresar un código de obstetra';
   }
@@ -341,9 +341,9 @@ Future<void> _dialogCodeFound(BuildContext context, Obstetra obstetra) {
     builder: (BuildContext context) {
       return AlertDialog(
         contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
-        actionsPadding: EdgeInsets.only(bottom: 10),
-        title: Text(
+            const EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: const EdgeInsets.only(bottom: 10),
+        title: const Text(
           'Vinculación exitosa',
           style: TextStyle(fontSize: 13),
         ),
@@ -354,16 +354,16 @@ Future<void> _dialogCodeFound(BuildContext context, Obstetra obstetra) {
             children: <TextSpan>[
               TextSpan(
                 text: '${obstetra.nombre} ${obstetra.apellido}',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              TextSpan(
+              const TextSpan(
                   text: ' estará controlando sus datos a partir del momento.')
             ],
           ),
         ),
         actions: <Widget>[
           TextButton(
-            child: Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            child: const Text("ACEPTAR", style: TextStyle(fontSize: 10)),
             onPressed: () {
               updateCodigoObstetra(
                   uid, obstetra.codigoObstetra!, obstetra.fcmToken!, context);

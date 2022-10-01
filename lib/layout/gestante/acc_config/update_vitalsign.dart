@@ -216,6 +216,7 @@ class _UpdateVitalSignsState extends State<UpdateVitalSigns> {
 
 class VitalSignWidget extends StatefulWidget {
   VitalSignWidget({
+    Key? key,
     required this.vitalSignController,
     required this.title,
     required this.infoMonitoreo,
@@ -223,7 +224,7 @@ class VitalSignWidget extends StatefulWidget {
     required this.instrumento,
     required this.infoMedicion,
     required this.imagen,
-  });
+  }) : super(key: key);
 
   final TextEditingController vitalSignController;
   final String title;
@@ -369,4 +370,70 @@ Future<Gestante> getGestante(String id) {
   GestanteService _gestanteService = GestanteService();
 
   return _gestanteService.getGestante(id);
+}
+
+Future<void> updateVitalsSuccess(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding:
+            const EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: const EdgeInsets.only(bottom: 10),
+        title: const Text(
+          'Configuración Actualizada',
+          style: TextStyle(fontSize: 13),
+        ),
+        content: RichText(
+          text: TextSpan(
+            text:
+                'La configuración de sus signos vitales se ha actualizado correctamente',
+            style: DefaultTextStyle.of(context).style,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            onPressed: () {
+              Navigator.of(context).popUntil(ModalRoute.withName("/"));
+            },
+          )
+        ],
+      );
+    },
+  );
+}
+
+Future<void> updateVitalsFailed(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding:
+            const EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: const EdgeInsets.only(bottom: 10),
+        title: const Text(
+          'Algo salió mal...',
+          style: TextStyle(fontSize: 13),
+        ),
+        content: RichText(
+          text: TextSpan(
+            text:
+                'La configuración de sus signos vitales no fue actualizado. Por favor, inténtelo más tarde',
+            style: DefaultTextStyle.of(context).style,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text("ACEPTAR", style: TextStyle(fontSize: 10)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      );
+    },
+  );
 }

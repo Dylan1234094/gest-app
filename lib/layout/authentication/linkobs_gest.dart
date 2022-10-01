@@ -23,11 +23,11 @@ class LinkObs extends StatefulWidget {
   State<LinkObs> createState() => _LinkObsState();
 }
 
-class linkObsArguments {
+class LinkObsArguments {
   final String codigoObs;
   final String fcmTokenObs;
 
-  linkObsArguments(this.codigoObs, this.fcmTokenObs);
+  LinkObsArguments(this.codigoObs, this.fcmTokenObs);
 }
 
 class _LinkObsState extends State<LinkObs> {
@@ -54,12 +54,12 @@ class _LinkObsState extends State<LinkObs> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(top: 20.0),
                   child: Text('Vinculación con Obstetra',
                       textAlign: TextAlign.center, style: kTitulo1),
                 ),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(top: 20.0),
                   child: Text(
                     'Ingresa el código de un(a) obstetra para compartirle sus resultados del monitoreo',
@@ -82,13 +82,13 @@ class _LinkObsState extends State<LinkObs> {
                       labelStyle: kSubTitulo1,
                     ),
                     validator: (value) {
-                      return ValidateCodeFormat(value!);
+                      return validateCodeFormat(value!);
                     },
                   ),
                 ),
                 Center(
                   child: Padding(
-                    padding: EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.all(20.0),
                     child: ElevatedButton(
                       onPressed: () => {
                         if (_keyForm.currentState!.validate())
@@ -157,8 +157,8 @@ Future<void> _dialogCodeNotFound(BuildContext context, String codeObs) {
     builder: (BuildContext context) {
       return AlertDialog(
         contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
-        actionsPadding: EdgeInsets.only(bottom: 10),
+            const EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: const EdgeInsets.only(bottom: 10),
         title: const Text('Código Inválido', style: TextStyle(fontSize: 13)),
         content:
             //Richtext
@@ -169,7 +169,7 @@ Future<void> _dialogCodeNotFound(BuildContext context, String codeObs) {
         ),
         actions: <Widget>[
           TextButton(
-            child: Text('ACEPTAR', style: TextStyle(fontSize: 10)),
+            child: const Text('ACEPTAR', style: TextStyle(fontSize: 10)),
             onPressed: () => Navigator.pop(context),
           )
         ],
@@ -184,9 +184,10 @@ Future<void> _dialogCodeFound(BuildContext context, Obstetra obstetra) {
     builder: (BuildContext context) {
       return AlertDialog(
         contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
-        actionsPadding: EdgeInsets.only(bottom: 10),
-        title: Text('Vinculación exitosa', style: TextStyle(fontSize: 13)),
+            const EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        actionsPadding: const EdgeInsets.only(bottom: 10),
+        title:
+            const Text('Vinculación exitosa', style: TextStyle(fontSize: 13)),
         content: Text(
           'El/La obstetra ${obstetra.nombre} ${obstetra.apellido} estará controlando sus datos a partir del momento.',
           style: kInfoPopUp,
@@ -194,12 +195,12 @@ Future<void> _dialogCodeFound(BuildContext context, Obstetra obstetra) {
         ),
         actions: <Widget>[
           TextButton(
-            child: Text('ACEPTAR', style: TextStyle(fontSize: 10)),
+            child: const Text('ACEPTAR', style: TextStyle(fontSize: 10)),
             //onPressed: () => Navigator.pop(context),
             onPressed: () => Navigator.pushNamed(
               context,
               '/registerGestante',
-              arguments: linkObsArguments(
+              arguments: LinkObsArguments(
                   obstetra.codigoObstetra!, obstetra.fcmToken!),
             ),
           )
@@ -215,7 +216,7 @@ Future<Obstetra> validateCodeObstetra(String codeObs) async {
   return await _gestanteService.validateCodeObstetra(codeObs);
 }
 
-String? ValidateCodeFormat(String value) {
+String? validateCodeFormat(String value) {
   if (value.isEmpty) {
     return 'Debe ingresar un código de obstetra';
   }

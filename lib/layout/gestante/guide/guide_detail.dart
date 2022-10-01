@@ -8,7 +8,7 @@ import '../../../utilities/designs.dart';
 
 class GuideDetailPage extends StatefulWidget {
   final String guideId;
-  const GuideDetailPage({required this.guideId});
+  const GuideDetailPage({Key? key, required this.guideId}) : super(key: key);
 
   @override
   State<GuideDetailPage> createState() => _GuideDetailPageState();

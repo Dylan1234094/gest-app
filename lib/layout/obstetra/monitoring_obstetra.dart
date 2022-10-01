@@ -28,11 +28,11 @@ class _MonitorObsState extends State<ScreenObs> {
         onPressed: () {
           Navigator.of(context)
               .push(MaterialPageRoute<void>(builder: (BuildContext context) {
-            return GestanteList();
+            return const GestanteList();
           }));
         },
         backgroundColor: colorPrincipal,
-        child: Icon(Icons.sms_outlined),
+        child: const Icon(Icons.sms_outlined),
       ),
       drawer: const DrawerObs(),
       appBar: AppBar(
@@ -51,7 +51,7 @@ class _MonitorObsState extends State<ScreenObs> {
               case ConnectionState.waiting:
                 return SizedBox(
                   height: MediaQuery.of(context).size.height / 1.3,
-                  child: Center(
+                  child: const Center(
                     child: CircularProgressIndicator(),
                   ),
                 );
@@ -65,7 +65,7 @@ class _MonitorObsState extends State<ScreenObs> {
                         case ConnectionState.waiting:
                           return SizedBox(
                             height: MediaQuery.of(context).size.height / 1.3,
-                            child: Center(
+                            child: const Center(
                               child: CircularProgressIndicator(),
                             ),
                           );
@@ -76,7 +76,8 @@ class _MonitorObsState extends State<ScreenObs> {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 20.0, horizontal: 10.0),
                                 child: ListView.builder(
-                                  physics: AlwaysScrollableScrollPhysics(),
+                                  physics:
+                                      const AlwaysScrollableScrollPhysics(),
                                   itemCount: snapshotGests.data!.length,
                                   itemBuilder: ((context, index) {
                                     VitalSign vitals = VitalSign.fromJson(
@@ -101,7 +102,7 @@ class _MonitorObsState extends State<ScreenObs> {
                                 ),
                               );
                             } else {
-                              return Center(
+                              return const Center(
                                 child: Text(
                                   "No se encontraron gestantes registradas",
                                 ),
@@ -132,7 +133,7 @@ class _MonitorObsState extends State<ScreenObs> {
                   return const Text("ERROR BODY");
                 }
               default:
-                return Text("data");
+                return const Text("data");
             }
           },
         ),
@@ -142,7 +143,11 @@ class _MonitorObsState extends State<ScreenObs> {
 }
 
 class InfoGestante extends StatelessWidget {
-  const InfoGestante({required this.gestante, required this.vitals});
+  const InfoGestante({
+    Key? key,
+    required this.gestante,
+    required this.vitals,
+  }) : super(key: key);
 
   final Gestante gestante;
   final VitalSign vitals;

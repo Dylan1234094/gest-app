@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 import '../../../utilities/designs.dart';
 
 class GoalsPage extends StatelessWidget {
-  const GoalsPage();
+  const GoalsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +64,8 @@ class GoalsPage extends StatelessWidget {
                           children: <Widget>[
                             Text(
                               "Desde ${DateFormat('dd/MM/yyyy').format(startTimeDate)} hasta ${DateFormat('dd/MM/yyyy').format(endTimeDate)}",
-                              style: kSubTitulo1.copyWith(color: colorSecundario),
+                              style:
+                                  kSubTitulo1.copyWith(color: colorSecundario),
                             ),
                             Text(
                               document['value'].toString() + ' min. diarios',

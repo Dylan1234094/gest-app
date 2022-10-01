@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:intl/intl.dart';
 import '../utilities/designs.dart';
 
@@ -14,7 +12,7 @@ class Chat extends StatefulWidget {
   final String anotherUserSurname;
   final String anotherUserFCMToken;
 
-  Chat(
+  const Chat(
       {Key? key,
       required this.nombreSender,
       required this.apellidoSender,
@@ -42,10 +40,10 @@ class MessageChat {
 
   Map<String, dynamic> toJson() {
     return {
-      "idFrom": this.idFrom,
-      "idTo": this.idTo,
-      "timestamp": this.timestamp,
-      "content": this.content,
+      "idFrom": idFrom,
+      "idTo": idTo,
+      "timestamp": timestamp,
+      "content": content,
     };
   }
 
@@ -63,7 +61,7 @@ class _ChatState extends State<Chat> {
   CollectionReference chats = FirebaseFirestore.instance.collection('chats');
   final currentUserId = FirebaseAuth.instance.currentUser!.uid;
   var chatDocId;
-  var _textController = new TextEditingController();
+  final _textController = TextEditingController();
   final ScrollController listScrollController = ScrollController();
 
   bool isLoading = false;
@@ -89,7 +87,7 @@ class _ChatState extends State<Chat> {
                 chatDocId = querySnapshot.docs.single.id;
               });
 
-              print(chatDocId);
+              //print(chatDocId);
             } else {
               await chats.add({
                 'users': {currentUserId: null, widget.anotherUserUid: null}
@@ -109,21 +107,21 @@ class _ChatState extends State<Chat> {
       'content': msg
     }).then((value) async {
       _textController.text = '';
-      var url =
-          'https://upc-cloud-test.azurewebsites.net/api/sendChatNotification';
-      Map data = {
-        'nombreSender': widget.nombreSender,
-        'apellidoSender': widget.apellidoSender,
-        'idSender': currentUserId,
-        'fcmReceiverToken': widget.anotherUserFCMToken
-      };
-      var body = json.encode(data);
+      // var url =
+      //     'https://upc-cloud-test.azurewebsites.net/api/sendChatNotification';
+      // Map data = {
+      //   'nombreSender': widget.nombreSender,
+      //   'apellidoSender': widget.apellidoSender,
+      //   'idSender': currentUserId,
+      //   'fcmReceiverToken': widget.anotherUserFCMToken
+      // };
+      //var body = json.encode(data);
       try {
-        var response = await http.post(Uri.parse(url),
-            headers: {"Content-Type": "application/json"}, body: body);
-        print(response.body);
+        // var response = await http.post(Uri.parse(url),
+        //     headers: {"Content-Type": "application/json"}, body: body);
+        //print(response.body);
       } catch (e) {
-        print(e);
+        //print(e);
       }
     });
   }
@@ -243,7 +241,11 @@ class _ChatState extends State<Chat> {
 }
 
 class BurbujaMensaje extends StatelessWidget {
-  const BurbujaMensaje({required this.messageChat, required this.isMe});
+  const BurbujaMensaje({
+    Key? key,
+    required this.messageChat,
+    required this.isMe,
+  }) : super(key: key);
 
   final MessageChat messageChat;
   final bool isMe;
@@ -259,12 +261,12 @@ class BurbujaMensaje extends StatelessWidget {
           elevation: 5.0,
           shape: RoundedRectangleBorder(
             borderRadius: isMe
-                ? BorderRadius.only(
+                ? const BorderRadius.only(
                     topLeft: Radius.circular(10.0),
                     topRight: Radius.circular(10.0),
                     bottomLeft: Radius.circular(10.0),
                   )
-                : BorderRadius.only(
+                : const BorderRadius.only(
                     topLeft: Radius.circular(10.0),
                     topRight: Radius.circular(10.0),
                     bottomRight: Radius.circular(10.0),
@@ -279,7 +281,7 @@ class BurbujaMensaje extends StatelessWidget {
               children: [
                 Text(
                   messageChat.content,
-                  style: TextStyle(color: Colors.white, fontSize: 10.0),
+                  style: const TextStyle(color: Colors.white, fontSize: 10.0),
                   textAlign: TextAlign.start,
                 ),
                 Text(

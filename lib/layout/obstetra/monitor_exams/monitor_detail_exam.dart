@@ -11,8 +11,12 @@ class MonitorExamDetailPage extends StatefulWidget {
   final String examName;
   final String gestId;
 
-  const MonitorExamDetailPage(
-      {required this.examId, required this.examName, required this.gestId});
+  const MonitorExamDetailPage({
+    Key? key,
+    required this.examId,
+    required this.examName,
+    required this.gestId,
+  }) : super(key: key);
 
   @override
   State<MonitorExamDetailPage> createState() => _MonitorExamDetailPageState();
@@ -46,13 +50,13 @@ class _MonitorExamDetailPageState extends State<MonitorExamDetailPage> {
             if (snapshot.hasData) {
               return SizedBox(
                 height: MediaQuery.of(context).size.height / 1.3,
-                child: Center(
+                child: const Center(
                   child: CircularProgressIndicator(),
                 ),
               );
             }
             return SingleChildScrollView(
-              physics: AlwaysScrollableScrollPhysics(),
+              physics: const AlwaysScrollableScrollPhysics(),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                     vertical: 20.0, horizontal: 10.0),
@@ -60,7 +64,7 @@ class _MonitorExamDetailPageState extends State<MonitorExamDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Padding(
-                        padding: EdgeInsets.only(bottom: 10.0),
+                        padding: const EdgeInsets.only(bottom: 10.0),
                         child: Text(
                           'Resultados de exámenes de ${widget.examName}',
                           style: kTitulo1,
@@ -75,7 +79,7 @@ class _MonitorExamDetailPageState extends State<MonitorExamDetailPage> {
                               return SizedBox(
                                 height:
                                     MediaQuery.of(context).size.height / 1.3,
-                                child: Center(
+                                child: const Center(
                                   child: CircularProgressIndicator(),
                                 ),
                               );
@@ -124,7 +128,7 @@ class _MonitorExamDetailPageState extends State<MonitorExamDetailPage> {
 }
 
 class DatoExamen extends StatelessWidget {
-  const DatoExamen({required this.exam});
+  const DatoExamen({Key? key, required this.exam}) : super(key: key);
 
   final Exam exam;
 
