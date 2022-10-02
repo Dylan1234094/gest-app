@@ -36,13 +36,10 @@ class GestanteService {
 
   void signInGestante(BuildContext context) async {
     try {
-      final GoogleSignInAccount? googleSignInAccount =
-          await _googleSignIn.signIn();
-      final GoogleSignInAuthentication googleSignInAuthentication =
-          await googleSignInAccount!.authentication;
+      final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount!.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleSignInAuthentication.accessToken,
-          idToken: googleSignInAuthentication.idToken);
+          accessToken: googleSignInAuthentication.accessToken, idToken: googleSignInAuthentication.idToken);
       await _auth.signInWithCredential(credential).then((value) async {
         try {
           // print(_googleSignIn.currentUser);
@@ -57,26 +54,22 @@ class GestanteService {
                   .collection("gestantes")
                   .withConverter(
                     fromFirestore: Gestante.fromFirestore,
-                    toFirestore: (Gestante gestante, options) =>
-                        gestante.toFirestore(),
+                    toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
                   )
                   .doc(value.user!.uid);
-              await docRef
-                  .set(gestante, SetOptions(merge: true))
-                  .then((value) => Navigator.pop(context, '/'));
+              await docRef.set(gestante, SetOptions(merge: true)).then((value) => Navigator.pop(context, '/'));
             } else {
               //request rtoken, create gestante with rtoken then update
               var rtoken = "";
-              var url =
-                  'https://upc-cloud-test.azurewebsites.net/api/getVitalData';
+              var url = 'https://upc-cloud-test.azurewebsites.net/api/getVitalData';
               Map data = {
                 'email': _googleSignIn.currentUser!.email,
                 'serverToken': _googleSignIn.currentUser!.serverAuthCode,
               };
               var body = json.encode(data);
               try {
-                var response = await http.post(Uri.parse(url),
-                    headers: {"Content-Type": "application/json"}, body: body);
+                var response =
+                    await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
                 rtoken = response.body;
               } catch (e) {
                 // print(e);
@@ -107,12 +100,12 @@ class GestanteService {
             .collection("gestantes")
             .withConverter(
               fromFirestore: Gestante.fromFirestore,
-              toFirestore: (Gestante gestante, options) =>
-                  gestante.toFirestore(),
+              toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
             )
             .doc(uid);
-        await docRef.set(gestante, SetOptions(merge: true)).then(
-            (value) => Navigator.popUntil(context, ModalRoute.withName('/')));
+        await docRef
+            .set(gestante, SetOptions(merge: true))
+            .then((value) => Navigator.popUntil(context, ModalRoute.withName('/')));
       });
     } on FirebaseAuthException {
       // print(e.message);
@@ -134,9 +127,7 @@ class GestanteService {
           toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
         )
         .doc(id);
-    await docRef
-        .set(gestante)
-        .then((value) => Navigator.pushNamed(context, '/linkObstetraGestante'));
+    await docRef.set(gestante).then((value) => Navigator.pushNamed(context, '/linkObstetraGestante'));
   }
 
   void createDataGestante(
@@ -179,18 +170,11 @@ class GestanteService {
     await docRef.set(gestante, SetOptions(merge: true)).then((value) async {
       Navigator.of(context).popUntil(ModalRoute.withName("/"));
 
-      var url =
-          'https://upc-cloud-test.azurewebsites.net/api/sendLinkNotification';
-      Map data = {
-        'nameGest': nombre,
-        'surnameGest': apellido,
-        'idGest': id,
-        'fcmReceiverToken': "fcmtoken"
-      };
+      var url = 'https://upc-cloud-test.azurewebsites.net/api/sendLinkNotification';
+      Map data = {'nameGest': nombre, 'surnameGest': apellido, 'idGest': id, 'fcmReceiverToken': "fcmtoken"};
       var body = json.encode(data);
       try {
-        var response = await http.post(Uri.parse(url),
-            headers: {"Content-Type": "application/json"}, body: body);
+        var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
         // print(response.body);
       } catch (e) {
         // print(e);
@@ -198,17 +182,8 @@ class GestanteService {
     });
   }
 
-  Future<void> updateGestante(
-      String id,
-      String nombre,
-      String apellido,
-      String telefono,
-      String dni,
-      String fechaNacimiento,
-      String fechaRegla,
-      String fechaEco,
-      String fechaCita,
-      BuildContext context) async {
+  Future<void> updateGestante(String id, String nombre, String apellido, String telefono, String dni,
+      String fechaNacimiento, String fechaRegla, String fechaEco, String fechaCita, BuildContext context) async {
     final gestante = Gestante(
         nombre: nombre,
         apellido: apellido,
@@ -233,8 +208,7 @@ class GestanteService {
     }
   }
 
-  void updateGestanteSigns(
-      String id, VitalSign vitals, BuildContext context) async {
+  Future<void> updateGestanteSigns(String id, VitalSign vitals, BuildContext context) async {
     final gestante = Gestante(vitals: vitals.toJson());
 
     final docRef = db
@@ -244,8 +218,7 @@ class GestanteService {
           toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
         )
         .doc(id);
-    await docRef.set(gestante, SetOptions(merge: true)).then(
-        (value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
+    await docRef.set(gestante, SetOptions(merge: true));
   }
 
   void desvincularObstetra(String id, BuildContext context) async {
@@ -258,8 +231,9 @@ class GestanteService {
           toFirestore: (Gestante gestante, options) => gestante.toFirestore(),
         )
         .doc(id);
-    await docRef.set(gestante, SetOptions(merge: true)).then(
-        (value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
+    await docRef
+        .set(gestante, SetOptions(merge: true))
+        .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("/")));
   }
 
   Future<Gestante> getGestante(String uid) async {
@@ -276,13 +250,7 @@ class GestanteService {
     var fechaCita = "";
     var photoUrl = "";
     var rtoken = "";
-    VitalSign vitals = const VitalSign(
-        actFisica: "",
-        freCardi: "",
-        gluco: "",
-        peso: "",
-        presArt: "",
-        satOxig: "");
+    VitalSign vitals = const VitalSign(actFisica: "", freCardi: "", gluco: "", peso: "", presArt: "", satOxig: "");
 
     try {
       // print(uid);
@@ -310,8 +278,7 @@ class GestanteService {
               presArt: data["vitals"]["presArt"],
               satOxig: data["vitals"]["satOxig"]);
         },
-        onError:
-            (e) {}, // print("Error al intentar obtener doc $uid en gestante"),
+        onError: (e) {}, // print("Error al intentar obtener doc $uid en gestante"),
       );
     } catch (e) {
       // print(e);
@@ -343,11 +310,8 @@ class GestanteService {
     var codigoObstetra = "";
 
     try {
-      final docRef = await db
-          .collection("obstetras")
-          .where("codigoObstetra", isEqualTo: codeObstetra)
-          .get()
-          .then((event) {
+      final docRef =
+          await db.collection("obstetras").where("codigoObstetra", isEqualTo: codeObstetra).get().then((event) {
         if (event.docs.isNotEmpty) {
           uid = event.docs.first.data()["id"];
           nombre = event.docs.first.data()["nombre"];
@@ -369,8 +333,7 @@ class GestanteService {
         codigoObstetra: codigoObstetra);
   }
 
-  void updateCodeObstetra(String id, String codigoObs, String fcmToken,
-      BuildContext context) async {
+  void updateCodeObstetra(String id, String codigoObs, String fcmToken, BuildContext context) async {
     final gestante = Gestante(codigoObstetra: codigoObs);
     var nombreGest = "";
     var apellidoGest = "";
@@ -390,23 +353,15 @@ class GestanteService {
           nombreGest = data["nombre"];
           apellidoGest = data["apellido"];
         },
-        onError:
-            (e) {}, // print("Error al intentar obtener doc $id en gestante"),
+        onError: (e) {}, // print("Error al intentar obtener doc $id en gestante"),
       );
       Navigator.of(context).popUntil(ModalRoute.withName("/"));
 
-      var url =
-          'https://upc-cloud-test.azurewebsites.net/api/sendLinkNotification';
-      Map data = {
-        'nameGest': nombreGest,
-        'surnameGest': apellidoGest,
-        'idGest': id,
-        'fcmReceiverToken': fcmToken
-      };
+      var url = 'https://upc-cloud-test.azurewebsites.net/api/sendLinkNotification';
+      Map data = {'nameGest': nombreGest, 'surnameGest': apellidoGest, 'idGest': id, 'fcmReceiverToken': fcmToken};
       var body = json.encode(data);
       try {
-        var response = await http.post(Uri.parse(url),
-            headers: {"Content-Type": "application/json"}, body: body);
+        var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
         // print(response.body);
       } catch (e) {
         // print(e);
@@ -423,11 +378,7 @@ class GestanteService {
     var fcmToken = "";
 
     try {
-      final gestRef = await db
-          .collection("gestantes")
-          .doc(gestID)
-          .get()
-          .then((DocumentSnapshot doc) async {
+      final gestRef = await db.collection("gestantes").doc(gestID).get().then((DocumentSnapshot doc) async {
         final data = doc.data() as Map<String, dynamic>;
         final docRef = await db
             .collection("obstetras")
@@ -446,11 +397,7 @@ class GestanteService {
     } catch (e) {
       // print(e);
     }
-    return obstetra = Obstetra(
-        id: uid,
-        nombre: nombre,
-        apellido: apellido,
-        codigoObstetra: codigoObstetra,
-        fcmToken: fcmToken);
+    return obstetra =
+        Obstetra(id: uid, nombre: nombre, apellido: apellido, codigoObstetra: codigoObstetra, fcmToken: fcmToken);
   }
 }

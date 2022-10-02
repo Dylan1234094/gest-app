@@ -60,26 +60,20 @@ class _DetailMonitorGestState extends State<PerfilGest> {
                   return const Align(
                     alignment: Alignment.center,
                     child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                       child: CircularProgressIndicator(),
                     ),
                   );
                 case ConnectionState.done:
-                  actFisicaController.text =
-                      snapshotGest.data!.vitals!["actFisica"];
-                  freCardiController.text =
-                      snapshotGest.data!.vitals!["freCardi"];
-                  presArtController.text =
-                      snapshotGest.data!.vitals!["presArt"];
-                  satOxigController.text =
-                      snapshotGest.data!.vitals!["satOxig"];
+                  actFisicaController.text = snapshotGest.data!.vitals!["actFisica"];
+                  freCardiController.text = snapshotGest.data!.vitals!["freCardi"];
+                  presArtController.text = snapshotGest.data!.vitals!["presArt"];
+                  satOxigController.text = snapshotGest.data!.vitals!["satOxig"];
                   pesoController.text = snapshotGest.data!.vitals!["peso"];
                   glucoController.text = snapshotGest.data!.vitals!["gluco"];
                   if (snapshotGest.hasData) {
                     return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 20.0, horizontal: 10.0),
+                      padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
@@ -88,19 +82,15 @@ class _DetailMonitorGestState extends State<PerfilGest> {
                             alignment: Alignment.center,
                             child: CircleAvatar(
                               radius: MediaQuery.of(context).size.height / 11,
-                              backgroundImage: snapshotGest.data!.photoUrl! !=
-                                      ""
+                              backgroundImage: snapshotGest.data!.photoUrl! != ""
                                   ? NetworkImage(snapshotGest.data!.photoUrl!)
-                                  : Image.asset(
-                                          "assets/default_profile_icon.png")
-                                      .image,
+                                  : Image.asset("assets/default_profile_icon.png").image,
                               backgroundColor: Colors.lightBlue[900],
                             ),
                           ),
                           PerfilData(
                             titleData: 'NOMBRE COMPLETO',
-                            data:
-                                '${snapshotGest.data!.nombre!} ${snapshotGest.data!.apellido!}',
+                            data: '${snapshotGest.data!.nombre!} ${snapshotGest.data!.apellido!}',
                           ),
                           PerfilData(
                             titleData: 'FECHA DE NACIMIENTO',
@@ -109,7 +99,7 @@ class _DetailMonitorGestState extends State<PerfilGest> {
                           PerfilData(
                             titleData: 'EDAD GESTACIONAL',
                             data:
-                                '${(DateTime.now().difference(intl.DateFormat("dd/MM/yyyy hh:mm:ss").parse(snapshotGest.data!.fechaRegla! + " 00:00:00")).inDays).round()} semanas de embarazo',
+                                "${(DateTime.now().difference(intl.DateFormat("dd/MM/yyyy hh:mm:ss").parse(snapshotGest.data!.fechaRegla! + " 00:00:00")).inDays / 4).round()} semanas de embarazo",
                           ),
                           const Padding(
                             padding: EdgeInsets.symmetric(vertical: 10.0),
@@ -124,8 +114,7 @@ class _DetailMonitorGestState extends State<PerfilGest> {
                                   ? VitalCardObs(
                                       userType: "obs",
                                       title: "Actividad Física",
-                                      iconPath:
-                                          "assets/IconsVitals/act_fisica_icon.png",
+                                      iconPath: "assets/IconsVitals/act_fisica_icon.png",
                                       vitalSign: "actFisica",
                                       unit: "Pasos",
                                       rtoken: snapshotGest.data!.rtoken!,
@@ -136,8 +125,7 @@ class _DetailMonitorGestState extends State<PerfilGest> {
                                   ? VitalCardObs(
                                       userType: "obs",
                                       title: "Frecuencia Cardíaca",
-                                      iconPath:
-                                          "assets/IconsVitals/fre_car_icon.png",
+                                      iconPath: "assets/IconsVitals/fre_car_icon.png",
                                       vitalSign: "freCardi",
                                       unit: "bpm",
                                       rtoken: snapshotGest.data!.rtoken!,
@@ -148,8 +136,7 @@ class _DetailMonitorGestState extends State<PerfilGest> {
                                   ? VitalCardObs(
                                       userType: "obs",
                                       title: "Glucosa",
-                                      iconPath:
-                                          "assets/IconsVitals/gluco_icon.png",
+                                      iconPath: "assets/IconsVitals/gluco_icon.png",
                                       vitalSign: "gluco",
                                       unit: "mmol/L",
                                       rtoken: snapshotGest.data!.rtoken!,
@@ -160,8 +147,7 @@ class _DetailMonitorGestState extends State<PerfilGest> {
                                   ? VitalCardObs(
                                       userType: "obs",
                                       title: "Peso",
-                                      iconPath:
-                                          "assets/IconsVitals/peso_icon.png",
+                                      iconPath: "assets/IconsVitals/peso_icon.png",
                                       vitalSign: "peso",
                                       unit: "kg",
                                       rtoken: snapshotGest.data!.rtoken!,
@@ -172,8 +158,7 @@ class _DetailMonitorGestState extends State<PerfilGest> {
                                   ? VitalCardObs(
                                       userType: "obs",
                                       title: "Presión Arterial",
-                                      iconPath:
-                                          "assets/IconsVitals/pres_art_icon.png",
+                                      iconPath: "assets/IconsVitals/pres_art_icon.png",
                                       vitalSign: "presArt",
                                       unit: "mmHg",
                                       rtoken: snapshotGest.data!.rtoken!,
@@ -184,8 +169,7 @@ class _DetailMonitorGestState extends State<PerfilGest> {
                                   ? VitalCardObs(
                                       userType: "obs",
                                       title: "Saturación de Oxígeno",
-                                      iconPath:
-                                          "assets/IconsVitals/sat_oxig_icon.png",
+                                      iconPath: "assets/IconsVitals/sat_oxig_icon.png",
                                       vitalSign: "satOxig",
                                       unit: "%",
                                       rtoken: snapshotGest.data!.rtoken!,
@@ -318,8 +302,7 @@ class _VitalCardObsState extends State<VitalCardObs> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(widget.title, textAlign: TextAlign.end, style: kTitulo3),
-                  Text('Ver evolución',
-                      style: kSubTitulo1.copyWith(color: colorSecundario))
+                  Text('Ver evolución', style: kSubTitulo1.copyWith(color: colorSecundario))
                 ],
               ),
             ),
