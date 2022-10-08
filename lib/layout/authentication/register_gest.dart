@@ -319,7 +319,7 @@ String? validateDNI(String value) {
     return 'DNI es obligatorio';
   }
   if (value.length != 8) {
-    return 'Celular debe tener 8 dígitos';
+    return 'DNI debe tener 8 dígitos';
   }
   return null;
 }

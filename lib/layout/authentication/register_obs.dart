@@ -84,7 +84,7 @@ class _FormObsState extends State<FormObs> {
                   formatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.allow(RegExp("[a-z A-Z á-ú]")),
                   ],
-                  label: 'Nombre',
+                  label: 'Nombre(s)',
                   validacion: (value) {
                     return validateText("Nombre", value!);
                   },
@@ -96,7 +96,7 @@ class _FormObsState extends State<FormObs> {
                   formatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.allow(RegExp("[a-z A-Z á-ú]")),
                   ],
-                  label: 'Apellido',
+                  label: 'Apellido(s)',
                   validacion: (value) {
                     return validateText("Apellido", value!);
                   },
@@ -319,12 +319,12 @@ String? validatePhoneNumber(String value) {
 
 String? validateEmail(String value) {
   if (value.isEmpty) {
-    return 'Email es obligatorio';
+    return 'Correo es obligatorio';
   }
   if (!RegExp(
           r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
       .hasMatch(value)) {
-    return 'Email no es válido';
+    return 'Correo no es válido';
   }
   return null;
 }
