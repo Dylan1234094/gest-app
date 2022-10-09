@@ -27,8 +27,7 @@ class _RegisterGoalPageState extends State<RegisterGoalPage> {
       builder: (BuildContext ctx) {
         return AlertDialog(
           title: const Text('Confirmación', style: TextStyle(fontSize: 13)),
-          content: const Text('¿Desea enviar los datos?',
-              style: kInfoPopUp, textAlign: TextAlign.justify),
+          content: const Text('¿Desea enviar los datos?', style: kInfoPopUp, textAlign: TextAlign.justify),
           actions: [
             TextButton(
               onPressed: () {
@@ -42,11 +41,7 @@ class _RegisterGoalPageState extends State<RegisterGoalPage> {
             TextButton(
               onPressed: () {
                 registerGoal(
-                        widget.gestId,
-                        valueController.text,
-                        startDateController.text,
-                        endDateController.text,
-                        context)
+                        widget.gestId, valueController.text, startDateController.text, endDateController.text, context)
                     .then((value) {
                   Navigator.of(context).pop();
                   _registerGoalSuccess(context);
@@ -89,8 +84,7 @@ class _RegisterGoalPageState extends State<RegisterGoalPage> {
           builder: (context, snapshot) {
             return SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 20.0, horizontal: 10.0),
+                padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
                 child: Form(
                   key: _keyForm,
                   child: Column(
@@ -99,8 +93,7 @@ class _RegisterGoalPageState extends State<RegisterGoalPage> {
                     children: [
                       Padding(
                         padding: EdgeInsets.only(top: 20.0),
-                        child: Text("Registrar Meta",
-                            textAlign: TextAlign.center, style: kTitulo1),
+                        child: Text("Registrar Meta", textAlign: TextAlign.center, style: kTitulo1),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 20.0),
@@ -116,12 +109,9 @@ class _RegisterGoalPageState extends State<RegisterGoalPage> {
                           style: TextStyle(fontSize: 13.0),
                           controller: valueController,
                           keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                           decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 10.0, horizontal: 10.0),
+                            contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                             border: const OutlineInputBorder(),
                             labelText: "Tiempo (min.)",
                             hintStyle: kSubTitulo1,
@@ -153,14 +143,10 @@ class _RegisterGoalPageState extends State<RegisterGoalPage> {
                           padding: EdgeInsets.all(20.0),
                           child: ElevatedButton(
                             style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  colorPrincipal),
-                              foregroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.white),
-                              fixedSize: MaterialStateProperty.all(
-                                  const Size(160.0, 46.0)),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
+                              backgroundColor: MaterialStateProperty.all<Color>(colorPrincipal),
+                              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                              fixedSize: MaterialStateProperty.all(const Size(160.0, 46.0)),
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
@@ -189,16 +175,15 @@ class _RegisterGoalPageState extends State<RegisterGoalPage> {
 
 String? ValidateResult(String result) {
   if (result.isEmpty) {
-    return 'Resultado no puede estar vacio';
+    return 'Tiempo no puede estar vacio';
   }
   if (result[0] == '0') {
-    return 'Resultado no puede ser cero';
+    return 'Tiempo no puede ser cero';
   }
   return null;
 }
 
-Future<void> registerGoal(String gestID, String value, String startDate,
-    String endDate, BuildContext context) {
+Future<void> registerGoal(String gestID, String value, String startDate, String endDate, BuildContext context) {
   GoalService _goalService = GoalService();
   return _goalService.registerGoal(gestID, value, startDate, endDate, context);
 }
@@ -209,8 +194,7 @@ Future<void> _registerGoalSuccess(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Meta Registrada',
@@ -240,8 +224,7 @@ Future<void> _registerGoalFailed(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text('Algo salió mal...', style: TextStyle(fontSize: 13)),
         content: const Text(

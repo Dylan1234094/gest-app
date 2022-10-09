@@ -20,6 +20,7 @@ class UpdateExamPage extends StatefulWidget {
 }
 
 class _UpdateExamPageState extends State<UpdateExamPage> {
+  final _keyForm = GlobalKey<FormState>();
   final dateController = TextEditingController();
   final valueController = TextEditingController();
   var uid = FirebaseAuth.instance.currentUser!.uid;
@@ -29,24 +30,20 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
       context: context,
       builder: (BuildContext ctx) {
         return AlertDialog(
-          contentPadding:
-              EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+          contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
           actionsPadding: EdgeInsets.only(bottom: 10),
           title: const Text('Confirmación', style: TextStyle(fontSize: 13)),
-          content: const Text('¿Desea actualizar los datos?',
-              style: kInfoPopUp, textAlign: TextAlign.justify),
+          content: const Text('¿Desea actualizar los datos?', style: kInfoPopUp, textAlign: TextAlign.justify),
           actions: [
             TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('CANCELAR',
-                    style: TextStyle(fontSize: 10, color: colorSecundario))),
+                child: const Text('CANCELAR', style: TextStyle(fontSize: 10, color: colorSecundario))),
             TextButton(
                 onPressed: () {
                   //! Update examen
-                  updateExamResult(uid, widget.examId, valueController.text,
-                          dateController.text, context)
+                  updateExamResult(uid, widget.examId, valueController.text, dateController.text, context)
                       .then((value) {
                     Navigator.of(context).pop();
                     _updateExamSuccess(context);
@@ -67,19 +64,16 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
       context: context,
       builder: (BuildContext ctx) {
         return AlertDialog(
-          contentPadding:
-              EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+          contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
           actionsPadding: EdgeInsets.only(bottom: 10),
           title: const Text('Confirmación', style: TextStyle(fontSize: 13)),
-          content: const Text('¿Desea elimar el registro?',
-              style: kInfoPopUp, textAlign: TextAlign.justify),
+          content: const Text('¿Desea elimar el registro?', style: kInfoPopUp, textAlign: TextAlign.justify),
           actions: [
             TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('CANCELAR',
-                    style: TextStyle(fontSize: 10, color: colorSecundario))),
+                child: const Text('CANCELAR', style: TextStyle(fontSize: 10, color: colorSecundario))),
             TextButton(
                 onPressed: () {
                   deleteExamResult(uid, widget.examId, context).then((value) {
@@ -156,85 +150,81 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
                 case (ConnectionState.done):
                   if (snapshot.hasData) {
                     valueController.text = snapshot.data!.value!.toString();
-                    dateController.text = intl.DateFormat('dd/MM/yyyy')
-                        .format(snapshot.data!.dateResult!.toDate());
+                    dateController.text = intl.DateFormat('dd/MM/yyyy').format(snapshot.data!.dateResult!.toDate());
                     return SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 20.0, horizontal: 10.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(top: 20.0),
-                              child: Text('Actualizar Examen',
-                                  textAlign: TextAlign.center, style: kTitulo1),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 20.0),
-                              child: Text(
-                                'Edite el resultado a continuación',
-                                textAlign: TextAlign.justify,
-                                style: kDescripcion,
+                      child: Form(
+                        key: _keyForm,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(top: 20.0),
+                                child: Text('Actualizar Examen', textAlign: TextAlign.center, style: kTitulo1),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: TextField(
-                                style: TextStyle(fontSize: 13.0),
-                                controller: valueController,
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp(r'^\d+\.?\d{0,2}')),
-                                ],
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 10.0, horizontal: 10.0),
-                                  border: OutlineInputBorder(),
-                                  labelText: 'Resultado (g/dL)',
-                                  hintStyle: kSubTitulo1,
-                                  labelStyle: kSubTitulo1,
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 20.0),
+                                child: Text(
+                                  'Edite el resultado a continuación',
+                                  textAlign: TextAlign.justify,
+                                  style: kDescripcion,
                                 ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: MyTextFormDate(
-                                label: "Fecha de resultado",
-                                dateController: dateController,
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextFormField(
+                                  validator: (value) {
+                                    return validateText("Resultado", value!);
+                                  },
+                                  style: TextStyle(fontSize: 13.0),
+                                  controller: valueController,
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                                  ],
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                    border: OutlineInputBorder(),
+                                    labelText: 'Resultado (g/dL)',
+                                    hintStyle: kSubTitulo1,
+                                    labelStyle: kSubTitulo1,
+                                  ),
+                                ),
                               ),
-                            ),
-                            Center(
-                              child: Padding(
-                                padding: EdgeInsets.all(20.0),
-                                child: ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            colorPrincipal),
-                                    foregroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Colors.white),
-                                    fixedSize: MaterialStateProperty.all(
-                                        const Size(160.0, 46.0)),
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: MyTextFormDate(
+                                  label: "Fecha de resultado",
+                                  dateController: dateController,
+                                ),
+                              ),
+                              Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(20.0),
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all<Color>(colorPrincipal),
+                                      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                                      fixedSize: MaterialStateProperty.all(const Size(160.0, 46.0)),
+                                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                        ),
                                       ),
                                     ),
+                                    onPressed: () {
+                                      if (_keyForm.currentState!.validate()) {
+                                        confirmDialog(context);
+                                      }
+                                    },
+                                    child: Text("GUARDAR"),
                                   ),
-                                  onPressed: () {
-                                    confirmDialog(context);
-                                  },
-                                  child: Text("GUARDAR"),
                                 ),
-                              ),
-                            )
-                          ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -254,14 +244,12 @@ class _UpdateExamPageState extends State<UpdateExamPage> {
   }
 }
 
-Future<void> updateExamResult(String gestID, String examID, String value,
-    String date, BuildContext context) {
+Future<void> updateExamResult(String gestID, String examID, String value, String date, BuildContext context) {
   ExamService _examService = ExamService();
   return _examService.updateExamResult(gestID, examID, value, date, context);
 }
 
-Future<void> deleteExamResult(
-    String gestID, String examID, BuildContext context) {
+Future<void> deleteExamResult(String gestID, String examID, BuildContext context) {
   ExamService _examService = ExamService();
   return _examService.deleteExamResult(gestID, examID, context);
 }
@@ -277,8 +265,7 @@ Future<void> _updateExamSuccess(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Examen actualizado',
@@ -308,8 +295,7 @@ Future<void> _updateExamFailed(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Algo salió mal...',
@@ -339,8 +325,7 @@ Future<void> _deleteExamSuccess(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Examen Eliminado',
@@ -370,8 +355,7 @@ Future<void> _deleteExamFailed(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Algo salió mal...',
@@ -393,4 +377,14 @@ Future<void> _deleteExamFailed(BuildContext context) {
       );
     },
   );
+}
+
+String? validateText(String label, String value) {
+  if (value.isEmpty) {
+    return '$label es obligatorio';
+  }
+  if (value == "0") {
+    return 'El resultado no puede ser 0';
+  }
+  return null;
 }

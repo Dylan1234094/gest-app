@@ -24,6 +24,7 @@ class UpdateGoalPage extends StatefulWidget {
 }
 
 class _UpdateGoalPageState extends State<UpdateGoalPage> {
+  final _keyForm = GlobalKey<FormState>();
   final startDateController = TextEditingController();
   final endDateController = TextEditingController();
   final valueController = TextEditingController();
@@ -33,12 +34,10 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
       context: context,
       builder: (BuildContext ctx) {
         return AlertDialog(
-          contentPadding:
-              EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+          contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
           actionsPadding: EdgeInsets.only(bottom: 10),
           title: const Text('Confirmación', style: TextStyle(fontSize: 13)),
-          content: const Text('¿Desea actualizar los datos?',
-              style: kInfoPopUp, textAlign: TextAlign.justify),
+          content: const Text('¿Desea actualizar los datos?', style: kInfoPopUp, textAlign: TextAlign.justify),
           actions: [
             TextButton(
               onPressed: () {
@@ -51,13 +50,8 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
             ),
             TextButton(
               onPressed: () {
-                updateGoal(
-                        widget.gestId,
-                        widget.goalId,
-                        valueController.text,
-                        startDateController.text,
-                        endDateController.text,
-                        context)
+                updateGoal(widget.gestId, widget.goalId, valueController.text, startDateController.text,
+                        endDateController.text, context)
                     .then((value) {
                   Navigator.of(context).pop();
                   _updateGoalSuccess(context);
@@ -79,12 +73,10 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
       context: context,
       builder: (BuildContext ctx) {
         return AlertDialog(
-          contentPadding:
-              EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+          contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
           actionsPadding: EdgeInsets.only(bottom: 10),
           title: const Text('Confirmación', style: TextStyle(fontSize: 13)),
-          content: const Text('¿Desea eliminar el registro?',
-              style: kInfoPopUp, textAlign: TextAlign.justify),
+          content: const Text('¿Desea eliminar el registro?', style: kInfoPopUp, textAlign: TextAlign.justify),
           actions: [
             TextButton(
               onPressed: () {
@@ -169,97 +161,89 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
               case (ConnectionState.done):
                 if (snapshot.hasData) {
                   valueController.text = snapshot.data!.value!.toString();
-                  startDateController.text = intl.DateFormat('dd/MM/yyyy')
-                      .format(snapshot.data!.startTime!.toDate());
-                  endDateController.text = intl.DateFormat('dd/MM/yyyy')
-                      .format(snapshot.data!.endTime!.toDate());
+                  startDateController.text = intl.DateFormat('dd/MM/yyyy').format(snapshot.data!.startTime!.toDate());
+                  endDateController.text = intl.DateFormat('dd/MM/yyyy').format(snapshot.data!.endTime!.toDate());
                   return SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 20.0, horizontal: 10.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 20.0),
-                            child: Text('Actualizar Meta',
-                                textAlign: TextAlign.center, style: kTitulo1),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 20.0),
-                            child: Text(
-                              'Edite la meta a continuación',
-                              textAlign: TextAlign.justify,
-                              style: kDescripcion,
+                    child: Form(
+                      key: _keyForm,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: 20.0),
+                              child: Text('Actualizar Meta', textAlign: TextAlign.center, style: kTitulo1),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextFormField(
-                              style: TextStyle(fontSize: 13.0),
-                              controller: valueController,
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(
-                                    vertical: 10.0, horizontal: 10.0),
-                                border: OutlineInputBorder(),
-                                labelText: "Tiempo (min.)",
-                                hintStyle: kSubTitulo1,
-                                labelStyle: kSubTitulo1,
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 20.0),
+                              child: Text(
+                                'Edite la meta a continuación',
+                                textAlign: TextAlign.justify,
+                                style: kDescripcion,
                               ),
-                              validator: (result) {
-                                return validateResult(result!);
-                              },
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: MyTextFormDate(
-                              label: "Fecha Inicial",
-                              dateController: startDateController,
-                              continous: true,
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: TextFormField(
+                                style: TextStyle(fontSize: 13.0),
+                                controller: valueController,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                  border: OutlineInputBorder(),
+                                  labelText: "Tiempo (min.)",
+                                  hintStyle: kSubTitulo1,
+                                  labelStyle: kSubTitulo1,
+                                ),
+                                validator: (result) {
+                                  return validateResult(result!);
+                                },
+                              ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: MyTextFormDate(
-                              label: "Fecha Final",
-                              dateController: endDateController,
-                              continous: true,
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: MyTextFormDate(
+                                label: "Fecha Inicial",
+                                dateController: startDateController,
+                                continous: true,
+                              ),
                             ),
-                          ),
-                          Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(20.0),
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          colorPrincipal),
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.white),
-                                  fixedSize: MaterialStateProperty.all(
-                                      const Size(160.0, 46.0)),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: MyTextFormDate(
+                                label: "Fecha Final",
+                                dateController: endDateController,
+                                continous: true,
+                              ),
+                            ),
+                            Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(20.0),
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all<Color>(colorPrincipal),
+                                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                                    fixedSize: MaterialStateProperty.all(const Size(160.0, 46.0)),
+                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                      ),
                                     ),
                                   ),
+                                  onPressed: () {
+                                    if (_keyForm.currentState!.validate()) {
+                                      confirmDialog(context);
+                                    }
+                                  },
+                                  child: Text("GUARDAR"),
                                 ),
-                                onPressed: () {
-                                  confirmDialog(context);
-                                },
-                                child: Text("GUARDAR"),
                               ),
-                            ),
-                          )
-                        ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   );
@@ -282,19 +266,18 @@ class _UpdateGoalPageState extends State<UpdateGoalPage> {
 
 String? validateResult(String result) {
   if (result.isEmpty) {
-    return 'Resultado no puede estar vacio';
+    return 'Tiempo no puede estar vacío';
   }
   if (result[0] == '0') {
-    return 'Resultado no puede ser cero';
+    return 'Tiempo no puede ser cero';
   }
   return null;
 }
 
-Future<void> updateGoal(String gestID, String goalID, String value,
-    String startDate, String endDate, BuildContext context) {
+Future<void> updateGoal(
+    String gestID, String goalID, String value, String startDate, String endDate, BuildContext context) {
   GoalService _goalService = GoalService();
-  return _goalService.updateGoal(
-      gestID, goalID, value, startDate, endDate, context);
+  return _goalService.updateGoal(gestID, goalID, value, startDate, endDate, context);
 }
 
 Future<void> deleteGoal(String gestID, String goalID, BuildContext context) {
@@ -313,8 +296,7 @@ Future<void> _updateGoalSuccess(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Meta Actualizada',
@@ -344,8 +326,7 @@ Future<void> _updateGoalFailed(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Algo salió mal...',
@@ -375,8 +356,7 @@ Future<void> _deleteGoalSuccess(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Meta Eliminada',
@@ -406,8 +386,7 @@ Future<void> _deleteGoalFailed(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding:
-            EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
+        contentPadding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 10),
         actionsPadding: EdgeInsets.only(bottom: 10),
         title: Text(
           'Algo salió mal...',
