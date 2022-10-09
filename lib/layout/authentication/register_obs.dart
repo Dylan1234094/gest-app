@@ -299,7 +299,7 @@ String? validateText(String label, String value) {
     return '$label es obligatorio';
   }
   if (value.length < 3) {
-    return '$label debe tener mínimo 3 carácteres';
+    return '$label debe tener mínimo 3 caracteres';
   }
   return null;
 }

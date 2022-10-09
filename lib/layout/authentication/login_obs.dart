@@ -235,7 +235,7 @@ String? validatePassword(String value) {
     return 'Contraseña es obligatorio';
   }
   if (value.length < 6) {
-    return 'Contraseña debe tener mínimo 6 carácteres';
+    return 'Contraseña debe tener mínimo 6 caracteres';
   }
   return null;
 }

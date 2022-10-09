@@ -182,7 +182,7 @@ class _RegisterExamPageState extends State<RegisterExamPage> {
 
 String? ValidateResult(String result) {
   if (result.isEmpty) {
-    return 'Resultado no puede estar vacio';
+    return 'Resultado no puede estar vacío';
   }
   if (result[0] == '0') {
     return 'Resultado no puede ser cero';

@@ -27,7 +27,7 @@ class _MyTextFormDate extends State<MyTextFormDate> {
       showCursor: true,
       validator: (text) {
         if (text!.isEmpty) {
-          return '${widget.label} no puede estar vacio';
+          return '${widget.label} no puede estar vacío';
         }
 
         return null;

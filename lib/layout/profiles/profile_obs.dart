@@ -100,6 +100,7 @@ class _ViewFormObsState extends State<ViewFormObs> {
                             validacion: (value) {
                               return validateText("Nombre", value!);
                             },
+                            enabled: true,
                           ),
                           InputTextWidget(
                             //! Apellido
@@ -113,6 +114,7 @@ class _ViewFormObsState extends State<ViewFormObs> {
                             validacion: (value) {
                               return validateText("Apellido", value!);
                             },
+                            enabled: true,
                           ),
                           InputTextWidget(
                             //! Correo
@@ -125,6 +127,7 @@ class _ViewFormObsState extends State<ViewFormObs> {
                             validacion: (value) {
                               return validateEmail(value!);
                             },
+                            enabled: false,
                           ),
                           InputTextWidget(
                             //! Celular
@@ -137,6 +140,7 @@ class _ViewFormObsState extends State<ViewFormObs> {
                             validacion: (value) {
                               return validatePhoneNumber(value!);
                             },
+                            enabled: true,
                           ),
                           Center(
                             child: Padding(
@@ -201,6 +205,7 @@ class InputTextWidget extends StatelessWidget {
     required this.label,
     required this.inputType,
     required this.validacion,
+    required this.enabled,
   }) : super(key: key);
 
   final TextEditingController controlador;
@@ -208,6 +213,7 @@ class InputTextWidget extends StatelessWidget {
   final List<TextInputFormatter> formatters;
   final String label;
   final FormFieldValidator<String>? validacion;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -215,6 +221,7 @@ class InputTextWidget extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
         style: const TextStyle(fontSize: 13.0),
+        enabled: enabled,
         controller: controlador,
         keyboardType: inputType,
         inputFormatters: formatters,
